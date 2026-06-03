@@ -1,7 +1,14 @@
 {
   "project": "tollgate",
   "spec": "docs/superpowers/specs/2026-06-02-tollgate-machine-payable-web-design.md",
-  "subsystems": ["move", "shared", "middleware", "agent", "dashboard", "deploy-demo"],
+  "subsystems": [
+    "move",
+    "shared",
+    "middleware",
+    "agent",
+    "dashboard",
+    "deploy-demo"
+  ],
   "_notes": {
     "gate_semantics": "A gate PASSES when its command exits 0. `gate.expect` is a confirming output substring where the tool prints one; `tsc --noEmit` prints nothing on success, so for typecheck gates rely on exit code 0.",
     "human_gate": "Tasks flagged `human_gate: true` produce scripts whose LIVE execution broadcasts transactions or moves test funds. The executor pool BUILDS and unit-tests them (the gate is the mocked unit test); a human runs the real script per the README runbook. Executors never broadcast or move funds.",
@@ -15,11 +22,25 @@
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-move.md",
       "depends_on": [],
       "effort": "low",
-      "files": { "create": ["move/tollgate/Move.toml", "move/tollgate/sources/.gitkeep", "move/tollgate/tests/.gitkeep"], "modify": [], "test": [] },
-      "provides": ["Move package 'tollgate' (named address tollgate=0x0)"],
+      "files": {
+        "create": [
+          "move/tollgate/Move.toml",
+          "move/tollgate/sources/.gitkeep",
+          "move/tollgate/tests/.gitkeep"
+        ],
+        "modify": [],
+        "test": []
+      },
+      "provides": [
+        "Move package 'tollgate' (named address tollgate=0x0)"
+      ],
       "requires": [],
-      "gate": { "run": "sui move build --path move/tollgate", "expect": "Build successful" },
+      "gate": {
+        "run": "sui move build --path move/tollgate && echo GATE_OK",
+        "expect": "GATE_OK"
+      },
       "commit": "chore(move): scaffold tollgate Move package",
+      "provider": "codex",
       "status": "pending"
     },
     {
@@ -27,23 +48,52 @@
       "subsystem": "move",
       "title": "mock_usd demo coin (6-decimal mintable stablecoin)",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-move.md",
-      "depends_on": ["move:1"],
+      "depends_on": [
+        "move:1"
+      ],
       "effort": "medium",
-      "files": { "create": ["move/tollgate/sources/mock_usd.move"], "modify": [], "test": ["move/tollgate/tests/mock_usd_tests.move"] },
-      "provides": ["tollgate::mock_usd::MOCK_USD", "mock_usd::mint(&mut TreasuryCap<MOCK_USD>, u64, address)"],
-      "requires": ["Move package 'tollgate' (move:1)"],
-      "gate": { "run": "sui move test --path move/tollgate", "expect": "Test result: OK" },
+      "files": {
+        "create": [
+          "move/tollgate/sources/mock_usd.move"
+        ],
+        "modify": [],
+        "test": [
+          "move/tollgate/tests/mock_usd_tests.move"
+        ]
+      },
+      "provides": [
+        "tollgate::mock_usd::MOCK_USD",
+        "mock_usd::mint(&mut TreasuryCap<MOCK_USD>, u64, address)"
+      ],
+      "requires": [
+        "Move package 'tollgate' (move:1)"
+      ],
+      "gate": {
+        "run": "sui move test --path move/tollgate",
+        "expect": "Test result: OK"
+      },
       "commit": "feat(move): mintable mock_usd demo stablecoin",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "move:3",
       "subsystem": "move",
-      "title": "tollgate module — register, pay, withdraw, receipts",
+      "title": "tollgate module \u2014 register, pay, withdraw, receipts",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-move.md",
-      "depends_on": ["move:2"],
+      "depends_on": [
+        "move:2"
+      ],
       "effort": "high",
-      "files": { "create": ["move/tollgate/sources/tollgate.move"], "modify": [], "test": ["move/tollgate/tests/tollgate_tests.move"] },
+      "files": {
+        "create": [
+          "move/tollgate/sources/tollgate.move"
+        ],
+        "modify": [],
+        "test": [
+          "move/tollgate/tests/tollgate_tests.move"
+        ]
+      },
       "provides": [
         "tollgate::tollgate::MeteredResource<phantom T> has key { id, owner, price: u64, balance: Balance<T> }",
         "tollgate::tollgate::OwnerCap has key, store { id, resource_id: ID }",
@@ -54,12 +104,17 @@
         "withdraw<T>(&mut MeteredResource<T>, &OwnerCap, amount: u64)",
         "price<T>, balance_value<T>, owner<T>"
       ],
-      "requires": ["tollgate::mock_usd::MOCK_USD (move:2)"],
-      "gate": { "run": "sui move test --path move/tollgate", "expect": "Test result: OK" },
+      "requires": [
+        "tollgate::mock_usd::MOCK_USD (move:2)"
+      ],
+      "gate": {
+        "run": "sui move test --path move/tollgate",
+        "expect": "Test result: OK"
+      },
       "commit": "feat(move): tollgate metered resource, pay, withdraw, receipts",
+      "provider": "codex",
       "status": "pending"
     },
-
     {
       "id": "shared:1",
       "subsystem": "shared",
@@ -67,95 +122,242 @@
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-shared.md",
       "depends_on": [],
       "effort": "medium",
-      "files": { "create": ["package.json", "tsconfig.base.json", "vitest.config.ts", ".gitignore", ".env.example", "packages/shared/package.json", "packages/shared/tsconfig.json", "packages/shared/src/version.ts"], "modify": [], "test": ["packages/shared/src/version.test.ts"] },
-      "provides": ["npm workspace root (workspaces: packages/*)", "tsconfig path alias @tollgate/shared/* -> packages/shared/src/*", "@tollgate/shared package (subpath exports ./* -> ./src/*.ts)", "SHARED_VERSION"],
+      "files": {
+        "create": [
+          "package.json",
+          "tsconfig.base.json",
+          "vitest.config.ts",
+          ".gitignore",
+          ".env.example",
+          "packages/shared/package.json",
+          "packages/shared/tsconfig.json",
+          "packages/shared/src/version.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/shared/src/version.test.ts"
+        ]
+      },
+      "provides": [
+        "npm workspace root (workspaces: packages/*)",
+        "tsconfig path alias @tollgate/shared/* -> packages/shared/src/*",
+        "@tollgate/shared package (subpath exports ./* -> ./src/*.ts)",
+        "SHARED_VERSION"
+      ],
       "requires": [],
-      "gate": { "run": "npx vitest run packages/shared/src/version.test.ts", "expect": "passed" },
+      "gate": {
+        "run": "npx vitest run packages/shared/src/version.test.ts",
+        "expect": "passed"
+      },
       "commit": "chore: scaffold npm workspace and @tollgate/shared",
-      "status": "pending"
+      "provider": "codex",
+      "status": "done",
+      "mastermind_note": "Reconciled by mastermind: deliverable already committed at HEAD 600c1ef; gate re-run and PASSED. Spurious empty-commit \"failure\" was a manifest-status desync, not a build failure."
     },
     {
       "id": "shared:2",
       "subsystem": "shared",
-      "title": "types.ts — protocol types + challenge schema",
+      "title": "types.ts \u2014 protocol types + challenge schema",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-shared.md",
-      "depends_on": ["shared:1"],
+      "depends_on": [
+        "shared:1"
+      ],
       "effort": "low",
-      "files": { "create": ["packages/shared/src/types.ts"], "modify": [], "test": ["packages/shared/src/types.test.ts"] },
-      "provides": ["PaymentChallengeSchema (zod)", "type PaymentChallenge { resourceId, packageId, coinType, price, recipient, nonce, expiresAt }", "interface ResourceConfig { resourceId, coinType, price, recipient }", "interface PaymentReceiptEvent { resourceId, payer, amount, nonce, timestampMs, txDigest }", "interface VerifyResult { ok, reason? }"],
-      "requires": ["@tollgate/shared package (shared:1)"],
-      "gate": { "run": "npx vitest run packages/shared/src/types.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/shared/src/types.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/shared/src/types.test.ts"
+        ]
+      },
+      "provides": [
+        "PaymentChallengeSchema (zod)",
+        "type PaymentChallenge { resourceId, packageId, coinType, price, recipient, nonce, expiresAt }",
+        "interface ResourceConfig { resourceId, coinType, price, recipient }",
+        "interface PaymentReceiptEvent { resourceId, payer, amount, nonce, timestampMs, txDigest }",
+        "interface VerifyResult { ok, reason? }"
+      ],
+      "requires": [
+        "@tollgate/shared package (shared:1)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/shared/src/types.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(shared): protocol types and PaymentChallenge schema",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "shared:3",
       "subsystem": "shared",
-      "title": "config.ts — validated env loader",
+      "title": "config.ts \u2014 validated env loader",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-shared.md",
-      "depends_on": ["shared:1"],
+      "depends_on": [
+        "shared:1"
+      ],
       "effort": "low",
-      "files": { "create": ["packages/shared/src/config.ts"], "modify": [], "test": ["packages/shared/src/config.test.ts"] },
-      "provides": ["type SuiNetwork = 'testnet'|'mainnet'|'devnet'|'localnet'", "interface TollgateConfig { network, rpcUrl, packageId, musdCoinType }", "loadConfig(env?): TollgateConfig"],
-      "requires": ["@tollgate/shared package (shared:1)"],
-      "gate": { "run": "npx vitest run packages/shared/src/config.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/shared/src/config.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/shared/src/config.test.ts"
+        ]
+      },
+      "provides": [
+        "type SuiNetwork = 'testnet'|'mainnet'|'devnet'|'localnet'",
+        "interface TollgateConfig { network, rpcUrl, packageId, musdCoinType }",
+        "loadConfig(env?): TollgateConfig"
+      ],
+      "requires": [
+        "@tollgate/shared package (shared:1)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/shared/src/config.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(shared): validated env config loader",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "shared:4",
       "subsystem": "shared",
-      "title": "client.ts — Sui client factory",
+      "title": "client.ts \u2014 Sui client factory",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-shared.md",
-      "depends_on": ["shared:3"],
+      "depends_on": [
+        "shared:3"
+      ],
       "effort": "low",
-      "files": { "create": ["packages/shared/src/client.ts"], "modify": [], "test": ["packages/shared/src/client.test.ts"] },
-      "provides": ["defaultRpcUrl(network: SuiNetwork): string", "getSuiClient(opts: { rpcUrl: string }): SuiClient"],
-      "requires": ["type SuiNetwork (shared:3)"],
-      "gate": { "run": "npx vitest run packages/shared/src/client.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/shared/src/client.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/shared/src/client.test.ts"
+        ]
+      },
+      "provides": [
+        "defaultRpcUrl(network: SuiNetwork): string",
+        "getSuiClient(opts: { rpcUrl: string }): SuiClient"
+      ],
+      "requires": [
+        "type SuiNetwork (shared:3)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/shared/src/client.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(shared): Sui client factory",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "shared:5",
       "subsystem": "shared",
-      "title": "receipts.ts — receipt read + verify",
+      "title": "receipts.ts \u2014 receipt read + verify",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-shared.md",
-      "depends_on": ["shared:2"],
+      "depends_on": [
+        "shared:2"
+      ],
       "effort": "medium",
-      "files": { "create": ["packages/shared/src/receipts.ts"], "modify": [], "test": ["packages/shared/src/receipts.test.ts"] },
-      "provides": ["bytesToHex(bytes): string", "hexToBytes(hex): Uint8Array", "readReceiptFromDigest(client, digest, packageId): Promise<PaymentReceiptEvent|null>", "verifyReceipt(receipt, { resourceId, price, nonce }): VerifyResult"],
-      "requires": ["PaymentReceiptEvent, VerifyResult (shared:2)"],
-      "gate": { "run": "npx vitest run packages/shared/src/receipts.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/shared/src/receipts.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/shared/src/receipts.test.ts"
+        ]
+      },
+      "provides": [
+        "bytesToHex(bytes): string",
+        "hexToBytes(hex): Uint8Array",
+        "readReceiptFromDigest(client, digest, packageId): Promise<PaymentReceiptEvent|null>",
+        "verifyReceipt(receipt, { resourceId, price, nonce }): VerifyResult"
+      ],
+      "requires": [
+        "PaymentReceiptEvent, VerifyResult (shared:2)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/shared/src/receipts.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(shared): on-chain receipt read and verification",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "shared:6",
       "subsystem": "shared",
-      "title": "coins.ts — exact-coin preparation",
+      "title": "coins.ts \u2014 exact-coin preparation",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-shared.md",
-      "depends_on": ["shared:1"],
+      "depends_on": [
+        "shared:1"
+      ],
       "effort": "medium",
-      "files": { "create": ["packages/shared/src/coins.ts"], "modify": [], "test": ["packages/shared/src/coins.test.ts"] },
-      "provides": ["prepareExactCoin(tx, client, owner, coinType, amount: bigint): Promise<TransactionObjectArgument>"],
-      "requires": ["@mysten/sui Transaction, TransactionObjectArgument, SuiClient (shared:1 installed)"],
-      "gate": { "run": "npx vitest run packages/shared/src/coins.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/shared/src/coins.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/shared/src/coins.test.ts"
+        ]
+      },
+      "provides": [
+        "prepareExactCoin(tx, client, owner, coinType, amount: bigint): Promise<TransactionObjectArgument>"
+      ],
+      "requires": [
+        "@mysten/sui Transaction, TransactionObjectArgument, SuiClient (shared:1 installed)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/shared/src/coins.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(shared): exact-coin preparation helper",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "shared:7",
       "subsystem": "shared",
-      "title": "ptb.ts — register/pay/withdraw transaction builders",
+      "title": "ptb.ts \u2014 register/pay/withdraw transaction builders",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-shared.md",
-      "depends_on": ["shared:5", "shared:6"],
+      "depends_on": [
+        "shared:5",
+        "shared:6"
+      ],
       "effort": "medium",
-      "files": { "create": ["packages/shared/src/ptb.ts"], "modify": [], "test": ["packages/shared/src/ptb.test.ts"] },
-      "provides": ["buildRegisterTx({ packageId, coinType, price }): Transaction", "buildPayTx(client, { packageId, coinType, resourceObjectId, owner, amount, nonceHex }): Promise<Transaction>", "buildWithdrawTx({ packageId, coinType, resourceObjectId, ownerCapId, amount }): Transaction"],
-      "requires": ["prepareExactCoin (shared:6)", "hexToBytes (shared:5)"],
-      "gate": { "run": "npx vitest run packages/shared/src/ptb.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/shared/src/ptb.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/shared/src/ptb.test.ts"
+        ]
+      },
+      "provides": [
+        "buildRegisterTx({ packageId, coinType, price }): Transaction",
+        "buildPayTx(client, { packageId, coinType, resourceObjectId, owner, amount, nonceHex }): Promise<Transaction>",
+        "buildWithdrawTx({ packageId, coinType, resourceObjectId, ownerCapId, amount }): Transaction"
+      ],
+      "requires": [
+        "prepareExactCoin (shared:6)",
+        "hexToBytes (shared:5)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/shared/src/ptb.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(shared): register/pay/withdraw PTB builders",
+      "provider": "codex",
       "status": "pending"
     },
     {
@@ -163,84 +365,216 @@
       "subsystem": "shared",
       "title": "Strict typecheck gate for @tollgate/shared",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-shared.md",
-      "depends_on": ["shared:2", "shared:3", "shared:4", "shared:5", "shared:6", "shared:7"],
+      "depends_on": [
+        "shared:2",
+        "shared:3",
+        "shared:4",
+        "shared:5",
+        "shared:6",
+        "shared:7"
+      ],
       "effort": "low",
-      "files": { "create": [], "modify": ["packages/shared/package.json"], "test": [] },
-      "provides": ["green tsc --noEmit for @tollgate/shared"],
-      "requires": ["all @tollgate/shared source (shared:2-7)"],
-      "gate": { "run": "npx tsc -p packages/shared/tsconfig.json --noEmit", "expect": "exit 0" },
+      "files": {
+        "create": [],
+        "modify": [
+          "packages/shared/package.json"
+        ],
+        "test": []
+      },
+      "provides": [
+        "green tsc --noEmit for @tollgate/shared"
+      ],
+      "requires": [
+        "all @tollgate/shared source (shared:2-7)"
+      ],
+      "gate": {
+        "run": "npx tsc -p packages/shared/tsconfig.json --noEmit && echo GATE_OK",
+        "expect": "GATE_OK"
+      },
       "commit": "chore(shared): strict typecheck gate",
+      "provider": "codex",
       "status": "pending"
     },
-
     {
       "id": "middleware:1",
       "subsystem": "middleware",
       "title": "Scaffold @tollgate/middleware",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-middleware.md",
-      "depends_on": ["shared:1"],
+      "depends_on": [
+        "shared:1"
+      ],
       "effort": "low",
-      "files": { "create": ["packages/middleware/package.json", "packages/middleware/tsconfig.json", "packages/middleware/src/constants.ts"], "modify": [], "test": ["packages/middleware/src/constants.test.ts"] },
-      "provides": ["@tollgate/middleware package", "const TOLLGATE_HEADER = 'x-tollgate-payment'"],
-      "requires": ["npm workspace + @tollgate/shared (shared:1)"],
-      "gate": { "run": "npx vitest run packages/middleware/src/constants.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/middleware/package.json",
+          "packages/middleware/tsconfig.json",
+          "packages/middleware/src/constants.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/middleware/src/constants.test.ts"
+        ]
+      },
+      "provides": [
+        "@tollgate/middleware package",
+        "const TOLLGATE_HEADER = 'x-tollgate-payment'"
+      ],
+      "requires": [
+        "npm workspace + @tollgate/shared (shared:1)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/middleware/src/constants.test.ts",
+        "expect": "passed"
+      },
       "commit": "chore(middleware): scaffold @tollgate/middleware",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "middleware:2",
       "subsystem": "middleware",
-      "title": "nonceStore.ts — single-use challenge nonces",
+      "title": "nonceStore.ts \u2014 single-use challenge nonces",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-middleware.md",
-      "depends_on": ["middleware:1"],
+      "depends_on": [
+        "middleware:1"
+      ],
       "effort": "medium",
-      "files": { "create": ["packages/middleware/src/nonceStore.ts"], "modify": [], "test": ["packages/middleware/src/nonceStore.test.ts"] },
-      "provides": ["interface NonceStore { issue(resourceId, ttlMs): IssuedNonce; validateAndConsume(nonce, resourceId): ConsumeResult }", "class InMemoryNonceStore", "type ConsumeResult = 'ok'|'unknown'|'expired'|'consumed'|'wrong-resource'", "interface IssuedNonce { nonce, expiresAt }"],
-      "requires": ["@tollgate/middleware package (middleware:1)"],
-      "gate": { "run": "npx vitest run packages/middleware/src/nonceStore.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/middleware/src/nonceStore.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/middleware/src/nonceStore.test.ts"
+        ]
+      },
+      "provides": [
+        "interface NonceStore { issue(resourceId, ttlMs): IssuedNonce; validateAndConsume(nonce, resourceId): ConsumeResult }",
+        "class InMemoryNonceStore",
+        "type ConsumeResult = 'ok'|'unknown'|'expired'|'consumed'|'wrong-resource'",
+        "interface IssuedNonce { nonce, expiresAt }"
+      ],
+      "requires": [
+        "@tollgate/middleware package (middleware:1)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/middleware/src/nonceStore.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(middleware): single-use nonce store",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "middleware:3",
       "subsystem": "middleware",
-      "title": "tollgate.ts — the 402 middleware",
+      "title": "tollgate.ts \u2014 the 402 middleware",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-middleware.md",
-      "depends_on": ["middleware:2", "shared:5", "shared:2"],
+      "depends_on": [
+        "middleware:2",
+        "shared:5",
+        "shared:2"
+      ],
       "effort": "high",
-      "files": { "create": ["packages/middleware/src/tollgate.ts"], "modify": [], "test": ["packages/middleware/src/tollgate.test.ts"] },
-      "provides": ["tollgate(opts: TollgateOptions): RequestHandler", "interface TollgateOptions { suiClient, packageId, resource: ResourceConfig, nonceStore?, challengeTtlMs? }"],
-      "requires": ["readReceiptFromDigest, verifyReceipt (shared:5)", "ResourceConfig, PaymentChallenge (shared:2)", "NonceStore, InMemoryNonceStore (middleware:2)", "TOLLGATE_HEADER (middleware:1)"],
-      "gate": { "run": "npx vitest run packages/middleware/src/tollgate.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/middleware/src/tollgate.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/middleware/src/tollgate.test.ts"
+        ]
+      },
+      "provides": [
+        "tollgate(opts: TollgateOptions): RequestHandler",
+        "interface TollgateOptions { suiClient, packageId, resource: ResourceConfig, nonceStore?, challengeTtlMs? }"
+      ],
+      "requires": [
+        "readReceiptFromDigest, verifyReceipt (shared:5)",
+        "ResourceConfig, PaymentChallenge (shared:2)",
+        "NonceStore, InMemoryNonceStore (middleware:2)",
+        "TOLLGATE_HEADER (middleware:1)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/middleware/src/tollgate.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(middleware): 402 challenge + on-chain receipt verification + replay guard",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "middleware:4",
       "subsystem": "middleware",
-      "title": "tools.ts — 3 self-contained paid tool handlers",
+      "title": "tools.ts \u2014 3 self-contained paid tool handlers",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-middleware.md",
-      "depends_on": ["middleware:1"],
+      "depends_on": [
+        "middleware:1"
+      ],
       "effort": "low",
-      "files": { "create": ["packages/middleware/src/tools.ts"], "modify": [], "test": ["packages/middleware/src/tools.test.ts"] },
-      "provides": ["cryptoPrice: RequestHandler", "fxRate: RequestHandler", "newsHeadlines: RequestHandler"],
-      "requires": ["express RequestHandler (middleware:1 installed)"],
-      "gate": { "run": "npx vitest run packages/middleware/src/tools.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/middleware/src/tools.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/middleware/src/tools.test.ts"
+        ]
+      },
+      "provides": [
+        "cryptoPrice: RequestHandler",
+        "fxRate: RequestHandler",
+        "newsHeadlines: RequestHandler"
+      ],
+      "requires": [
+        "express RequestHandler (middleware:1 installed)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/middleware/src/tools.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(middleware): self-contained paid tool handlers",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "middleware:5",
       "subsystem": "middleware",
-      "title": "paidServer.ts + main.ts — the demo provider",
+      "title": "paidServer.ts + main.ts \u2014 the demo provider",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-middleware.md",
-      "depends_on": ["middleware:3", "middleware:4"],
+      "depends_on": [
+        "middleware:3",
+        "middleware:4"
+      ],
       "effort": "medium",
-      "files": { "create": ["packages/middleware/src/paidServer.ts", "packages/middleware/src/main.ts"], "modify": [], "test": ["packages/middleware/src/paidServer.test.ts"] },
-      "provides": ["createPaidServer(cfg: PaidServerConfig): Express", "interface PaidServerConfig { suiClient, packageId, resources: { cryptoPrice, fxRate, newsHeadlines } }", "main.ts entry (reads deployment.json, listens on PORT)"],
-      "requires": ["tollgate (middleware:3)", "cryptoPrice/fxRate/newsHeadlines (middleware:4)", "ResourceConfig (shared:2)", "loadConfig (shared:3)", "getSuiClient (shared:4)"],
-      "gate": { "run": "npx vitest run packages/middleware/src/paidServer.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/middleware/src/paidServer.ts",
+          "packages/middleware/src/main.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/middleware/src/paidServer.test.ts"
+        ]
+      },
+      "provides": [
+        "createPaidServer(cfg: PaidServerConfig): Express",
+        "interface PaidServerConfig { suiClient, packageId, resources: { cryptoPrice, fxRate, newsHeadlines } }",
+        "main.ts entry (reads deployment.json, listens on PORT)"
+      ],
+      "requires": [
+        "tollgate (middleware:3)",
+        "cryptoPrice/fxRate/newsHeadlines (middleware:4)",
+        "ResourceConfig (shared:2)",
+        "loadConfig (shared:3)",
+        "getSuiClient (shared:4)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/middleware/src/paidServer.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(middleware): paid demo server with 3 gated tools",
+      "provider": "codex",
       "status": "pending"
     },
     {
@@ -248,99 +582,257 @@
       "subsystem": "middleware",
       "title": "Strict typecheck gate for @tollgate/middleware",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-middleware.md",
-      "depends_on": ["middleware:2", "middleware:3", "middleware:4", "middleware:5"],
+      "depends_on": [
+        "middleware:2",
+        "middleware:3",
+        "middleware:4",
+        "middleware:5"
+      ],
       "effort": "low",
-      "files": { "create": [], "modify": ["packages/middleware/package.json"], "test": [] },
-      "provides": ["green tsc --noEmit for @tollgate/middleware"],
-      "requires": ["all @tollgate/middleware source (middleware:1-5)"],
-      "gate": { "run": "npx tsc -p packages/middleware/tsconfig.json --noEmit", "expect": "exit 0" },
+      "files": {
+        "create": [],
+        "modify": [
+          "packages/middleware/package.json"
+        ],
+        "test": []
+      },
+      "provides": [
+        "green tsc --noEmit for @tollgate/middleware"
+      ],
+      "requires": [
+        "all @tollgate/middleware source (middleware:1-5)"
+      ],
+      "gate": {
+        "run": "npx tsc -p packages/middleware/tsconfig.json --noEmit && echo GATE_OK",
+        "expect": "GATE_OK"
+      },
       "commit": "chore(middleware): strict typecheck gate",
+      "provider": "codex",
       "status": "pending"
     },
-
     {
       "id": "agent:1",
       "subsystem": "agent",
       "title": "Scaffold @tollgate/agent",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-agent.md",
-      "depends_on": ["shared:1"],
+      "depends_on": [
+        "shared:1"
+      ],
       "effort": "low",
-      "files": { "create": ["packages/agent/package.json", "packages/agent/tsconfig.json", "packages/agent/src/banner.ts"], "modify": [], "test": ["packages/agent/src/banner.test.ts"] },
-      "provides": ["@tollgate/agent package", "const AGENT_NAME"],
-      "requires": ["npm workspace + @tollgate/shared (shared:1)"],
-      "gate": { "run": "npx vitest run packages/agent/src/banner.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/agent/package.json",
+          "packages/agent/tsconfig.json",
+          "packages/agent/src/banner.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/agent/src/banner.test.ts"
+        ]
+      },
+      "provides": [
+        "@tollgate/agent package",
+        "const AGENT_NAME"
+      ],
+      "requires": [
+        "npm workspace + @tollgate/shared (shared:1)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/agent/src/banner.test.ts",
+        "expect": "passed"
+      },
       "commit": "chore(agent): scaffold @tollgate/agent",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "agent:2",
       "subsystem": "agent",
-      "title": "payAndRetry.ts — autonomous 402 -> pay -> retry",
+      "title": "payAndRetry.ts \u2014 autonomous 402 -> pay -> retry",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-agent.md",
-      "depends_on": ["agent:1", "shared:7", "shared:2"],
+      "depends_on": [
+        "agent:1",
+        "shared:7",
+        "shared:2"
+      ],
       "effort": "high",
-      "files": { "create": ["packages/agent/src/payAndRetry.ts"], "modify": [], "test": ["packages/agent/src/payAndRetry.test.ts"] },
-      "provides": ["createTollgateFetch(deps: TollgateFetchDeps): TollgateFetch", "type TollgateFetch = (url, init?) => Promise<Response>", "interface TollgateFetchDeps { keypair, suiClient, packageId, fetchImpl?, onPayment? }", "class InsufficientBalanceError", "class ChallengeExpiredError", "class VerificationRejectedError"],
-      "requires": ["buildPayTx (shared:7)", "PaymentChallengeSchema (shared:2)", "@mysten/sui Ed25519Keypair, SuiClient (agent:1 installed)"],
-      "gate": { "run": "npx vitest run packages/agent/src/payAndRetry.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/agent/src/payAndRetry.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/agent/src/payAndRetry.test.ts"
+        ]
+      },
+      "provides": [
+        "createTollgateFetch(deps: TollgateFetchDeps): TollgateFetch",
+        "type TollgateFetch = (url, init?) => Promise<Response>",
+        "interface TollgateFetchDeps { keypair, suiClient, packageId, fetchImpl?, onPayment? }",
+        "class InsufficientBalanceError",
+        "class ChallengeExpiredError",
+        "class VerificationRejectedError"
+      ],
+      "requires": [
+        "buildPayTx (shared:7)",
+        "PaymentChallengeSchema (shared:2)",
+        "@mysten/sui Ed25519Keypair, SuiClient (agent:1 installed)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/agent/src/payAndRetry.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(agent): autonomous payAndRetry fetch wrapper",
-      "status": "pending"
+      "provider": "codex",
+      "mastermind_note": "Reconciled by mastermind 2026-06-03: deliverable already committed at HEAD 96a2c2f (payAndRetry.ts +191, payAndRetry.test.ts +173); gate `npx vitest run packages/agent/src/payAndRetry.test.ts` re-run after `npm install` and PASSED (4/4). The escalated empty-commit \"failure\" was a manifest-status desync (kernel did not mark done on merge-back, re-dispatched a built task), not a build failure.",
+      "status": "done"
     },
     {
       "id": "agent:3",
       "subsystem": "agent",
-      "title": "llm.ts — DGrid OpenAI-compatible client",
+      "title": "llm.ts \u2014 DGrid OpenAI-compatible client",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-agent.md",
-      "depends_on": ["agent:1"],
+      "depends_on": [
+        "agent:1"
+      ],
       "effort": "low",
-      "files": { "create": ["packages/agent/src/llm.ts"], "modify": [], "test": ["packages/agent/src/llm.test.ts"] },
-      "provides": ["createLlmClient(env?): OpenAI (baseURL DGRID_BASE_URL ?? https://api.dgrid.ai/v1)", "getModel(env?): string (TOLLGATE_AGENT_MODEL ?? anthropic/claude-3.5-haiku)"],
-      "requires": ["openai ^6.41.0 (agent:1 installed)"],
-      "gate": { "run": "npx vitest run packages/agent/src/llm.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/agent/src/llm.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/agent/src/llm.test.ts"
+        ]
+      },
+      "provides": [
+        "createLlmClient(env?): OpenAI (baseURL DGRID_BASE_URL ?? https://api.dgrid.ai/v1)",
+        "getModel(env?): string (TOLLGATE_AGENT_MODEL ?? anthropic/claude-3.5-haiku)"
+      ],
+      "requires": [
+        "openai ^6.41.0 (agent:1 installed)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/agent/src/llm.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(agent): DGrid OpenAI-compatible LLM client",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "agent:4",
       "subsystem": "agent",
-      "title": "tools.ts — paid-tool function schema + handlers",
+      "title": "tools.ts \u2014 paid-tool function schema + handlers",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-agent.md",
-      "depends_on": ["agent:2"],
+      "depends_on": [
+        "agent:2"
+      ],
       "effort": "medium",
-      "files": { "create": ["packages/agent/src/tools.ts"], "modify": [], "test": ["packages/agent/src/tools.test.ts"] },
-      "provides": ["toolDefs: OpenAI.Chat.Completions.ChatCompletionTool[] (get_crypto_price, get_fx_rate, get_news_headlines)", "type ToolHandler = (args) => Promise<string>", "createToolHandlers(tfetch, baseUrl): Record<string, ToolHandler>"],
-      "requires": ["TollgateFetch (agent:2)"],
-      "gate": { "run": "npx vitest run packages/agent/src/tools.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/agent/src/tools.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/agent/src/tools.test.ts"
+        ]
+      },
+      "provides": [
+        "toolDefs: OpenAI.Chat.Completions.ChatCompletionTool[] (get_crypto_price, get_fx_rate, get_news_headlines)",
+        "type ToolHandler = (args) => Promise<string>",
+        "createToolHandlers(tfetch, baseUrl): Record<string, ToolHandler>"
+      ],
+      "requires": [
+        "TollgateFetch (agent:2)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/agent/src/tools.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(agent): paid-tool function schema and handlers",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "agent:5",
       "subsystem": "agent",
-      "title": "agentLoop.ts — LLM tool-calling loop",
+      "title": "agentLoop.ts \u2014 LLM tool-calling loop",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-agent.md",
-      "depends_on": ["agent:4"],
+      "depends_on": [
+        "agent:4"
+      ],
       "effort": "high",
-      "files": { "create": ["packages/agent/src/agentLoop.ts"], "modify": [], "test": ["packages/agent/src/agentLoop.test.ts"] },
-      "provides": ["interface AgentResult { report, toolCalls }", "interface RunAgentParams { llm, model, task, tools, handlers, maxSteps? }", "runAgent(p): Promise<AgentResult>"],
-      "requires": ["ToolHandler (agent:4)", "openai (agent:1 installed)"],
-      "gate": { "run": "npx vitest run packages/agent/src/agentLoop.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/agent/src/agentLoop.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/agent/src/agentLoop.test.ts"
+        ]
+      },
+      "provides": [
+        "interface AgentResult { report, toolCalls }",
+        "interface RunAgentParams { llm, model, task, tools, handlers, maxSteps? }",
+        "runAgent(p): Promise<AgentResult>"
+      ],
+      "requires": [
+        "ToolHandler (agent:4)",
+        "openai (agent:1 installed)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/agent/src/agentLoop.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(agent): LLM tool-calling loop",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "agent:6",
       "subsystem": "agent",
-      "title": "runDemo.ts — the money-shot entry (human-run live)",
+      "title": "runDemo.ts \u2014 the money-shot entry (human-run live)",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-agent.md",
-      "depends_on": ["agent:2", "agent:3", "agent:4", "agent:5", "shared:3", "shared:4"],
+      "depends_on": [
+        "agent:2",
+        "agent:3",
+        "agent:4",
+        "agent:5",
+        "shared:3",
+        "shared:4"
+      ],
       "effort": "medium",
       "human_gate": true,
-      "files": { "create": ["packages/agent/src/runDemo.ts"], "modify": [], "test": ["packages/agent/src/runDemo.test.ts"] },
-      "provides": ["explorerTxUrl(network, digest): string", "keypairFromEnv(pk): Ed25519Keypair", "main(): Promise<void> (guarded entry)"],
-      "requires": ["createTollgateFetch (agent:2)", "createLlmClient/getModel (agent:3)", "toolDefs/createToolHandlers (agent:4)", "runAgent (agent:5)", "loadConfig (shared:3)", "getSuiClient (shared:4)", "AGENT_NAME (agent:1)"],
-      "gate": { "run": "npx vitest run packages/agent/src/runDemo.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/agent/src/runDemo.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/agent/src/runDemo.test.ts"
+        ]
+      },
+      "provides": [
+        "explorerTxUrl(network, digest): string",
+        "keypairFromEnv(pk): Ed25519Keypair",
+        "main(): Promise<void> (guarded entry)"
+      ],
+      "requires": [
+        "createTollgateFetch (agent:2)",
+        "createLlmClient/getModel (agent:3)",
+        "toolDefs/createToolHandlers (agent:4)",
+        "runAgent (agent:5)",
+        "loadConfig (shared:3)",
+        "getSuiClient (shared:4)",
+        "AGENT_NAME (agent:1)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/agent/src/runDemo.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(agent): money-shot demo runner",
+      "provider": "codex",
       "status": "pending"
     },
     {
@@ -348,70 +840,184 @@
       "subsystem": "agent",
       "title": "Strict typecheck gate for @tollgate/agent",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-agent.md",
-      "depends_on": ["agent:2", "agent:3", "agent:4", "agent:5", "agent:6"],
+      "depends_on": [
+        "agent:2",
+        "agent:3",
+        "agent:4",
+        "agent:5",
+        "agent:6"
+      ],
       "effort": "low",
-      "files": { "create": [], "modify": ["packages/agent/package.json"], "test": [] },
-      "provides": ["green tsc --noEmit for @tollgate/agent"],
-      "requires": ["all @tollgate/agent source (agent:1-6)"],
-      "gate": { "run": "npx tsc -p packages/agent/tsconfig.json --noEmit", "expect": "exit 0" },
+      "files": {
+        "create": [],
+        "modify": [
+          "packages/agent/package.json"
+        ],
+        "test": []
+      },
+      "provides": [
+        "green tsc --noEmit for @tollgate/agent"
+      ],
+      "requires": [
+        "all @tollgate/agent source (agent:1-6)"
+      ],
+      "gate": {
+        "run": "npx tsc -p packages/agent/tsconfig.json --noEmit && echo GATE_OK",
+        "expect": "GATE_OK"
+      },
       "commit": "chore(agent): strict typecheck gate",
+      "provider": "codex",
       "status": "pending"
     },
-
     {
       "id": "dashboard:1",
       "subsystem": "dashboard",
       "title": "Scaffold the Vite React app",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-dashboard.md",
-      "depends_on": ["shared:1"],
+      "depends_on": [
+        "shared:1"
+      ],
       "effort": "medium",
-      "files": { "create": ["packages/dashboard/package.json", "packages/dashboard/tsconfig.json", "packages/dashboard/vite.config.ts", "packages/dashboard/vitest.config.ts", "packages/dashboard/index.html", "packages/dashboard/src/vite-env.d.ts", "packages/dashboard/src/main.tsx", "packages/dashboard/src/Hello.tsx"], "modify": [], "test": ["packages/dashboard/src/Hello.test.tsx"] },
-      "provides": ["@tollgate/dashboard package", "Vite+React+vitest(jsdom) setup", "Hello()"],
-      "requires": ["npm workspace + @tollgate/shared (shared:1)"],
-      "gate": { "run": "npx vitest run --config packages/dashboard/vitest.config.ts packages/dashboard/src/Hello.test.tsx", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/dashboard/package.json",
+          "packages/dashboard/tsconfig.json",
+          "packages/dashboard/vite.config.ts",
+          "packages/dashboard/vitest.config.ts",
+          "packages/dashboard/index.html",
+          "packages/dashboard/src/vite-env.d.ts",
+          "packages/dashboard/src/main.tsx",
+          "packages/dashboard/src/Hello.tsx"
+        ],
+        "modify": [],
+        "test": [
+          "packages/dashboard/src/Hello.test.tsx"
+        ]
+      },
+      "provides": [
+        "@tollgate/dashboard package",
+        "Vite+React+vitest(jsdom) setup",
+        "Hello()"
+      ],
+      "requires": [
+        "npm workspace + @tollgate/shared (shared:1)"
+      ],
+      "gate": {
+        "run": "npx vitest run --config packages/dashboard/vitest.config.ts packages/dashboard/src/Hello.test.tsx",
+        "expect": "passed"
+      },
       "commit": "chore(dashboard): scaffold Vite React app",
-      "status": "pending"
+      "provider": "codex",
+      "status": "done",
+      "mastermind_note": "Reconciled by mastermind: deliverable already committed at HEAD 600c1ef; gate re-run and PASSED. Spurious empty-commit \"failure\" was a manifest-status desync, not a build failure."
     },
     {
       "id": "dashboard:2",
       "subsystem": "dashboard",
-      "title": "receiptsFeed.ts — on-chain receipt polling",
+      "title": "receiptsFeed.ts \u2014 on-chain receipt polling",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-dashboard.md",
-      "depends_on": ["dashboard:1", "shared:5"],
+      "depends_on": [
+        "dashboard:1",
+        "shared:5"
+      ],
       "effort": "medium",
-      "files": { "create": ["packages/dashboard/src/receiptsFeed.ts"], "modify": [], "test": ["packages/dashboard/src/receiptsFeed.test.ts"] },
-      "provides": ["interface ReceiptRow { resourceId, payer, amount, nonce, timestampMs, txDigest }", "fetchReceipts(client, packageId, limit?): Promise<ReceiptRow[]>", "useReceipts(client, packageId, intervalMs?): ReceiptRow[]"],
-      "requires": ["bytesToHex (shared:5)", "@mysten/sui SuiClient.queryEvents"],
-      "gate": { "run": "npx vitest run --config packages/dashboard/vitest.config.ts packages/dashboard/src/receiptsFeed.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/dashboard/src/receiptsFeed.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/dashboard/src/receiptsFeed.test.ts"
+        ]
+      },
+      "provides": [
+        "interface ReceiptRow { resourceId, payer, amount, nonce, timestampMs, txDigest }",
+        "fetchReceipts(client, packageId, limit?): Promise<ReceiptRow[]>",
+        "useReceipts(client, packageId, intervalMs?): ReceiptRow[]"
+      ],
+      "requires": [
+        "bytesToHex (shared:5)",
+        "@mysten/sui SuiClient.queryEvents"
+      ],
+      "gate": {
+        "run": "npx vitest run --config packages/dashboard/vitest.config.ts packages/dashboard/src/receiptsFeed.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(dashboard): on-chain receipt polling feed",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "dashboard:3",
       "subsystem": "dashboard",
-      "title": "PaymentTimeline.tsx — live payment feed",
+      "title": "PaymentTimeline.tsx \u2014 live payment feed",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-dashboard.md",
-      "depends_on": ["dashboard:2"],
+      "depends_on": [
+        "dashboard:2"
+      ],
       "effort": "medium",
-      "files": { "create": ["packages/dashboard/src/PaymentTimeline.tsx"], "modify": [], "test": ["packages/dashboard/src/PaymentTimeline.test.tsx"] },
-      "provides": ["suiscanTxUrl(network, digest): string", "PaymentTimeline(props: { rows: ReceiptRow[]; network: string }): JSX.Element"],
-      "requires": ["ReceiptRow (dashboard:2)"],
-      "gate": { "run": "npx vitest run --config packages/dashboard/vitest.config.ts packages/dashboard/src/PaymentTimeline.test.tsx", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/dashboard/src/PaymentTimeline.tsx"
+        ],
+        "modify": [],
+        "test": [
+          "packages/dashboard/src/PaymentTimeline.test.tsx"
+        ]
+      },
+      "provides": [
+        "suiscanTxUrl(network, digest): string",
+        "PaymentTimeline(props: { rows: ReceiptRow[]; network: string }): JSX.Element"
+      ],
+      "requires": [
+        "ReceiptRow (dashboard:2)"
+      ],
+      "gate": {
+        "run": "npx vitest run --config packages/dashboard/vitest.config.ts packages/dashboard/src/PaymentTimeline.test.tsx",
+        "expect": "passed"
+      },
       "commit": "feat(dashboard): live payment timeline with explorer links",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "dashboard:4",
       "subsystem": "dashboard",
-      "title": "App.tsx — wire the dashboard",
+      "title": "App.tsx \u2014 wire the dashboard",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-dashboard.md",
-      "depends_on": ["dashboard:2", "dashboard:3", "shared:4", "shared:3"],
+      "depends_on": [
+        "dashboard:2",
+        "dashboard:3",
+        "shared:4",
+        "shared:3"
+      ],
       "effort": "medium",
-      "files": { "create": ["packages/dashboard/src/App.tsx"], "modify": ["packages/dashboard/src/main.tsx"], "test": ["packages/dashboard/src/App.test.tsx"] },
-      "provides": ["App(): JSX.Element (reads VITE_SUI_NETWORK / VITE_TOLLGATE_PACKAGE_ID / VITE_SUI_RPC_URL, polls receipts, renders totals + timeline)"],
-      "requires": ["getSuiClient, defaultRpcUrl (shared:4)", "type SuiNetwork (shared:3)", "useReceipts (dashboard:2)", "PaymentTimeline (dashboard:3)"],
-      "gate": { "run": "npx vitest run --config packages/dashboard/vitest.config.ts packages/dashboard/src/App.test.tsx", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/dashboard/src/App.tsx"
+        ],
+        "modify": [
+          "packages/dashboard/src/main.tsx"
+        ],
+        "test": [
+          "packages/dashboard/src/App.test.tsx"
+        ]
+      },
+      "provides": [
+        "App(): JSX.Element (reads VITE_SUI_NETWORK / VITE_TOLLGATE_PACKAGE_ID / VITE_SUI_RPC_URL, polls receipts, renders totals + timeline)"
+      ],
+      "requires": [
+        "getSuiClient, defaultRpcUrl (shared:4)",
+        "type SuiNetwork (shared:3)",
+        "useReceipts (dashboard:2)",
+        "PaymentTimeline (dashboard:3)"
+      ],
+      "gate": {
+        "run": "npx vitest run --config packages/dashboard/vitest.config.ts packages/dashboard/src/App.test.tsx",
+        "expect": "passed"
+      },
       "commit": "feat(dashboard): wire App with live receipts and totals",
+      "provider": "codex",
       "status": "pending"
     },
     {
@@ -419,102 +1025,258 @@
       "subsystem": "dashboard",
       "title": "Strict typecheck gate for @tollgate/dashboard",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-dashboard.md",
-      "depends_on": ["dashboard:2", "dashboard:3", "dashboard:4"],
+      "depends_on": [
+        "dashboard:2",
+        "dashboard:3",
+        "dashboard:4"
+      ],
       "effort": "low",
-      "files": { "create": [], "modify": ["packages/dashboard/package.json"], "test": [] },
-      "provides": ["green tsc --noEmit for @tollgate/dashboard"],
-      "requires": ["all @tollgate/dashboard source (dashboard:1-4)"],
-      "gate": { "run": "npx tsc -p packages/dashboard/tsconfig.json --noEmit", "expect": "exit 0" },
+      "files": {
+        "create": [],
+        "modify": [
+          "packages/dashboard/package.json"
+        ],
+        "test": []
+      },
+      "provides": [
+        "green tsc --noEmit for @tollgate/dashboard"
+      ],
+      "requires": [
+        "all @tollgate/dashboard source (dashboard:1-4)"
+      ],
+      "gate": {
+        "run": "npx tsc -p packages/dashboard/tsconfig.json --noEmit && echo GATE_OK",
+        "expect": "GATE_OK"
+      },
       "commit": "chore(dashboard): strict typecheck gate",
+      "provider": "codex",
       "status": "pending"
     },
-
     {
       "id": "deploy-demo:1",
       "subsystem": "deploy-demo",
       "title": "Scaffold @tollgate/deploy-demo + deployment.ts",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-deploy-demo.md",
-      "depends_on": ["shared:1", "shared:2"],
+      "depends_on": [
+        "shared:1",
+        "shared:2"
+      ],
       "effort": "medium",
-      "files": { "create": ["packages/deploy-demo/package.json", "packages/deploy-demo/tsconfig.json", "packages/deploy-demo/src/deployment.ts"], "modify": [], "test": ["packages/deploy-demo/src/deployment.test.ts"] },
-      "provides": ["@tollgate/deploy-demo package", "const DEPLOYMENT_FILE", "interface ResourceTriple<T>", "interface DeploymentInfo { packageId, treasuryCapId, musdCoinType, resources?, ownerCaps? }", "writeDeployment(info, file?)", "readDeployment(file?): DeploymentInfo"],
-      "requires": ["ResourceConfig (shared:2)"],
-      "gate": { "run": "npx vitest run packages/deploy-demo/src/deployment.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/deploy-demo/package.json",
+          "packages/deploy-demo/tsconfig.json",
+          "packages/deploy-demo/src/deployment.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/deploy-demo/src/deployment.test.ts"
+        ]
+      },
+      "provides": [
+        "@tollgate/deploy-demo package",
+        "const DEPLOYMENT_FILE",
+        "interface ResourceTriple<T>",
+        "interface DeploymentInfo { packageId, treasuryCapId, musdCoinType, resources?, ownerCaps? }",
+        "writeDeployment(info, file?)",
+        "readDeployment(file?): DeploymentInfo"
+      ],
+      "requires": [
+        "ResourceConfig (shared:2)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/deploy-demo/src/deployment.test.ts",
+        "expect": "passed"
+      },
       "commit": "chore(deploy-demo): scaffold package and deployment I/O",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "deploy-demo:2",
       "subsystem": "deploy-demo",
-      "title": "publish.ts — parse sui client publish output",
+      "title": "publish.ts \u2014 parse sui client publish output",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-deploy-demo.md",
-      "depends_on": ["deploy-demo:1"],
+      "depends_on": [
+        "deploy-demo:1"
+      ],
       "effort": "medium",
       "human_gate": true,
-      "files": { "create": ["packages/deploy-demo/src/publish.ts"], "modify": [], "test": ["packages/deploy-demo/src/publish.test.ts"] },
-      "provides": ["interface PublishedPackage { packageId, treasuryCapId, musdCoinType }", "parsePublishOutput(raw): PublishedPackage", "main() — reads publish.json, writes base deployment.json"],
-      "requires": ["DeploymentInfo, writeDeployment (deploy-demo:1)"],
-      "gate": { "run": "npx vitest run packages/deploy-demo/src/publish.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/deploy-demo/src/publish.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/deploy-demo/src/publish.test.ts"
+        ]
+      },
+      "provides": [
+        "interface PublishedPackage { packageId, treasuryCapId, musdCoinType }",
+        "parsePublishOutput(raw): PublishedPackage",
+        "main() \u2014 reads publish.json, writes base deployment.json"
+      ],
+      "requires": [
+        "DeploymentInfo, writeDeployment (deploy-demo:1)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/deploy-demo/src/publish.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(deploy-demo): parse sui client publish output",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "deploy-demo:3",
       "subsystem": "deploy-demo",
-      "title": "signer.ts + register.ts — register the 3 resources",
+      "title": "signer.ts + register.ts \u2014 register the 3 resources",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-deploy-demo.md",
-      "depends_on": ["deploy-demo:1", "shared:7"],
+      "depends_on": [
+        "deploy-demo:1",
+        "shared:7"
+      ],
       "effort": "high",
       "human_gate": true,
-      "files": { "create": ["packages/deploy-demo/src/signer.ts", "packages/deploy-demo/src/register.ts"], "modify": [], "test": ["packages/deploy-demo/src/register.test.ts"] },
-      "provides": ["keypairFromEnv(pk): Ed25519Keypair", "submitAndWait(client, signer, tx): Promise<SuiTransactionBlockResponse>", "interface RegisteredResource { resourceId, ownerCapId }", "parseRegisterOutput(raw): RegisteredResource", "registerTx(packageId, musdCoinType, price): Transaction", "main() — registers 3 resources, writes deployment.json resources + ownerCaps"],
-      "requires": ["buildRegisterTx (shared:7)", "readDeployment/writeDeployment/ResourceTriple (deploy-demo:1)", "loadConfig (shared:3), getSuiClient (shared:4)"],
-      "gate": { "run": "npx vitest run packages/deploy-demo/src/register.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/deploy-demo/src/signer.ts",
+          "packages/deploy-demo/src/register.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/deploy-demo/src/register.test.ts"
+        ]
+      },
+      "provides": [
+        "keypairFromEnv(pk): Ed25519Keypair",
+        "submitAndWait(client, signer, tx): Promise<SuiTransactionBlockResponse>",
+        "interface RegisteredResource { resourceId, ownerCapId }",
+        "parseRegisterOutput(raw): RegisteredResource",
+        "registerTx(packageId, musdCoinType, price): Transaction",
+        "main() \u2014 registers 3 resources, writes deployment.json resources + ownerCaps"
+      ],
+      "requires": [
+        "buildRegisterTx (shared:7)",
+        "readDeployment/writeDeployment/ResourceTriple (deploy-demo:1)",
+        "loadConfig (shared:3), getSuiClient (shared:4)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/deploy-demo/src/register.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(deploy-demo): keypair signer + resource registration",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "deploy-demo:4",
       "subsystem": "deploy-demo",
-      "title": "fund.ts — mint mUSD to the agent wallet",
+      "title": "fund.ts \u2014 mint mUSD to the agent wallet",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-deploy-demo.md",
-      "depends_on": ["deploy-demo:3"],
+      "depends_on": [
+        "deploy-demo:3"
+      ],
       "effort": "medium",
       "human_gate": true,
-      "files": { "create": ["packages/deploy-demo/src/fund.ts"], "modify": [], "test": ["packages/deploy-demo/src/fund.test.ts"] },
-      "provides": ["buildMintTx({ packageId, treasuryCapId, amount, recipient }): Transaction", "main() — mints mUSD + sends SUI gas to AGENT_ADDRESS"],
-      "requires": ["keypairFromEnv, submitAndWait (deploy-demo:3)", "readDeployment (deploy-demo:1)", "Move target mock_usd::mint (move:2)"],
-      "gate": { "run": "npx vitest run packages/deploy-demo/src/fund.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/deploy-demo/src/fund.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/deploy-demo/src/fund.test.ts"
+        ]
+      },
+      "provides": [
+        "buildMintTx({ packageId, treasuryCapId, amount, recipient }): Transaction",
+        "main() \u2014 mints mUSD + sends SUI gas to AGENT_ADDRESS"
+      ],
+      "requires": [
+        "keypairFromEnv, submitAndWait (deploy-demo:3)",
+        "readDeployment (deploy-demo:1)",
+        "Move target mock_usd::mint (move:2)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/deploy-demo/src/fund.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(deploy-demo): fund agent wallet with mUSD and gas",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "deploy-demo:5",
       "subsystem": "deploy-demo",
-      "title": "withdraw.ts — provider withdraw closer",
+      "title": "withdraw.ts \u2014 provider withdraw closer",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-deploy-demo.md",
-      "depends_on": ["deploy-demo:3", "shared:7"],
+      "depends_on": [
+        "deploy-demo:3",
+        "shared:7"
+      ],
       "effort": "medium",
       "human_gate": true,
-      "files": { "create": ["packages/deploy-demo/src/withdraw.ts"], "modify": [], "test": ["packages/deploy-demo/src/withdraw.test.ts"] },
-      "provides": ["withdrawTx({ packageId, coinType, resourceObjectId, ownerCapId, amount }): Transaction", "main() — withdraws accrued earnings using cap from deployment.json"],
-      "requires": ["buildWithdrawTx (shared:7)", "keypairFromEnv, submitAndWait (deploy-demo:3)", "readDeployment (deploy-demo:1)"],
-      "gate": { "run": "npx vitest run packages/deploy-demo/src/withdraw.test.ts", "expect": "passed" },
+      "files": {
+        "create": [
+          "packages/deploy-demo/src/withdraw.ts"
+        ],
+        "modify": [],
+        "test": [
+          "packages/deploy-demo/src/withdraw.test.ts"
+        ]
+      },
+      "provides": [
+        "withdrawTx({ packageId, coinType, resourceObjectId, ownerCapId, amount }): Transaction",
+        "main() \u2014 withdraws accrued earnings using cap from deployment.json"
+      ],
+      "requires": [
+        "buildWithdrawTx (shared:7)",
+        "keypairFromEnv, submitAndWait (deploy-demo:3)",
+        "readDeployment (deploy-demo:1)"
+      ],
+      "gate": {
+        "run": "npx vitest run packages/deploy-demo/src/withdraw.test.ts",
+        "expect": "passed"
+      },
       "commit": "feat(deploy-demo): provider withdraw script",
+      "provider": "codex",
       "status": "pending"
     },
     {
       "id": "deploy-demo:6",
       "subsystem": "deploy-demo",
-      "title": "Root README — setup + Judging Quickstart + runbook",
+      "title": "Root README \u2014 setup + Judging Quickstart + runbook",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-deploy-demo.md",
-      "depends_on": ["move:3", "middleware:5", "agent:6", "dashboard:4", "deploy-demo:2", "deploy-demo:3", "deploy-demo:4", "deploy-demo:5"],
+      "depends_on": [
+        "move:3",
+        "middleware:5",
+        "agent:6",
+        "dashboard:4",
+        "deploy-demo:2",
+        "deploy-demo:3",
+        "deploy-demo:4",
+        "deploy-demo:5"
+      ],
       "effort": "medium",
-      "files": { "create": ["README.md"], "modify": [], "test": [] },
-      "provides": ["public README (overview, architecture, Package ID location, Judging Quickstart, Why Sui, human-gated runbook, deadline note)"],
-      "requires": ["full system layout + runbook command sequence (publish->register->fund->serve->demo->withdraw)"],
-      "gate": { "run": "node -e \"const s=require('fs').readFileSync('README.md','utf8');for(const h of ['Judging Quickstart','Package ID','Why Sui','payAndRetry','withdraw']){if(!s.includes(h)){console.error('missing: '+h);process.exit(1)}}console.log('README OK')\"", "expect": "README OK" },
+      "files": {
+        "create": [
+          "README.md"
+        ],
+        "modify": [],
+        "test": []
+      },
+      "provides": [
+        "public README (overview, architecture, Package ID location, Judging Quickstart, Why Sui, human-gated runbook, deadline note)"
+      ],
+      "requires": [
+        "full system layout + runbook command sequence (publish->register->fund->serve->demo->withdraw)"
+      ],
+      "gate": {
+        "run": "node -e \"const s=require('fs').readFileSync('README.md','utf8');for(const h of ['Judging Quickstart','Package ID','Why Sui','payAndRetry','withdraw']){if(!s.includes(h)){console.error('missing: '+h);process.exit(1)}}console.log('README OK')\"",
+        "expect": "README OK"
+      },
       "commit": "docs: root README with Judging Quickstart and runbook",
+      "provider": "codex",
       "status": "pending"
     },
     {
@@ -522,13 +1284,32 @@
       "subsystem": "deploy-demo",
       "title": "Strict typecheck gate for @tollgate/deploy-demo",
       "plan": "docs/superpowers/plans/2026-06-02-tollgate-deploy-demo.md",
-      "depends_on": ["deploy-demo:2", "deploy-demo:3", "deploy-demo:4", "deploy-demo:5"],
+      "depends_on": [
+        "deploy-demo:2",
+        "deploy-demo:3",
+        "deploy-demo:4",
+        "deploy-demo:5"
+      ],
       "effort": "low",
-      "files": { "create": [], "modify": ["packages/deploy-demo/package.json"], "test": [] },
-      "provides": ["green tsc --noEmit for @tollgate/deploy-demo"],
-      "requires": ["all @tollgate/deploy-demo source (deploy-demo:1-5)"],
-      "gate": { "run": "npx tsc -p packages/deploy-demo/tsconfig.json --noEmit", "expect": "exit 0" },
+      "files": {
+        "create": [],
+        "modify": [
+          "packages/deploy-demo/package.json"
+        ],
+        "test": []
+      },
+      "provides": [
+        "green tsc --noEmit for @tollgate/deploy-demo"
+      ],
+      "requires": [
+        "all @tollgate/deploy-demo source (deploy-demo:1-5)"
+      ],
+      "gate": {
+        "run": "npx tsc -p packages/deploy-demo/tsconfig.json --noEmit && echo GATE_OK",
+        "expect": "GATE_OK"
+      },
       "commit": "chore(deploy-demo): strict typecheck gate",
+      "provider": "codex",
       "status": "pending"
     }
   ]
