@@ -182,6 +182,7 @@ different value. Both CLIs accept the same six levels (`none|minimal|low|medium|
 |-----|-----------------------------------------------|
 | **Codex** | `codex exec -m <model> -c model_reasoning_effort="<effort>" "<prompt>"` — `-c` overrides config; or pre-define `[profiles.*]` blocks and pass `--profile <name>`. |
 | **Claude Code** | `claude -p --model <model> --effort <effort> "<prompt>"` — or set `CLAUDE_CODE_EFFORT_LEVEL=<effort>` in that spawn's env. |
+| **Grok Build** | `GROK_HOME=<profile> grok -p "<prompt>" --cwd <worktree> -m <model> --effort <effort> --always-approve --max-turns <N>` — map `none`/`minimal` → `low` at dispatch. |
 
 Caveats the kernel must respect:
 
