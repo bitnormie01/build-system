@@ -15,7 +15,7 @@ architect's output (spec, plans, manifest) via the repo.
 |------|----------------------|-----------------|----------------|
 | **architect** | brainstorming, writing-plans (+ writing-skills optional) | idea + reference docs | spec, plans, `manifest.json` |
 | **mastermind** | verification-before-completion, requesting-code-review, finishing-a-development-branch, using-git-worktrees (+ dispatching-parallel-agents, subagent-driven-development as doctrine) | spec, plans, manifest, returned task results | review verdicts, merges, status updates |
-| **executor** | test-driven-development, verification-before-completion, systematic-debugging, receiving-code-review | its one task + required upstream signatures | the built task (commit on its worktree branch) |
+| **executor** | test-driven-development, verification-before-completion, systematic-debugging, receiving-code-review | its one task + required upstream signatures | the built task (file changes in its worktree — the kernel gates, scope-checks, and commits them) |
 
 All three are bootstrapped with **using-superpowers** so their kits trigger reliably.
 

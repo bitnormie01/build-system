@@ -36,6 +36,12 @@ It has two jobs (see `references/roles.md`):
 2. **Rotate the executor on rate-limit** — swap accounts and re-deliver the executor kit fresh. The
    account is just a credential; nothing the executor sees changes across a rotation.
 
+The kernel runs in two modes over the same invariants: the autonomous loop (`kernel run`) for
+unattended builds, and **manager mode**, where a strong LLM session drives the kernel's subcommands
+one step at a time and reviews every gate-passed diff before it is committed — see the kernel
+repo's `MANAGER.md`. In manager mode the managing session takes over the mastermind's review duty;
+the kernel still owns gates, scoped commits, and rotation.
+
 ## The one rule everything depends on
 
 The repo is the single source of truth. Every role, every dispatch: **sync the canonical repo before

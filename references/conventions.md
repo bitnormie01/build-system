@@ -63,9 +63,12 @@ every role, obeys the same two-sided rule:
   whatever local files happen to be lying around in the sandbox — they may predate the current
   system. The kernel places each worker on a fresh worktree at canonical `HEAD`; if you ever doubt
   freshness, re-sync before reading.
-- **Before reporting done — commit and push back to the repo.** Your output isn't real until it's a
+- **Before reporting done — get your output into the repo.** Your output isn't real until it's a
   commit on the canonical branch (or a pushed branch the mastermind merges). Nothing important stays
-  only in a local working copy.
+  only in a local working copy. **Who runs `git commit` depends on the role:** the architect and
+  mastermind commit and push their own artifacts. The **executor never commits** — the kernel
+  re-runs the task's gate and then commits exactly the task's declared files itself, so the
+  executor's job ends at "files changed in the worktree, gate passing."
 
 On any conflict, the **committed repo state wins** over a local copy — same principle as "the file
 wins over memory," one level up. This is what lets the architect change the system mid-build and

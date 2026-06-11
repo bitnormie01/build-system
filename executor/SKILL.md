@@ -24,14 +24,17 @@ without anything breaking.
    anything looks stale, re-sync before touching code (see `../references/conventions.md` → "The
    repo is the single source of truth").
 2. Load this kit + `../references/task-contract.md` + `../references/conventions.md`.
-3. Build the task. Run its gate. Commit and **push** — your work isn't real until it's in the repo.
-4. Return the result (gate output + commit hash). Stop. Do not look for more work.
+3. Build the task. Run its gate until it passes. **Do NOT commit or push** — the kernel re-runs the
+   gate independently and commits exactly your task's declared files. A commit you make yourself
+   would hide your diff from that verification and is treated as a failure.
+4. Return the result (gate output + the list of files you changed). Stop. Do not look for more work.
 
 ## Your kit (scoped — you do not hold mastermind skills)
 
 - **test-driven-development** — the loop, always: write the failing test → run it, confirm it fails
-  for the right reason → minimal implementation → run it, confirm it passes → commit. The task block
-  is already written this way; follow it.
+  for the right reason → minimal implementation → run it, confirm it passes. The task block is
+  already written this way; follow it (the plan's final "Commit" step is executed by the kernel,
+  not by you).
 - **verification-before-completion** — never report "done" without running the gate command and
   seeing its expected output with your own eyes. A claimed pass you didn't run is the single worst
   thing you can do to an autonomous pipeline — it poisons every task that depends on you.
@@ -45,7 +48,9 @@ without anything breaking.
 ## Boundaries
 
 - **One task only. Don't invent scope.** If the task seems to need something outside its stated
-  files, that's a plan gap — return it as `BLOCKED`, don't build the extra thing.
+  files, that's a plan gap — return it as `BLOCKED`, don't build the extra thing. The kernel
+  refuses to commit changes outside your task's declared files, so an out-of-scope edit is wasted
+  work that fails the task.
 - **Don't re-plan or reorganize.** You don't restructure the project or rename interfaces; you build
   to the signatures you were given.
 - **Never touch secrets.** No private keys, mnemonics, or secret values in code, commits, or logs —
