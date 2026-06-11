@@ -109,6 +109,10 @@ Stage 4 of the architect emits `docs/superpowers/manifest.json`. This is what th
                     don't run everything high.
 - `gate`          — the command the kernel runs after the executor returns. PASS → commit + mark
                     done; FAIL → retry, then escalate.
+- `files`         — **must be exhaustive.** The kernel's commit is scoped: it stages only the paths
+                    declared here (plus incidental lockfiles) and **fails the task** if the worktree
+                    contains any other change. A file the implementation genuinely needs but the
+                    plan didn't declare is a plan bug, not executor discretion.
 - `provides` /
   `requires`      — used by the orchestrator to inject upstream signatures into a task's prompt at
                     dispatch time, so a stateless executor on a rotated account never has to guess.
@@ -151,6 +155,8 @@ Check:
 - Decomposition:  tasks are 2-5 min steps; clear boundaries; one gate per task.
 - Self-containment: every `Requires:` signature is pasted into the task body, not assumed.
 - DAG validity:   every `Depends on:` points to a task that `Provides:` what this task `Requires:`.
+- Files exhaustive: every file the steps create/modify/test appears in `Files:` — the kernel's
+  commit is scoped to exactly that list and fails the task on any undeclared change.
 
 Only flag issues that would make an executor build the wrong thing or get stuck. Approve otherwise.
 

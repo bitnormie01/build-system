@@ -41,6 +41,18 @@ The kernel also runs the deterministic plumbing around these: compute dependency
 the manifest, run gate commands, record status, and escalate judgment calls to the mastermind. None
 of that lives in an LLM.
 
+## Two operating modes, same wiring
+
+The kernel's jobs above are mode-independent. What differs is who turns the crank:
+
+- **Loop mode** (`kernel run`) — the kernel iterates autonomously; the mastermind is consulted only
+  on escalation. Best unattended.
+- **Manager mode** — a strong LLM session (the mastermind seat, in practice) drives the kernel's
+  verbs one step at a time and **reviews every gate-passed diff before the kernel commits it**. The
+  mastermind's review duty from the table above moves inline, in front of each commit, instead of
+  before merge. Kit isolation, gates, scoped commits, and rotation stay in the kernel either way.
+  Protocol: the kernel repo's `MANAGER.md`.
+
 ## Boot discipline (all roles)
 
 Every role, every dispatch, follows the same two-sided repo rule (full text in `conventions.md`):

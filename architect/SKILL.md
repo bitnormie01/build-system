@@ -95,6 +95,10 @@ Run these four stages in order. Do not start a stage until the previous one is a
     It's the kernel's budget throttle (see `../references/task-contract.md` §6) — don't default
     everything to high.
   - a single **gate** command with expected result (this becomes the kernel's acceptance check)
+  - an **exhaustive `Files:` list** — the kernel's commit is scoped to exactly these paths (plus
+    lockfiles) and fails the task on any undeclared change, so a forgotten file here makes the task
+    unbuildable. Think through every file the implementation touches, including configs and test
+    helpers.
 - Apply `../references/conventions.md` (no placeholders, exact paths, complete code, strict-TS rules,
   key-safety rules).
 
