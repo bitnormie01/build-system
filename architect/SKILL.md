@@ -41,14 +41,20 @@ rotating pool of executors behave like one coherent engineer.**
 
 ## Build on existing skills — do not reinvent
 
-This skill orchestrates a proven chain. Use these if installed; otherwise follow the inline
-fallback in `../references/pipeline-fallback.md`.
+This skill orchestrates a proven chain. Resolution order, per stage:
 
-| Stage | Skill to invoke | Produces |
-|-------|-----------------|----------|
-| Spec  | `superpowers:brainstorming` (or `brainstorming`) | `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` |
-| Plans | `superpowers:writing-plans` (or `writing-plans`) | `docs/superpowers/plans/YYYY-MM-DD-<subsystem>.md` |
-| Review| plan-document-reviewer prompt | Approved / Issues per plan |
+1. **Installed superpowers skills** — invoke them when the session has them (maintained source).
+2. **Vendored copies** — `../references/vendor/superpowers/<skill>/SKILL.md` (pinned snapshot,
+   embedded in this repo). When superpowers is not installed, follow the vendored SKILL.md
+   **verbatim as a document** — same method, no skill machinery needed.
+3. `../references/pipeline-fallback.md` — a condensed checklist of the same flow; a summary to
+   keep yourself honest, not a substitute for 1 or 2.
+
+| Stage | Skill to invoke | Vendored fallback | Produces |
+|-------|-----------------|-------------------|----------|
+| Spec  | `superpowers:brainstorming` (or `brainstorming`) | `vendor/superpowers/brainstorming/SKILL.md` | `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` |
+| Plans | `superpowers:writing-plans` (or `writing-plans`) | `vendor/superpowers/writing-plans/SKILL.md` | `docs/superpowers/plans/YYYY-MM-DD-<subsystem>.md` |
+| Review| plan-document-reviewer prompt (task-contract §4; upstream original in `vendor/superpowers/writing-plans/plan-document-reviewer-prompt.md`) | — | Approved / Issues per plan |
 
 The architect's job is to run them **in order, with the right inputs, and to enforce the
 executor-ready output contract** at the end — which vanilla superpowers does not do, because it

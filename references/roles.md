@@ -18,8 +18,10 @@ architect's output (spec, plans, manifest) via the repo.
 | **executor** | self-contained build doctrine (test-first loop, verify-before-done, root-cause debugging, RESULT protocol) — inlined in its SKILL.md, no external skills | its one task + required upstream signatures | the built task (file changes in its worktree — the kernel gates, scope-checks, and commits them) |
 
 Only the **architect** (and idea-forge upstream of it) runs as an interactive session where
-superpowers skills may exist — it is bootstrapped with **using-superpowers** when installed, with
-`pipeline-fallback.md` covering the rest. The mastermind and executor kits are delivered into
+superpowers skills may exist — it is bootstrapped with **using-superpowers** when installed. When
+superpowers is absent, the architect falls back to the **vendored pinned copies** embedded at
+`references/vendor/superpowers/` (brainstorming + writing-plans, followed verbatim as documents;
+see `vendor/superpowers/UPSTREAM.md`), with `pipeline-fallback.md` as a condensed checklist. The mastermind and executor kits are delivered into
 **headless one-shot prompts** by the kernel: they can reference no external skill, so everything
 they need is written inline in their SKILL.md files.
 

@@ -1,9 +1,11 @@
-# Pipeline Fallback
+# Pipeline Fallback (condensed checklist)
 
-Use this only when the `superpowers:brainstorming` and `superpowers:writing-plans` skills are NOT
-installed in the current environment. It reproduces their essential behavior inline so the architect
-kit is portable to any agent. If superpowers IS installed, invoke those skills instead — they're the
-maintained source.
+Resolution order for the architect's spec/plan stages: (1) installed `superpowers:brainstorming` /
+`superpowers:writing-plans` skills — the maintained source; (2) the **vendored full texts** at
+`vendor/superpowers/{brainstorming,writing-plans}/SKILL.md` — a pinned snapshot embedded in this
+repo (see `vendor/superpowers/UPSTREAM.md`); follow them verbatim as documents when superpowers is
+not installed; (3) this file — a condensed checklist of the same flow, kept as a quick self-check,
+not a substitute for the full method.
 
 ## Stage 2 fallback — brainstorm into a spec
 

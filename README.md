@@ -22,7 +22,9 @@ build-system/
     ├── task-contract.md        # plan grammar + manifest.json DAG schema (the bridge)
     ├── conventions.md          # coding + decomposition rules + repo-as-source-of-truth
     ├── roles.md                # kernel/human wiring: which kit each role holds, delivery matrix
-    └── pipeline-fallback.md    # inline spec/plan logic when superpowers isn't installed
+    ├── pipeline-fallback.md    # condensed spec/plan checklist (summary of the vendored method)
+    └── vendor/superpowers/     # pinned MIT snapshot of brainstorming + writing-plans
+                                #   (architect's fallback when superpowers isn't installed; UPSTREAM.md)
 ```
 
 ## How the kernel uses it
