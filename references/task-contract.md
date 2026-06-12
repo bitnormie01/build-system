@@ -139,6 +139,32 @@ kernel applies it as a **launch flag** on the CLI invocation that runs this prom
 same way it picks the model and account. Effort is a dispatch parameter, never something the agent
 reads or decides.
 
+### 3.1 What the executor returns (worker output protocol)
+
+The executor ends its run with one of these two blocks — the **last lines it prints**, exact
+format. The kernel scans worker output for the `RESULT:` marker; a `BLOCKED` report is classified
+as a self-reported failure (with the REASON preserved as the diagnostic) instead of being mistaken
+for success.
+
+```
+RESULT: DONE
+FILES: <comma-separated repo-relative paths changed>
+GATE: <the gate command's final output line(s) proving the pass>
+```
+
+```
+RESULT: BLOCKED
+REASON: <one or two lines — root cause found, or the plan gap hit>
+```
+
+The report is evidence, not authority: the kernel still runs the gate itself and scope-checks the
+commit regardless of what the executor claims. `BLOCKED` exists so a stuck executor can fail
+honestly and informatively — a fabricated `DONE` wastes a gate run and a retry; a good `REASON`
+saves both.
+
+<!-- EXECUTOR-KIT-END — sections below are orchestrator/kernel-side; the kernel does not deliver
+     them to executors. Keep this marker: src/prompt.ts slices the executor's copy here. -->
+
 ## 4. Plan-document-reviewer prompt (Stage 4)
 
 Dispatch this over each plan before generating the manifest.

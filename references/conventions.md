@@ -34,6 +34,22 @@ prompt. They are the standing rules a stateless executor needs but can't infer.
 - Tests are Foundry: unit + invariant + fork where the spec calls for it. The gate command is the
   specific `forge test --match-test ...` for that task, with expected pass output.
 
+## Sui Move (when relevant)
+
+- Pin the toolchain: the `sui` CLI version in the plan's Tech Stack header and `edition = "2024"`
+  (or the spec's pinned edition) in `Move.toml`.
+- **No hardcoded addresses.** Package and dependency addresses go through named addresses in
+  `Move.toml`; deployed object/package IDs live in config or env var names, never in source.
+- Capability-gated entry points: any function that mutates owner-controlled state takes the
+  capability object as a parameter — never an address-equality check. Make ownership/transfer
+  decisions (`key`/`store`, shared vs owned) explicit in the task body, not implied.
+- Abort codes are named `const` values, one per failure mode — a bare `abort 0` is a
+  review-blocking issue.
+- Tests are `sui move test`, colocated `#[test]` modules. The gate command is the specific
+  `sui move test --filter <test_name>` (or test module) for that task, with expected pass output.
+  On-chain integration steps against a network are separate tasks and `human_gate: true` when they
+  spend or deploy.
+
 ## Safety (non-negotiable)
 
 - **Never put a private key, mnemonic, or secret in plaintext** in a plan, task, prompt, commit, or

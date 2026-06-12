@@ -88,7 +88,10 @@ Run these four stages in order. Do not start a stage until the previous one is a
   writing-plans output, every task MUST also declare:
   - `provides:` — the interfaces/types/exports this task creates (so downstream tasks can name them)
   - `requires:` — the interfaces it consumes from earlier tasks (paste the actual signatures into
-    the task body — never assume the executor "remembers" them)
+    the task body — never assume the executor "remembers" them). **A `Requires:` entry must match
+    its provider's `Provides:` entry character-for-character** — the kernel resolves them by literal
+    string equality, so copy-paste the signature, never retype or reformat it. A near-match
+    silently degrades the executor's context instead of erroring.
   - `effort:` — the reasoning level for this task (`none|minimal|low|medium|high|xhigh`). You assign
     this because you're the only component that knows each task's difficulty: boilerplate/scaffolding
     `low`, normal feature work `medium`, tricky algorithms or security-sensitive code `high`/`xhigh`.
@@ -99,6 +102,13 @@ Run these four stages in order. Do not start a stage until the previous one is a
     lockfiles) and fails the task on any undeclared change, so a forgotten file here makes the task
     unbuildable. Think through every file the implementation touches, including configs and test
     helpers.
+  - the **dispatch-control fields where they apply** (manifest level): `human_gate: true` on every
+    deploy / key-operation / fund-movement task — the kernel pauses these for a human, never
+    auto-runs them; `provider` only when a task genuinely needs a specific pool (the deployed
+    topology is a rotating Codex executor pool plus one strong Claude seat — leave tasks unpinned
+    by default and pin `claude` only for work that truly needs the strong model, or you'll starve
+    the architect/mastermind seat); `allow_empty: true` only on tasks that legitimately change no
+    files (rare — placeholders, verification-only tasks).
 - Apply `../references/conventions.md` (no placeholders, exact paths, complete code, strict-TS rules,
   key-safety rules).
 
@@ -109,6 +119,12 @@ Run these four stages in order. Do not start a stage until the previous one is a
 - Generate the **task manifest** (`docs/superpowers/manifest.json`) per `../references/task-contract.md`.
   This is the bridge to the mastermind: a DAG of tasks with dependencies, files, gate commands, and
   provides/requires edges.
+- **Validate the manifest mechanically before pushing** — hand-written JSON against a strict schema
+  fails at dispatch time otherwise, mid-build. From the kernel checkout:
+  `npm run kernel -- validate --manifest docs/superpowers/manifest.json`. It must report a clean
+  parse, a valid DAG, and **zero unmatched `requires`** (every `requires` string found verbatim in
+  a dependency's `provides`). Fix and re-validate until clean; a manifest that doesn't validate is
+  not done.
 - **Commit and push the whole system to the repo** — spec, plans, and `manifest.json`. The repo is
   the single source of truth (`../references/conventions.md`); the mastermind and executors pull from
   it, so until you've pushed, the system doesn't exist for them. Regenerating later is just another
