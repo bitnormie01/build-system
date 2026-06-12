@@ -54,8 +54,11 @@ buildable here. Input 6 is **optional** and never gates generation.
 6. **Prior art (optional)** — links or descriptions of existing / past projects in this space: prior
    hackathon winners (e.g. past Sui Overflow / Walrus / DeepBook winners), shipped ecosystem projects,
    sponsor showcases, or specific projects the user pastes. Consulted **only at Step 3** to sharpen the
-   Novelty score against the white space — it does **not** seed or gate divergence. If the user gives
-   none and none is readily found, **skip the prior-art steps and run the normal flow** — never block,
+   Novelty score against the white space — it does **not** seed or gate divergence. **When the
+   session has web access, don't wait to be handed it:** spend ONE bounded search pass — past winners
+   of this event series, the sponsors' showcase / "built on X" pages, obvious shipped competitors —
+   and treat whatever it yields as this input. One pass, then move on. If the user gives none and the
+   pass finds nothing useful, **skip the prior-art steps and run the normal flow** — never block,
    stall, or invent competitors.
 
 If the user pre-supplied these (e.g. via `prompts/INVOKE_IDEA_FORGE.md`), confirm them back in one
@@ -68,6 +71,9 @@ Goal: a wide, varied candidate field. Do not judge yet — judging now kills var
 1. **Load seeds.** For a Web3 event, load `../references/web3-seed-pack.md` (a16z Big Ideas + ETHGlobal
    track archetypes). For a non-Web3 event, build an equivalent seed list from the event's own theme,
    its sponsor list, and current trends in the builder's domain. Seeds are spark material, not ideas.
+   **The pack is a dated snapshot — the floor for variety, not the ceiling:** when web access exists,
+   augment it with the current quarter's narratives (the event's own announcements, the sponsors'
+   latest releases) before generating.
 2. **Generate ≥20 candidates.** Cross seeds × target tracks × the builder's skill set. Each candidate
    is one line: *problem → solution → the demo moment*. Force the quantity; reach past the obvious
    first five. Cover several distinct seeds — not 20 variations of one idea.
@@ -142,6 +148,10 @@ Write the winner as a single brief with **all** of these fields (no placeholders
 - **Solution** — one line.
 - **Must-have demo features** — 2–3, the minimum that makes the money shot land.
 - **Target sponsor track(s)** — from Step 1.
+- **Judging criteria (published)** — the event's actual rubric/weights, read off the rules page
+  (e.g. "Real-World Application 50% · Product & UX 20% · …"). The architect and the demo plan
+  optimize against these downstream; a brief without them forces the next stage to re-research the
+  event.
 - **Why it wins / Why it's novel** — *with prior art*, title it **"Why it wins"** and name **both** the
   white space (the gap: "unlike <existing project / category>, this …") **and** the head-to-head edge on
   a real judging axis ("vs. <strongest prior art>, ours wins on <criterion> because <demonstrable

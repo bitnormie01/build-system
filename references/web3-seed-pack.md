@@ -5,6 +5,12 @@ starting points you cross with the event's tracks and the builder's skills to re
 candidates. For a non-Web3 event, don't use this pack; build an equivalent seed list from the event's
 own theme and sponsor list (see `../idea-forge/SKILL.md` Step 2).
 
+> **Snapshot, not a feed.** Axis 1 mirrors the a16z "Big Ideas for Crypto in 2026" list (published
+> Dec 2025). Treat this pack as the floor for variety: when the session has web access, augment it
+> with the current quarter's narratives before generating. **Refresh Axis 1 when the next annual
+> a16z list drops (~December)** — a year-old seed pack quietly skews every candidate field toward
+> last year's narratives.
+
 Two axes: **what's hot** (a16z Big Ideas for Crypto in 2026) × **how hackathons slice it** (ETHGlobal
 track archetypes). Cross them.
 
