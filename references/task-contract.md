@@ -49,10 +49,11 @@ it; deviations break the parser.
       Expected: PASS
 - [ ] **Step 5: Commit (kernel-performed — no agent runs this)**
       The kernel re-runs the gate, scope-checks the worktree against `Files:`, and commits exactly
-      those declared paths itself, with the message below. Shown so the plan reads end-to-end; it is
-      sliced out of the executor's copy and is **not** a command any agent runs (the executor never
-      touches git — see `../executor/SKILL.md`). The message here is the single authored source for
-      the manifest's `commit` field — the two must match byte-for-byte.
+      those declared paths itself, with the message below. This step stays in the task block (the
+      executor receives the full block per §3) only so the plan reads end-to-end; it is **not** a
+      command any agent runs — the executor never touches git and is told to skip it (see
+      `../executor/SKILL.md`). The message here is the single authored source for the manifest's
+      `commit` field — the two must match byte-for-byte.
       Message: `feat: <message>`
 ```
 
@@ -78,9 +79,10 @@ Stage 4 of the architect emits `docs/superpowers/manifest.json`. This is what th
 byte-for-byte — the manifest is the kernel's machine-readable *view* of the same facts the plan states
 for humans and hands to the executor. **Precedence:** the plan is the authored source; the manifest
 governs execution. If the two ever disagree, the manifest is *invalid* — regenerate it from the plans;
-never "pick the one that looks right." Stage-4 validation checks this equality (architect `SKILL.md`
-Stage 4; the §4 reviewer), because a drifted field is the one class of bug neither the executor nor
-the kernel can catch alone: the executor proves the **plan's** gate against the **plan's** files while
+never "pick the one that looks right." The architect checks this equality at **Stage 4**, after the
+manifest is generated (the §4 plan-reviewer runs earlier, over the plans alone, so it cannot). It
+matters because a drifted field is the one class of bug neither the executor nor the kernel can catch
+alone: the executor proves the **plan's** gate against the **plan's** files while
 the kernel runs the **manifest's** gate and commits the **manifest's** files. If they differ, honest
 work fails scope-check or a wrong check passes.
 
@@ -212,8 +214,10 @@ Check:
   commit is scoped to exactly that list and fails the task on any undeclared change.
 - Effort present:  every task has an `**Effort:**` line — a missing one silently dispatches at
   `medium` (§5), so a dropped line on a hard or security-sensitive task is a real defect.
-- Human-gate:      every task that deploys, moves funds, or uses a key/secret is flagged for
-  `human_gate: true` in the manifest (§2) — a missing flag lets the autonomous pool run it.
+- Human-gate:      flag any task whose steps deploy, move funds, or use a key/secret — each MUST
+  carry `human_gate: true` in the manifest (§2), or the autonomous pool will run it. (You read the
+  plan, so you name the tasks that need gating; the manifest generator/validator sets and checks the
+  flag — see architect `SKILL.md` Stage 4.)
 
 Only flag issues that would make an executor build the wrong thing or get stuck. Approve otherwise.
 
