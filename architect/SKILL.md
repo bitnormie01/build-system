@@ -82,6 +82,11 @@ Run these four stages in order. Do not start a stage until the previous one is a
 - Read the project idea and **every** reference doc the user pointed at (specs, API docs,
   hackathon rules, existing code). If a docs folder was given, list it and read the relevant files
   before asking anything.
+- **If a resource pack exists** at `docs/resources/<event>/` (from `resource-extractor`), read it —
+  its `sponsors/*` carry the verbatim testnet package/contract addresses, entry-point signatures, and
+  integration model to plan against, and `event.md` the exact constraints/deadline. Prefer these
+  extracted, sourced facts over re-deriving interfaces; guessed addresses/signatures are the kit's top
+  residual risk. The brief's *Feasibility notes for the architect* field points at the specifics.
 - Establish: target platform/chain, language/runtime, hard deadline, and any non-negotiable
   constraints. Pull these into the spec header verbatim.
 

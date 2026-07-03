@@ -12,7 +12,8 @@ documents, and docs/superpowers/manifest.json.
 
 PROJECT: [one-line description of what I'm building]
 
-DOCS: [path(s) to reference docs — spec, API docs, hackathon rules, existing repo. "none" if fresh]
+DOCS: [path(s) — the resource pack docs/resources/<event>/ and the idea-forge brief if you have them,
+plus any spec / API docs / hackathon rules / existing repo. "none" if fresh]
 
 CONSTRAINTS: [target platform/chain, language/runtime + versions, hard deadline, anything
 non-negotiable]

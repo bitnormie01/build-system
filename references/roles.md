@@ -17,8 +17,8 @@ architect's output (spec, plans, manifest) via the repo.
 | **mastermind** | self-contained escalation doctrine (evidence-first diagnosis, failure classification, VERDICT protocol) — inlined in its SKILL.md, no external skills | failing task block + gate output (+ the failing worktree when available) | a structured `VERDICT: retry \| replan \| human` (logged by the kernel) |
 | **executor** | self-contained build doctrine (test-first loop, verify-before-done, root-cause debugging, RESULT protocol) — inlined in its SKILL.md, no external skills | its one task + required upstream signatures | the built task (file changes in its worktree — the kernel gates, scope-checks, and commits them) |
 
-Only the **architect** (and idea-forge upstream of it) runs as an interactive session where
-superpowers skills may exist — it is bootstrapped with **using-superpowers** when installed. When
+Only the **architect** (and idea-forge / resource-extractor upstream of it) runs as an interactive
+session where superpowers skills may exist — it is bootstrapped with **using-superpowers** when installed. When
 superpowers is absent, the architect falls back to the **vendored pinned copies** embedded at
 `references/vendor/superpowers/` (brainstorming + writing-plans, followed verbatim as documents;
 see `vendor/superpowers/UPSTREAM.md`), with `pipeline-fallback.md` as a condensed checklist. The mastermind and executor kits are delivered into
@@ -32,8 +32,8 @@ second, default config that builds **inside Claude Code** with no kernel:
 
 | Config | Planner | Builder | Who orchestrates |
 |--------|---------|---------|------------------|
-| **Claude-Code-native** (default) | idea-forge → architect | Claude Code subagents (each = `executor`) | the **orchestrator** — one Claude Code session (`../orchestrator/SKILL.md`) that plays kernel + mastermind + reviewer |
-| **External-pool** (optional) | idea-forge → architect | stateless multi-account pool (each = `executor`) | a deterministic **kernel** (your code, not in here) + the `mastermind` on escalation |
+| **Claude-Code-native** (default) | resource-extractor → idea-forge → architect | Claude Code subagents (each = `executor`) | the **orchestrator** — one Claude Code session (`../orchestrator/SKILL.md`) that plays kernel + mastermind + reviewer |
+| **External-pool** (optional) | resource-extractor → idea-forge → architect | stateless multi-account pool (each = `executor`) | a deterministic **kernel** (your code, not in here) + the `mastermind` on escalation |
 
 In Claude-Code-native mode there is no kernel binary, no account rotation, and no headless kit
 delivery: the orchestrator reads the plans from the repo, dispatches a subagent per task with the

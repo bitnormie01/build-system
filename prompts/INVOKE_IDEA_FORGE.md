@@ -8,10 +8,12 @@ architect's input.
 ## Running the pipeline
 
 ```
-Step 0 — idea-forge: run in its own session. It commits a brief to docs/idea-forge/ and emits an
-         architect kickoff block.
-Step 1 — architect: open a NEW session, paste that block. Plans from the brief; emits the manifest.
-Then  — kernel: builds from the manifest (separate program).
+Step 0a — resource-extractor (optional): extract the hackathon's docs into docs/resources/<event>/.
+Step 0  — idea-forge: its own session. Reads the resource pack if present; commits a brief to
+          docs/idea-forge/ and emits an architect kickoff block.
+Step 1  — architect: open a NEW session, paste that block. Plans from the brief (+ resource pack);
+          emits spec/plans/manifest.
+Then   — orchestrator: builds it in Claude Code via subagents (or hand the manifest to an external kernel).
 The brief file is the baton between Step 0 and Step 1 — never run them in one session.
 ```
 
@@ -36,6 +38,8 @@ RISK APPETITE: [safe-feasible | novel-wow]
 PRIOR ART (optional): [existing / past projects in this space — prior winners, shipped projects,
 sponsor showcases, competitor links; leave blank if none]
 
+If a resource pack exists at docs/resources/<event>/ (from resource-extractor), sync the repo and read
+it FIRST — it pre-fills the hackathon URL, tracks, published judging criteria, and prior art.
 Run it straight: diverge to ≥20 varied candidates and run the bolder-pass; converge on the external
 weighted rubric (intrinsic buildability highest), NOT on my preference; end in exactly one brief with all
 required fields, emitted in the architect's PROJECT / DOCS / CONSTRAINTS format. Ask me the five

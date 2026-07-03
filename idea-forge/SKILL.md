@@ -39,6 +39,13 @@ Ask these **one at a time**, multiple-choice where you can, and do not generate 
 until you have all five **required** inputs (1–5). They set the rubric weights and what counts as
 buildable here. Input 6 is **optional** and never gates generation.
 
+**If a resource pack exists** at `docs/resources/<event>/` (produced by `resource-extractor`, Step 0a),
+sync the repo and read it FIRST — it is your primary, pre-verified source. Its `event.md` (published
+judging criteria + weights), `tracks.md`, and `prior-art.md` satisfy inputs 1, 2, and 6 directly, so
+confirm those back from the pack instead of re-fetching, and use its `sponsors/*` and `seeds.md` as
+accurate divergence fuel and feasibility grounding. Only fetch or search live for what the pack doesn't
+cover. With no pack, run the inputs below as normal.
+
 1. **Hackathon + URL** — which event, and its rules / judging page. Read it; the published judging
    criteria drive the rubric in Step 3.
 2. **Target tracks** (max 3) — which sponsor / prize tracks to aim at. More than 3 splits focus.
@@ -162,6 +169,12 @@ Write the winner as a single brief with **all** of these fields (no placeholders
 - **Demo money shot** — the single ~15-second moment the judge will remember.
 - **Out of scope (explicit)** — what you are deliberately NOT building, to keep the build focused on the
   money shot.
+- **Feasibility notes for the architect (primitives, not design)** — the concrete build facts the
+  architect needs, transcribed **verbatim** from the resource pack's `sponsors/*` when it exists (or
+  your own research): testnet package / contract / object addresses, entry-point signatures, the
+  integration model (branch, SDK, codegen), and the one external dependency to request on day 1.
+  Facts, not design. Omit only if the build touches no sponsor SDK/protocol — this section is what lets
+  the architect plan without guessing interfaces (see the reference brief's section of the same name).
 
 **Write the brief to `docs/idea-forge/<YYYY-MM-DD>-<slug>-brief.md`, then commit and push it, BEFORE
 you offer the hand-off.** Mandatory on a real run: the architect boots in a *fresh session* and syncs
@@ -185,7 +198,7 @@ documents, and docs/superpowers/manifest.json.
 
 PROJECT: <one-line solution>
 
-DOCS: docs/idea-forge/<YYYY-MM-DD>-<slug>-brief.md, <hackathon URL>
+DOCS: docs/idea-forge/<YYYY-MM-DD>-<slug>-brief.md, docs/resources/<event>/ (the resource pack, if extracted), <hackathon URL>
 
 CONSTRAINTS: <chain/platform>, <language/runtime + versions implied by the skill set>, hard deadline
 <hackathon end — absolute date/time; builder fills this in, idea-forge did NOT gate on it>, team =

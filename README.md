@@ -11,8 +11,9 @@ single source of truth.
 
 ## Two ways to run it
 
-The **planning** front end is identical either way — `idea-forge` (optional) → `architect` produce a
-spec, plans, and a task DAG, committed to the repo. What differs is who **builds** the plan:
+The **planning** front end is identical either way — `resource-extractor` (optional) → `idea-forge`
+(optional) → `architect` produce a resource pack, a scoped brief, then a spec, plans, and a task DAG,
+committed to the repo. What differs is who **builds** the plan:
 
 - **Claude-Code-native (default, no kernel).** A Claude Code session is the `orchestrator`
   (`orchestrator/SKILL.md`): it reads the plans and dispatches a fresh **subagent** per task (each
@@ -32,12 +33,14 @@ external-pool config; for the Claude-Code-native build read `orchestrator/SKILL.
 ```
 build-system/
 ├── README.md
+├── resource-extractor/SKILL.md # Step 0a (optional): extract the hackathon's docs -> committed resource pack (drives Chrome for JS-heavy sites)
 ├── idea-forge/SKILL.md         # Step 0 (optional): blank start -> one scoped hackathon brief
 ├── architect/SKILL.md          # Step 1: idea+docs -> spec, plans, manifest.json (runs once, top model)
 ├── orchestrator/SKILL.md       # Step 2 (Claude-Code-native): drive the build in-session via subagents
 ├── mastermind/SKILL.md         # failure-judgment doctrine (external-pool escalation; orchestrator reuses it inline)
 ├── executor/SKILL.md           # build one task, test-first, prove the gate (dispatched to each subagent)
 ├── prompts/                    # copy-paste kickoffs
+│   ├── INVOKE_RESOURCE_EXTRACTOR.md
 │   ├── INVOKE_IDEA_FORGE.md
 │   ├── INVOKE_ARCHITECT.md
 │   └── INVOKE_ORCHESTRATOR.md
