@@ -61,6 +61,18 @@ executor-ready output contract** at the end — which vanilla superpowers does n
 assumes same-session subagent execution. You are building for a multi-account, multi-agent pool
 instead.
 
+> **Two overrides when you fall back to the vendored skills — follow their *method*, not these tails:**
+> 1. **Ignore `writing-plans` §Execution Handoff.** Do **not** offer same-session subagent/inline
+>    execution ("Which approach?"). Stop at the reviewed, pushed manifest (Stage 4) — a separate
+>    stateless pool builds it.
+> 2. **Do not emit `writing-plans`' `REQUIRED SUB-SKILL: superpowers:…` plan header.** That line rides
+>    into the plan document and reaches stateless executors that have no superpowers skills. Use the
+>    plan header from `../references/task-contract.md` §1 instead.
+>
+> Likewise the vendored `brainstorming` skill's terminal "invoke writing-plans" step: you sequence the
+> stages yourself, so follow its dialogue/method, not its skill-to-skill hand-off. (Recorded in
+> `../references/vendor/superpowers/UPSTREAM.md`.)
+
 ## The pipeline
 
 Run these four stages in order. Do not start a stage until the previous one is approved.
@@ -125,12 +137,26 @@ Run these four stages in order. Do not start a stage until the previous one is a
 - Generate the **task manifest** (`docs/superpowers/manifest.json`) per `../references/task-contract.md`.
   This is the bridge to the mastermind: a DAG of tasks with dependencies, files, gate commands, and
   provides/requires edges.
-- **Validate the manifest mechanically before pushing** — hand-written JSON against a strict schema
-  fails at dispatch time otherwise, mid-build. From the kernel checkout:
-  `npm run kernel -- validate --manifest docs/superpowers/manifest.json`. It must report a clean
-  parse, a valid DAG, and **zero unmatched `requires`** (every `requires` string found verbatim in
-  a dependency's `provides`). Fix and re-validate until clean; a manifest that doesn't validate is
-  not done.
+- **Validate the manifest mechanically before pushing** — a manifest that doesn't validate fails at
+  dispatch time, mid-build. Never gate "done" on tooling you may not have; gate it on the checks
+  passing. Run whichever is available:
+  - **If the kernel checkout is present:** `npm run kernel -- validate --manifest docs/superpowers/manifest.json`.
+  - **If it is not** (the kernel is a separate build — see `README.md`): run the equivalent by hand.
+
+  Either way the manifest must pass **all** of:
+  1. **Clean parse + valid DAG** — no cycles; every `depends_on` id exists.
+  2. **Zero unmatched `requires`** — every `requires` string found verbatim in a dependency's
+     `provides` (literal string equality; see the character-for-character rule above).
+  3. **Manifest ⇄ plan equality** — every task's `gate`, `files`, `effort`, `provides`, `requires`,
+     and `commit` byte-match its plan task block. The manifest is a *projection* of the plans, not a
+     second draft (`../references/task-contract.md` §2); a drifted field is the one bug the executor
+     and kernel can't catch alone.
+  4. **Effort present** — every task has an `**Effort:**` line (a missing one silently dispatches at
+     `medium`).
+  5. **Human-gate coverage** — every deploy / key-operation / fund-movement task carries
+     `human_gate: true` (canonical snake_case; `../references/task-contract.md` §2).
+
+  Fix and re-validate until clean; a manifest that fails any check is not done.
 - **Commit and push the whole system to the repo** — spec, plans, and `manifest.json`. The repo is
   the single source of truth (`../references/conventions.md`); the mastermind and executors pull from
   it, so until you've pushed, the system doesn't exist for them. Regenerating later is just another

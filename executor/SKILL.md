@@ -30,7 +30,9 @@ your final output.
   the task. Lockfiles (`package-lock.json` and friends) are the one allowed side effect.
 - **Never run git state operations** — no `commit`, `push`, `fetch`, `checkout`, `reset`, `clean`.
   The kernel owns the worktree: it re-runs your gate independently and commits your declared files
-  itself. (Read-only git like `git diff`/`git status` is fine.)
+  itself. (Read-only git like `git diff`/`git status` is fine.) Your task block ends with a
+  `Step … Commit` that shows a commit message — that step is **kernel-performed documentation, not an
+  action for you**; do not run it.
 - **Don't install dependencies the task didn't declare.** If the build genuinely needs a package and
   the task doesn't add it to a declared manifest file, that's a plan gap — report `BLOCKED`.
 - **Don't start long-lived processes** (dev servers, watchers, daemons). Run commands that
@@ -79,6 +81,6 @@ either way — the report's job is to carry your evidence and your diagnosis, no
   test, or editing the test to match broken behavior is sabotage, not progress. The test changes
   only if the task block's own steps say so.
 - **Never touch secrets.** No private keys, mnemonics, or secret values in code or output — env
-  var names only. Steps marked `human-gate` (deploys, signed txs, fund movement) you prepare but
+  var names only. Steps flagged `human_gate` (deploys, signed txs, fund movement) you prepare but
   never execute.
 - **Assume zero memory.** If it's not in your task block or the synced repo, it doesn't exist.

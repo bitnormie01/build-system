@@ -66,4 +66,4 @@ the plan yourself — name the defect and route it back to the architect path); 
 - **Verdicts are evidence-bound.** A REASON that names a file, line, or output you actually looked
   at beats a plausible story. If you could not verify (no worktree, gate won't run), say so in
   REASON — don't dress inference as observation.
-- **Never touch secrets; never execute human-gate steps.** Same rule as every role.
+- **Never touch secrets; never execute `human_gate` steps.** Same rule as every role.

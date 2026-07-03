@@ -47,10 +47,13 @@ it; deviations break the parser.
 - [ ] **Step 4: Run to confirm it passes**   # <-- THIS IS THE GATE
       Run: `pnpm vitest run tests/.../file.test.ts`
       Expected: PASS
-- [ ] **Step 5: Commit**
-      ```bash
-      git add <paths> && git commit -m "feat: <message>"
-      ```
+- [ ] **Step 5: Commit (kernel-performed — no agent runs this)**
+      The kernel re-runs the gate, scope-checks the worktree against `Files:`, and commits exactly
+      those declared paths itself, with the message below. Shown so the plan reads end-to-end; it is
+      sliced out of the executor's copy and is **not** a command any agent runs (the executor never
+      touches git — see `../executor/SKILL.md`). The message here is the single authored source for
+      the manifest's `commit` field — the two must match byte-for-byte.
+      Message: `feat: <message>`
 ```
 
 ### Required fields, formally
@@ -60,7 +63,7 @@ it; deviations break the parser.
 | `### Task N:`    | Unique integer (or `N.M` for phased). Becomes the task id. |
 | `**Files:**`     | Each line is `Create:` / `Modify:` / `Test:` + a backticked path. |
 | `**Depends on:**`| Comma-separated `Task X` refs. Defines DAG edges. Omit if root. |
-| `**Effort:**`    | Reasoning level the architect assigns to this task. One of `none\|minimal\|low\|medium\|high\|xhigh`. The kernel maps it to the right CLI flag at dispatch (see §6). |
+| `**Effort:**`    | Reasoning level the architect assigns to this task. One of `none\|minimal\|low\|medium\|high\|xhigh`. **Required on every task** — the §5 parser defaults a *missing* line to `medium`, so a dropped or mistyped Effort silently downgrades a hard or security-sensitive task; Stage-4 validation and the §4 reviewer flag its absence. The kernel maps it to the right CLI flag at dispatch (see §6). |
 | `**Provides:**`  | Signatures/types/exports this task creates. Downstream tasks may name these. |
 | `**Requires:**`  | Signatures consumed from upstream. MUST also appear inline in the step code. |
 | `- [ ]`          | One atomic step. Code steps carry a fenced block; command steps carry `Run:`/`Expected:`. |
@@ -69,6 +72,17 @@ it; deviations break the parser.
 ## 2. The task DAG (manifest.json)
 
 Stage 4 of the architect emits `docs/superpowers/manifest.json`. This is what the mastermind loads.
+
+**The manifest is a mechanical projection of the plans, never authored independently.** Each task's
+`gate`, `files`, `effort`, `provides`, `requires`, and `commit` MUST match its plan task block
+byte-for-byte — the manifest is the kernel's machine-readable *view* of the same facts the plan states
+for humans and hands to the executor. **Precedence:** the plan is the authored source; the manifest
+governs execution. If the two ever disagree, the manifest is *invalid* — regenerate it from the plans;
+never "pick the one that looks right." Stage-4 validation checks this equality (architect `SKILL.md`
+Stage 4; the §4 reviewer), because a drifted field is the one class of bug neither the executor nor
+the kernel can catch alone: the executor proves the **plan's** gate against the **plan's** files while
+the kernel runs the **manifest's** gate and commits the **manifest's** files. If they differ, honest
+work fails scope-check or a wrong check passes.
 
 ```json
 {
@@ -92,6 +106,8 @@ Stage 4 of the architect emits `docs/superpowers/manifest.json`. This is what th
       "requires": [],
       "gate": { "run": "forge build", "expect": "Compiler run successful" },
       "commit": "chore: scaffold foundry project",
+      "human_gate": false,
+      "allow_empty": false,
       "status": "pending"
     }
   ]
@@ -117,6 +133,17 @@ Stage 4 of the architect emits `docs/superpowers/manifest.json`. This is what th
   `requires`      — used by the orchestrator to inject upstream signatures into a task's prompt at
                     dispatch time, so a stateless executor on a rotated account never has to guess.
 - `status`        — `pending` | `dispatched` | `building` | `gate_pending` | `done` | `failed`.
+- `human_gate`    — **boolean, default `false`.** `true` on every task that deploys, moves funds, or
+                    uses a key/secret. The kernel MUST pause a `human_gate: true` task for a human and
+                    never auto-dispatch it (see `conventions.md` §Safety). This is the one
+                    safety-critical dispatch field; its **canonical spelling is `human_gate`**
+                    (snake_case, like `depends_on`) — no other spelling (`human-gate`) is valid.
+- `allow_empty`   — boolean, default `false`. `true` only on tasks that legitimately change no files
+                    (rare — verification-only or placeholder tasks). Absent the flag, the kernel fails
+                    a task whose worktree contains no declared change.
+- `provider`      — optional string. Pins a task to a specific pool/seat (e.g. `claude`) when it
+                    genuinely needs the strong model. Omit by default; over-pinning starves the
+                    architect/mastermind seat.
 
 ## 3. How the orchestrator consumes a task
 
@@ -183,6 +210,10 @@ Check:
 - DAG validity:   every `Depends on:` points to a task that `Provides:` what this task `Requires:`.
 - Files exhaustive: every file the steps create/modify/test appears in `Files:` — the kernel's
   commit is scoped to exactly that list and fails the task on any undeclared change.
+- Effort present:  every task has an `**Effort:**` line — a missing one silently dispatches at
+  `medium` (§5), so a dropped line on a hard or security-sensitive task is a real defect.
+- Human-gate:      every task that deploys, moves funds, or uses a key/secret is flagged for
+  `human_gate: true` in the manifest (§2) — a missing flag lets the autonomous pool run it.
 
 Only flag issues that would make an executor build the wrong thing or get stuck. Approve otherwise.
 
@@ -201,7 +232,11 @@ The grammar above is regex-friendly:
 - Files: lines matching `^- (Create|Modify|Test):\s*\`(.+?)\``
 
 Map each parsed task to a row in your task table; store `provides`/`requires` as JSON columns so the
-scheduler can resolve the dependency edges and assemble executor context at dispatch.
+scheduler can resolve the dependency edges and assemble executor context at dispatch. The manifest's
+`gate`, `files`, `effort`, `provides`, `requires`, and `commit` are the **projection** of these parsed
+plan values — they must match the plan byte-for-byte (§2 precedence). The parser defaults a missing
+`Effort:` to `medium` for resilience, but that is a fallback for malformed input, not a license to
+omit it — the producer side (architect Stage 4, §4 reviewer) requires the line on every task.
 
 ## 6. Effort → CLI flag mapping (kernel dispatch)
 

@@ -69,6 +69,24 @@ Every role, every dispatch, follows the same two-sided repo rule (full text in `
 This is what lets the architect regenerate the system mid-build and have the next agent that boots
 pick up the change automatically — it pulled, so it sees it.
 
+## Mid-build regeneration (what the kernel owes in-flight work)
+
+"The next agent that boots pulls the new system" holds only for agents that have **not started**.
+Tasks already dispatched against the *previous* manifest are the hazard: a stateless executor got its
+task block and upstream signatures at dispatch and does **not** re-read the manifest mid-run, so it
+cannot know the plan changed under it. When the architect regenerates spec/plans/manifest during an
+active build, the kernel MUST:
+
+1. **Quiesce, don't clobber.** Refuse to commit any in-flight task whose `id`, `files`, `gate`, or
+   `provides` changed under it; re-dispatch it fresh against the new manifest.
+2. **Invalidate stale consumers.** If a task's `provides` signature changed, every already-committed
+   task built against the *old* signature is now wrong — mark its subtree for replan/rebuild. Two
+   committed files disagreeing is exactly the case "the file wins over memory" does **not** resolve.
+
+Because regeneration disrupts running work, prefer to land it at a checkpoint (no tasks dispatched).
+Regenerating between builds is free; regenerating during one is a controlled operation, not a casual
+push.
+
 ## Delivery matrix (what the kernel hands each role)
 
 | Delivered | architect | mastermind | executor |

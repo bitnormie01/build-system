@@ -108,7 +108,9 @@ Score **every** candidate with `../references/ideation-rubric.md`. Do not pick b
   prior art:** note "no prior art available — scoring Novelty on first principles" and proceed — no
   stall, no invented competitors.
 - **Judge's-eye head-to-head — only if prior art was provided or found** (layers on the white-space
-  check; both run, in order). Once the weighted score below ranks the survivors, take the **top 2–3**
+  check; both run, in order — and although listed here, this step *executes after* the **Score the
+  survivors** step below, on its top 2–3, then feeds the verdict back into WOW + Novelty + Fit). Once
+  the weighted score below ranks the survivors, take the **top 2–3**
   and simulate a judge scoring each against the **strongest 1–3 prior-art projects** on the **event's
   actual published criteria** (read them off the rules page; for demo-first events: working-demo
   strength, genuine on-chain / Sui-stack usage, usefulness, "wow"). Per decisive criterion, state **win
@@ -161,10 +163,14 @@ Write the winner as a single brief with **all** of these fields (no placeholders
 - **Out of scope (explicit)** — what you are deliberately NOT building, to keep the build focused on the
   money shot.
 
-**Write the brief to `docs/idea-forge/<YYYY-MM-DD>-<slug>-brief.md` FIRST — before you offer the
-hand-off.** Mandatory on a real run: the kickoff block's `DOCS:` points at this exact path, so the
-file must exist on disk before you hand off, or the architect's first move (reading the brief) fails.
-Write the file, *then* offer the block.
+**Write the brief to `docs/idea-forge/<YYYY-MM-DD>-<slug>-brief.md`, then commit and push it, BEFORE
+you offer the hand-off.** Mandatory on a real run: the architect boots in a *fresh session* and syncs
+the canonical repo before reading anything (the repo is the single source of truth), and the kickoff
+block's `DOCS:` points at this exact path. If the brief is only written to a local file and not
+pushed, the architect's first move — reading the brief from the synced repo — fails. So: write the
+file, then `git add` + `git commit` + `git push` it to the canonical branch, *then* offer the block.
+Writing to disk is not enough; local files are never trusted — the same two-sided repo rule every role
+in this kit runs on.
 
 Then **offer the hand-off**: "Hand this to the architect?" and emit the kickoff block below, filled
 from the brief. **Paste it into a new, fresh session — the architect does not continue this

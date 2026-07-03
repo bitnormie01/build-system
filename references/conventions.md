@@ -56,9 +56,10 @@ prompt. They are the standing rules a stateless executor needs but can't infer.
   log. Plans reference secrets only as env var names (e.g. `DEPLOYER_PK`), never values.
 - A key that has been exposed anywhere is **compromised** — the plan must treat it as burned and
   rotate, never reuse.
-- Deployment / key-operation steps are flagged `human-gate: true` in the manifest. The autonomous
-  pool prepares them but a human runs them. Executors never broadcast signed transactions or move
-  funds autonomously.
+- Deployment / key-operation / fund-movement steps are flagged `human_gate: true` in the manifest
+  (canonical spelling — snake_case, defined in `task-contract.md` §2; never `human-gate`). The
+  autonomous pool prepares them but a human runs them. Executors never broadcast signed transactions
+  or move funds autonomously.
 
 ## Spec / plan hygiene
 

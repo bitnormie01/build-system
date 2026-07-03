@@ -20,6 +20,24 @@ license in `LICENSE`.
 3. `../pipeline-fallback.md` — a condensed checklist of the same flow; now a summary/reference,
    not the primary fallback.
 
+## Contract overrides (two vendored tails the architect must NOT follow verbatim)
+
+The vendored bodies are kept unedited so they stay a faithful pinned snapshot. But two tails assume
+*same-session* execution and are **superseded by `../task-contract.md` and `../../architect/SKILL.md`** —
+following them verbatim would break the multi-agent pipeline:
+
+- **`writing-plans` §Execution Handoff** ("offer subagent-driven / inline execution … Which
+  approach?") — do **not** offer same-session execution. The architect stops at the reviewed, pushed
+  manifest; a separate stateless kernel/executor pool builds it.
+- **`writing-plans` plan header** (`REQUIRED SUB-SKILL: superpowers:subagent-driven-development`) —
+  do **not** emit it. That line rides into the plan document and reaches stateless executors that
+  have no superpowers skills. Use the plan header in `../task-contract.md` §1.
+- **`brainstorming` terminal "invoke writing-plans" step** — the architect sequences the stages
+  itself; follow brainstorming's dialogue/method, not its skill-to-skill hand-off.
+
+These are behavioral overrides only; the divergence/design method in the vendored bodies is followed
+as written.
+
 ## Refreshing
 
 ```bash

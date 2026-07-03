@@ -50,5 +50,11 @@ For each subsystem, produce a plan file under `docs/superpowers/plans/` followin
 ## Stage 4 fallback — review and manifest
 
 - Run the reviewer prompt from `task-contract.md` over each plan; fix blocking issues inline.
-- Emit `docs/superpowers/manifest.json` per the contract.
-- Stop. Hand off to the orchestrator. Do not execute tasks in this session.
+- Emit `docs/superpowers/manifest.json` as a **projection of the plans** (`task-contract.md` §2):
+  every task's `gate`, `files`, `effort`, `provides`, `requires`, and `commit` byte-match its plan
+  block; every deploy/key/fund task carries `human_gate: true`; every task has an `Effort:` line.
+- Validate: clean parse + valid DAG + zero unmatched `requires` + manifest⇄plan equality (kernel
+  validator if available, else by hand — see `architect/SKILL.md` Stage 4). Not done until it passes.
+- Stop. Hand off to the orchestrator. **Do not offer or run same-session execution**, and do not emit
+  the vendored `writing-plans` `REQUIRED SUB-SKILL` header — the terminal state is the reviewed,
+  pushed manifest.

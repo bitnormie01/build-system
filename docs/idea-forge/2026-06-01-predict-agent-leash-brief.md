@@ -9,10 +9,10 @@
 - **Hackathon:** Sui Overflow 2026 (Mysten Labs) — global virtual hackathon, $500K+ prizes.
   - Handbook: https://mystenlabs.notion.site/overflow-2026-handbook
   - Tracks: https://overflow.sui.io/
-- **Hard deadline:** **2026-06-21, end of day Pacific Time** (the handbook lists the date in PT without a
-  clock time; treat as 23:59 PT). Build window May 7 → Jun 21. **Testnet deployment is accepted for
-  judging** (mainnet only unlocks the second 50% of prize money, post-hackathon). Effective wall from
-  today: **~3 weeks.**
+- **Hard deadline (inert calendar fact — idea-forge does not gate on it; the architect/builder scopes
+  to the calendar later):** **2026-06-21, end of day Pacific Time** (the handbook lists the date in PT
+  without a clock time; treat as 23:59 PT). **Testnet deployment is accepted for judging** (mainnet
+  only unlocks the second 50% of prize money, post-hackathon).
 - **Team:** solo + AI build pipeline (architect → Codex executor pool → Claude reviewer).
 - **Target tracks:** **DeepBook** (Specialized — the track's problem statement *is* DeepBook Predict) +
   **Agentic Web** (Core — Sub-track 2: "Autonomous Agent Wallet").
@@ -73,7 +73,7 @@ that **exceeds its cap, and the on-chain leash rejects it live** in front of the
 **Revoke**, and the agent's next action **fails on-chain**. Authority granted, bounded, and revoked —
 provably, on-chain, in one breath.
 
-## Out of scope (explicit — protects the ~3-week box)
+## Out of scope (explicit — keeps the build focused on the money shot)
 
 - **No mainnet deployment** for the demo (testnet only; mainnet redeploy is post-hackathon).
 - **No bespoke DeFi Move** beyond the single leash module — use Predict / spot as-is.
@@ -101,9 +101,11 @@ provably, on-chain, in one breath.
 
 ## Rubric mapping (why this won, for the record)
 
-Adapted weights (feasibility kept highest per the skill invariant + the tight box; the rest mirror the
-event's published, impact-first rubric): **Feasibility 35 · Real-World Application 25 · Sui-stack
-fit + technical depth 20 · Demo WOW + UX 15 · Novelty 5.** Leash scored **445**, ahead of an intent engine
-(405) and a stress-test+hedge tool (385). It is feasible enough (one small Move module; everything else TS
-against deployed testnet Predict) and uniquely maxes both impact axes by landing **DeepBook Predict** and
-**Agentic Web Sub-track 2** exactly as the sponsors framed them.
+Scored on the current four rubric axes (`references/ideation-rubric.md`), intrinsic buildability kept
+highest per the skill invariant, the other three re-mapped to mirror the event's published,
+impact-first rubric — Real-World Application + Sui-stack fit fold into **Theme + sponsor-track fit**,
+UX into **Demo WOW**: **Intrinsic buildability 35 · Theme + sponsor-track fit 25 · Demo WOW + UX 20 ·
+Novelty 20.** Leash scored highest, ahead of an intent engine and a stress-test+hedge tool. It is
+intrinsically buildable (one small Move module; everything else TS against deployed testnet Predict —
+no external blocker) and uniquely maxes both impact axes by landing **DeepBook Predict** and **Agentic
+Web Sub-track 2** exactly as the sponsors framed them.
