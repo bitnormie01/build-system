@@ -27,8 +27,9 @@ The vendored bodies are kept unedited so they stay a faithful pinned snapshot. B
 following them verbatim would break the multi-agent pipeline:
 
 - **`writing-plans` §Execution Handoff** ("offer subagent-driven / inline execution … Which
-  approach?") — do **not** offer same-session execution. The architect stops at the reviewed, pushed
-  manifest; a separate stateless kernel/executor pool builds it.
+  approach?") — do **not** use its raw menu. Execution is governed by architect Stage 4:
+  Claude-Code-native (the `orchestrator` builds it in-session via subagents) or external-pool (stop at
+  the reviewed, pushed manifest for a separate kernel).
 - **`writing-plans` plan header** (`REQUIRED SUB-SKILL: superpowers:subagent-driven-development`) —
   do **not** emit it. That line rides into the plan document and reaches stateless executors that
   have no superpowers skills. Use the plan header in `../task-contract.md` §1.

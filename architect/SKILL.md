@@ -62,9 +62,9 @@ assumes same-session subagent execution. You are building for a multi-account, m
 instead.
 
 > **Two overrides when you fall back to the vendored skills — follow their *method*, not these tails:**
-> 1. **Ignore `writing-plans` §Execution Handoff.** Do **not** offer same-session subagent/inline
->    execution ("Which approach?"). Stop at the reviewed, pushed manifest (Stage 4) — a separate
->    stateless pool builds it.
+> 1. **Ignore `writing-plans` §Execution Handoff** — its raw "Which approach?" menu. Execution is
+>    governed by the Stage-4 hand-off below instead: Claude-Code-native (the `orchestrator` builds it
+>    in-session via subagents) or external-pool (stop at the manifest for a separate kernel).
 > 2. **Do not emit `writing-plans`' `REQUIRED SUB-SKILL: superpowers:…` plan header.** That line rides
 >    into the plan document and reaches stateless executors that have no superpowers skills. Use the
 >    plan header from `../references/task-contract.md` §1 instead.
@@ -121,12 +121,12 @@ Run these four stages in order. Do not start a stage until the previous one is a
     unbuildable. Think through every file the implementation touches, including configs and test
     helpers.
   - the **dispatch-control fields where they apply** (manifest level): `human_gate: true` on every
-    deploy / key-operation / fund-movement task — the kernel pauses these for a human, never
-    auto-runs them; `provider` only when a task genuinely needs a specific pool (the deployed
-    topology is a rotating Codex executor pool plus one strong Claude seat — leave tasks unpinned
-    by default and pin `claude` only for work that truly needs the strong model, or you'll starve
-    the architect/mastermind seat); `allow_empty: true` only on tasks that legitimately change no
-    files (rare — placeholders, verification-only tasks).
+    deploy / key-operation / fund-movement task — the kernel/orchestrator pauses these for a human,
+    never auto-runs them; `provider` (external-pool only — in Claude-Code-native mode there is one
+    provider, so omit it) only when a task genuinely needs a specific pool: the external-pool topology
+    is a rotating Codex executor pool plus one strong Claude seat, so leave tasks unpinned by default
+    and pin `claude` only for work that truly needs the strong model; `allow_empty: true` only on
+    tasks that legitimately change no files (rare — placeholders, verification-only tasks).
 - Apply `../references/conventions.md` (no placeholders, exact paths, complete code, strict-TS rules,
   key-safety rules).
 
@@ -135,8 +135,13 @@ Run these four stages in order. Do not start a stage until the previous one is a
 - Run the plan-document-reviewer over each plan (see `../references/task-contract.md` for the prompt).
   Fix any blocking issues inline.
 - Generate the **task manifest** (`docs/superpowers/manifest.json`) per `../references/task-contract.md`.
-  This is the bridge to the mastermind: a DAG of tasks with dependencies, files, gate commands, and
-  provides/requires edges.
+  It is a DAG of tasks with dependencies, files, gate commands, and provides/requires edges — and the
+  **only place the `human_gate` safety flags live** (they are not in the §1 plan grammar). Generate it
+  by default in *both* configs: it is **required** for external-pool, and the **recommended default**
+  for Claude-Code-native because it carries the validated human-gate coverage the orchestrator relies
+  on. A native build *may* skip it and have the orchestrator parse plans directly — but then the
+  orchestrator must derive human-gating from each task's content itself (`../orchestrator/SKILL.md`),
+  so only skip it when the build has no deploy / key / fund-movement tasks.
 - **Validate the manifest mechanically before pushing** — a manifest that doesn't validate fails at
   dispatch time, mid-build. Never gate "done" on tooling you may not have; gate it on the checks
   passing. Run whichever is available:
@@ -157,13 +162,23 @@ Run these four stages in order. Do not start a stage until the previous one is a
      `human_gate: true` (canonical snake_case; `../references/task-contract.md` §2).
 
   Fix and re-validate until clean; a manifest that fails any check is not done.
-- **Commit and push the whole system to the repo** — spec, plans, and `manifest.json`. The repo is
+- **Commit and push the whole system to the repo** — spec, plans, and the `manifest.json` (whenever you
+  generated one; that is the default — see above). The repo is
   the single source of truth (`../references/conventions.md`); the mastermind and executors pull from
   it, so until you've pushed, the system doesn't exist for them. Regenerating later is just another
   commit — agents that boot afterward pick it up automatically.
-- **Do NOT offer same-session subagent execution.** End by telling the user the manifest is committed
-  and ready for their orchestrator to load and distribute. The architect's job ends at a built,
-  reviewed, pushed, machine-parseable plan.
+- **Hand off to the build — two supported configurations; pick per the user's setup:**
+  - **Claude-Code-native (default):** the plan is built *in Claude Code itself* by the `orchestrator`
+    (`../orchestrator/SKILL.md`) — the main session dispatches a subagent per task, proves each gate,
+    and commits. End by confirming the spec/plans (+ the `manifest.json` — the default) are committed
+    and pushed,
+    and offer to start the orchestrator (continue here, or a fresh session via
+    `../prompts/INVOKE_ORCHESTRATOR.md`). No external kernel needed.
+  - **External-pool (optional):** for a separate deterministic kernel + multi-account executor pool,
+    stop at the reviewed, pushed `manifest.json` and hand it to that kernel — do not execute here.
+
+  Either way the architect's own job ends at a built, reviewed, pushed plan: it plans, it never writes
+  product code.
 
 > Shared references: `../references/{task-contract,conventions}.md` are the same files all three
 > roles follow — they are the structure, not skills, so sharing them does not break role isolation.

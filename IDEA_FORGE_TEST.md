@@ -7,6 +7,12 @@ session's thinking) given **only** `idea-forge/SKILL.md` + `references/ideation-
 to end. The five inputs were pre-supplied (no human to answer prompts). The briefs below are the
 **actual, verbatim** output of those cold runs — this is how you judge the skill across sessions.
 
+> **Note (post-adaptation):** these transcripts predate the Claude-Code-native adaptation, so their
+> architect hand-off blocks still show the old external-pool `EXECUTION TARGET` ("stateless
+> multi-account pool … do NOT offer same-session execution"). They are kept verbatim as a historical
+> record; the **current** hand-off is native-default — see `prompts/INVOKE_ARCHITECT.md` and
+> `idea-forge/SKILL.md` Step 4.
+
 ## Acceptance criteria (scored per run)
 
 1. Elicits the five inputs before generating (pre-supplied in test; confirmed back).

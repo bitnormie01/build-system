@@ -55,6 +55,7 @@ For each subsystem, produce a plan file under `docs/superpowers/plans/` followin
   block; every deploy/key/fund task carries `human_gate: true`; every task has an `Effort:` line.
 - Validate: clean parse + valid DAG + zero unmatched `requires` + manifest⇄plan equality (kernel
   validator if available, else by hand — see `architect/SKILL.md` Stage 4). Not done until it passes.
-- Stop. Hand off to the orchestrator. **Do not offer or run same-session execution**, and do not emit
-  the vendored `writing-plans` `REQUIRED SUB-SKILL` header — the terminal state is the reviewed,
-  pushed manifest.
+- Stop planning and hand off to the build per architect Stage 4: **Claude-Code-native** (the
+  `orchestrator` builds it in-session via subagents) or **external-pool** (stop at the manifest for a
+  separate kernel). Do not use the vendored `writing-plans` raw execution handoff, and do not emit its
+  `REQUIRED SUB-SKILL` header.

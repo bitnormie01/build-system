@@ -191,10 +191,11 @@ CONSTRAINTS: <chain/platform>, <language/runtime + versions implied by the skill
 <hackathon end — absolute date/time; builder fills this in, idea-forge did NOT gate on it>, team =
 solo + AI. Target track(s): <tracks>. Must land the demo money shot. Out of scope: <out-of-scope list>.
 
-EXECUTION TARGET: a stateless, multi-account agent pool coordinated by a separate orchestrator. Every
-task must be self-contained per references/task-contract.md — paste upstream signatures into each
-task, declare Provides/Requires, and give exactly one gate command per task. Do NOT offer
-same-session subagent execution; stop at the reviewed manifest.
+EXECUTION TARGET: built in Claude Code by the orchestrator — the main session dispatches a fresh
+subagent per task (orchestrator/SKILL.md). Every task must be self-contained per
+references/task-contract.md — paste upstream signatures into each task, declare Provides/Requires, and
+give exactly one gate command per task. Hand off at the reviewed plan (+ optional manifest) and the
+orchestrator builds it. (For an external multi-account pool instead, stop at the manifest for a kernel.)
 ```
 
 ## Hard guardrails

@@ -25,7 +25,23 @@ see `vendor/superpowers/UPSTREAM.md`), with `pipeline-fallback.md` as a condense
 **headless one-shot prompts** by the kernel: they can reference no external skill, so everything
 they need is written inline in their SKILL.md files.
 
-## The kernel's two jobs (and only these)
+## Two run configurations
+
+The three roles above are wired by a deterministic kernel in the **external-pool** config. There is a
+second, default config that builds **inside Claude Code** with no kernel:
+
+| Config | Planner | Builder | Who orchestrates |
+|--------|---------|---------|------------------|
+| **Claude-Code-native** (default) | idea-forge → architect | Claude Code subagents (each = `executor`) | the **orchestrator** — one Claude Code session (`../orchestrator/SKILL.md`) that plays kernel + mastermind + reviewer |
+| **External-pool** (optional) | idea-forge → architect | stateless multi-account pool (each = `executor`) | a deterministic **kernel** (your code, not in here) + the `mastermind` on escalation |
+
+In Claude-Code-native mode there is no kernel binary, no account rotation, and no headless kit
+delivery: the orchestrator reads the plans from the repo, dispatches a subagent per task with the
+`executor` kit + the task block per `../references/task-contract.md` §3, and does the gate/scope/commit
+itself. Everything below about kernel delivery, rotation, and the effort→CLI-flag mapping is the
+**external-pool** config; the orchestrator is the native-mode equivalent and holds those jobs itself.
+
+## The kernel's two jobs (external-pool config)
 
 The kernel is deterministic code, not an LLM. It is the **only** component that knows all three kits
 exist — that's what makes isolation possible.

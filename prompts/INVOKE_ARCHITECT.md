@@ -17,10 +17,12 @@ DOCS: [path(s) to reference docs — spec, API docs, hackathon rules, existing r
 CONSTRAINTS: [target platform/chain, language/runtime + versions, hard deadline, anything
 non-negotiable]
 
-EXECUTION TARGET: a stateless, multi-account agent pool coordinated by a separate orchestrator.
-Every task must be self-contained per references/task-contract.md — paste upstream signatures into
-each task, declare Provides/Requires, and give exactly one gate command per task. Do NOT offer
-same-session subagent execution; stop at the reviewed manifest.
+EXECUTION TARGET: built in Claude Code by the orchestrator — the main session dispatches a fresh
+subagent per task (orchestrator/SKILL.md). Every task must be self-contained per
+references/task-contract.md — paste upstream signatures into each task, declare Provides/Requires, and
+give exactly one gate command per task. Hand off at the reviewed plan (+ optional manifest) and the
+orchestrator builds it. (For an external multi-account pool instead, stop at the manifest for a
+separate kernel.)
 
 Start with Stage 1 (Ingest): read every doc above, then confirm the target/runtime/deadline back to
 me before asking your first brainstorming question.
@@ -51,5 +53,5 @@ DOCS: ./docs/curvesniper-brief.md, ./docs/four-meme-contracts.md
 CONSTRAINTS: BSC mainnet (chain 56), TypeScript strict + ESM, Node ≥20, viem ^2.21.0 only (no
 Bitquery), hard deadline 2026-04-22.
 
-EXECUTION TARGET: stateless multi-account pool + separate orchestrator. (as above)
+EXECUTION TARGET: built in Claude Code by the orchestrator. (as above)
 ```

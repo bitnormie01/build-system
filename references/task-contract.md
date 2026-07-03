@@ -6,6 +6,13 @@ mastermind/executor pool is stateless and rotates across accounts. This contract
 machine-readable so an orchestrator can distribute them with no copy-paste, and keeps every task
 self-contained so a stateless executor can't drift.
 
+Both run configs (see `roles.md`) use this contract. The **Claude-Code-native** `orchestrator` reads
+the plan grammar (§1) and the executor prompt (§3) to dispatch subagents — there the `manifest.json`
+(§2) is the recommended default (it carries the validated `human_gate` coverage plus the DAG) but may
+be skipped for a build with no deploy/key/fund tasks, in which case the orchestrator parses plans
+directly and derives human-gating from task content; the §6 CLI mapping does not apply. The
+**external-pool** kernel requires the manifest and uses §5/§6 to parse and dispatch.
+
 ## 1. Plan document grammar
 
 Every plan file under `docs/superpowers/plans/` MUST follow this structure. The orchestrator parses
@@ -149,7 +156,8 @@ work fails scope-check or a wrong check passes.
 
 ## 3. How the orchestrator consumes a task
 
-For each ready task the mastermind builds the executor prompt as:
+For each ready task the builder assembles the executor prompt as — the Claude Code `orchestrator`
+(native) or the kernel (external-pool):
 
 ```
 SYSTEM: You are an executor. Build exactly this task. Do not invent scope.
@@ -161,12 +169,14 @@ ACCEPTANCE: run `<gate.run>` — it must output `<gate.expect>`. Return only aft
 ```
 
 This is the anti-drift mechanism: the executor's context is **the task plus exactly the upstream
-interfaces it needs** — nothing more, nothing assumed.
+interfaces it needs** — nothing more, nothing assumed. In Claude-Code-native mode this is exactly the
+prompt the `orchestrator` hands each dispatched subagent (Task/Agent tool); in external-pool mode it's
+what the kernel delivers to each pool executor — the same prompt either way.
 
-The executor prompt carries no effort instruction — `task.effort` is not part of the prompt. The
-kernel applies it as a **launch flag** on the CLI invocation that runs this prompt (see §6), the
-same way it picks the model and account. Effort is a dispatch parameter, never something the agent
-reads or decides.
+The executor prompt carries no effort instruction — `task.effort` is not part of the prompt. It is a
+**dispatch parameter**, never something the agent reads or decides: the kernel applies it as a launch
+flag on the CLI invocation (external-pool, §6), and the `orchestrator` sets it as the subagent's
+`effort` parameter when spawning via the Task/Agent tool (Claude-Code-native).
 
 ### 3.1 What the executor returns (worker output protocol)
 
@@ -242,7 +252,11 @@ plan values — they must match the plan byte-for-byte (§2 precedence). The par
 `Effort:` to `medium` for resilience, but that is a fallback for malformed input, not a license to
 omit it — the producer side (architect Stage 4, §4 reviewer) requires the line on every task.
 
-## 6. Effort → CLI flag mapping (kernel dispatch)
+## 6. Effort → CLI flag mapping (external-pool kernel dispatch)
+
+**This section is the external-pool config only.** In Claude-Code-native mode there is no CLI dispatch —
+the `orchestrator` sets `task.effort` as the subagent's `effort` parameter on the Task/Agent tool; the
+rest of this section does not apply.
 
 The kernel reads `task.effort` and sets it as a launch flag on the fresh, non-interactive invocation
 for whichever CLI/account runs the task. Effort is set **per dispatch**, never mutated mid-run — each

@@ -2,29 +2,53 @@
 
 A reusable, three-role system for autonomous builds. The **architect** turns an idea + docs into a
 spec, plans, and a task manifest. The **mastermind** owns correctness and integration. The
-**executor** builds one task at a time. A deterministic **kernel** (your code — speced, not in here)
-brokers the whole thing.
+**executor** builds one task at a time. The build is driven either by **Claude Code itself** or by a
+separate deterministic **kernel** (your code — speced, not in here) — see **Two ways to run it** below.
 
-Each role boots with an isolated, scoped skill kit and the shared structure to follow — never each
-other's skills. The only thing they share is the architect's output, and they read and write it
-through the **git repo**, which is the single source of truth.
+Each role boots with an isolated, scoped skill kit and the shared structure to follow. The only thing
+they share is the architect's output, and they read and write it through the **git repo**, which is the
+single source of truth.
+
+## Two ways to run it
+
+The **planning** front end is identical either way — `idea-forge` (optional) → `architect` produce a
+spec, plans, and a task DAG, committed to the repo. What differs is who **builds** the plan:
+
+- **Claude-Code-native (default, no kernel).** A Claude Code session is the `orchestrator`
+  (`orchestrator/SKILL.md`): it reads the plans and dispatches a fresh **subagent** per task (each
+  playing the `executor` role), then re-runs every gate, scope-checks, reviews the diff, and commits.
+  The one session plays kernel + mastermind + reviewer; subagents are the executor pool. Nothing
+  outside Claude Code is required. Kickoff: `prompts/INVOKE_ORCHESTRATOR.md`.
+- **External-pool (optional).** A separate deterministic **kernel** (your code — speced here, not
+  shipped here) loads `manifest.json`, distributes tasks across a stateless multi-account executor
+  pool, runs gates, scoped-commits, rotates accounts on rate limits, and escalates to the `mastermind`.
+  Use this to build across many accounts in parallel, outside Claude Code.
+
+The **"How the kernel uses it"** and **"Where the kernel fits"** sections below describe the
+external-pool config; for the Claude-Code-native build read `orchestrator/SKILL.md`.
 
 ## Files
 
 ```
 build-system/
 ├── README.md
-├── architect/SKILL.md          # idea+docs -> spec, plans, manifest.json (runs once, top model)
-├── mastermind/SKILL.md         # coordination + gatekeeping judgment
-├── executor/SKILL.md           # build one task, test-first, prove the gate
-├── prompts/INVOKE_ARCHITECT.md # copy-paste kickoff for the architect
+├── idea-forge/SKILL.md         # Step 0 (optional): blank start -> one scoped hackathon brief
+├── architect/SKILL.md          # Step 1: idea+docs -> spec, plans, manifest.json (runs once, top model)
+├── orchestrator/SKILL.md       # Step 2 (Claude-Code-native): drive the build in-session via subagents
+├── mastermind/SKILL.md         # failure-judgment doctrine (external-pool escalation; orchestrator reuses it inline)
+├── executor/SKILL.md           # build one task, test-first, prove the gate (dispatched to each subagent)
+├── prompts/                    # copy-paste kickoffs
+│   ├── INVOKE_IDEA_FORGE.md
+│   ├── INVOKE_ARCHITECT.md
+│   └── INVOKE_ORCHESTRATOR.md
 └── references/                 # SHARED structure (not skills) — all roles follow these
-    ├── task-contract.md        # plan grammar + manifest.json DAG schema (the bridge)
+    ├── task-contract.md        # plan grammar + manifest DAG + executor prompt (the bridge)
     ├── conventions.md          # coding + decomposition rules + repo-as-source-of-truth
-    ├── roles.md                # kernel/human wiring: which kit each role holds, delivery matrix
+    ├── roles.md                # role wiring + the two run configurations
+    ├── ideation-rubric.md      # idea-forge's weighted decider
     ├── pipeline-fallback.md    # condensed spec/plan checklist (summary of the vendored method)
-    └── vendor/superpowers/     # pinned MIT snapshot of brainstorming + writing-plans
-                                #   (architect's fallback when superpowers isn't installed; UPSTREAM.md)
+    ├── web3-seed-pack.md       # divergence fuel for idea-forge (Web3 events)
+    └── vendor/superpowers/     # pinned MIT snapshot of brainstorming + writing-plans (UPSTREAM.md)
 ```
 
 ## How the kernel uses it
