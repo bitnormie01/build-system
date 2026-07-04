@@ -1,9 +1,12 @@
 # Roles
 
 This is the kernel's wiring sheet and your map of the system. It documents which kit each role holds
-and what the kernel delivers to whom. **It is not delivered into any agent's context** — agents see
-only their own kit plus the shared contract. Keeping role boundaries here (not in the agents) is what
-enforces isolation: no role can peek at another's skills.
+and what the kernel delivers to whom. **It is not delivered into any pipeline role's context** — the
+architect, mastermind, and executor see only their own kit plus the shared contract. (User-side seats
+are different: the `guide` — the user's mission-control session — and a manager-mode session sit on
+the kernel/human side of the table and hold this map by design; they advise, verify, and unblock, but
+never extract, ideate, plan, or build.) Keeping role boundaries here (not in the pipeline agents) is
+what enforces isolation: no role can peek at another's skills.
 
 ## The three roles over one shared structure
 
@@ -43,8 +46,9 @@ itself. Everything below about kernel delivery, rotation, and the effort→CLI-f
 
 ## The kernel's two jobs (external-pool config)
 
-The kernel is deterministic code, not an LLM. It is the **only** component that knows all three kits
-exist — that's what makes isolation possible.
+The kernel is deterministic code, not an LLM. It is the only **pipeline-side** component that knows
+all three kits exist — that's what makes isolation possible. (User-side seats — the `guide` and a
+manager-mode session — also hold the map, by design; see the note at the top of this file.)
 
 1. **Deliver the right kit at boot.** Before any agent works, the kernel assembles its context:
    that role's `SKILL.md` + `references/task-contract.md` + `references/conventions.md` + (for the

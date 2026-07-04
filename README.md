@@ -11,6 +11,11 @@ single source of truth.
 
 ## Two ways to run it
 
+**New to the kit? Start with the `guide`** (`guide/SKILL.md`, kickoff `prompts/INVOKE_GUIDE.md`): a
+persistent mission-control session that plans the pipeline for your specific event, fills in each
+step's kickoff, verifies each committed artifact, and unblocks you between steps. Each pipeline step
+still runs in its own fresh session; the guide is the seat you come back to.
+
 The **planning** front end is identical either way — `resource-extractor` (optional) → `idea-forge`
 (optional) → `architect` produce a resource pack, a scoped brief, then a spec, plans, and a task DAG,
 committed to the repo. What differs is who **builds** the plan:
@@ -33,6 +38,7 @@ external-pool config; for the Claude-Code-native build read `orchestrator/SKILL.
 ```
 build-system/
 ├── README.md
+├── guide/SKILL.md              # START HERE — mission control: plans the pipeline per event, preps kickoffs, verifies batons, helpdesk between steps
 ├── resource-extractor/SKILL.md # Step 0a (optional): extract the hackathon's docs -> committed resource pack (drives Chrome for JS-heavy sites)
 ├── idea-forge/SKILL.md         # Step 0 (optional): blank start -> one scoped hackathon brief
 ├── architect/SKILL.md          # Step 1: idea+docs -> spec, plans, manifest.json (runs once, top model)
@@ -40,6 +46,7 @@ build-system/
 ├── mastermind/SKILL.md         # failure-judgment doctrine (external-pool escalation; orchestrator reuses it inline)
 ├── executor/SKILL.md           # build one task, test-first, prove the gate (dispatched to each subagent)
 ├── prompts/                    # copy-paste kickoffs
+│   ├── INVOKE_GUIDE.md
 │   ├── INVOKE_RESOURCE_EXTRACTOR.md
 │   ├── INVOKE_IDEA_FORGE.md
 │   ├── INVOKE_ARCHITECT.md
@@ -56,8 +63,9 @@ build-system/
 
 ## How the kernel uses it
 
-The kernel is the only component that knows all three kits exist — that is what enforces isolation.
-It has two jobs (see `references/roles.md`):
+The kernel is the only pipeline-side component that knows all three kits exist — that is what enforces
+isolation (user-side seats — the `guide` and a manager-mode session — hold the map by design; see
+`references/roles.md`). It has two jobs:
 
 1. **Deliver the right kit at boot** — assemble each agent's context: its own `SKILL.md` +
    `task-contract.md` + `conventions.md` (+ the executor's one task and required signatures). It
