@@ -444,7 +444,7 @@
       "commit": "feat(mock-cap): MockCapClient over the shared service",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "mock-cap:6",
@@ -495,7 +495,7 @@
       "commit": "feat(mock-cap): CapEnvironment + createMockEnvironment",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "heartbeat:1",
@@ -578,7 +578,7 @@
       "commit": "feat(heartbeat): rolling in-flight target monitor",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "heartbeat:3",
@@ -621,7 +621,7 @@
       "commit": "feat(heartbeat): sharded heartbeat engine",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "downtime-attestation:1",
@@ -701,7 +701,7 @@
       "commit": "feat(attestation): expiry-keyed downtime detector",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "downtime-attestation:3",
@@ -787,7 +787,7 @@
       "commit": "feat(attestation): Deadman attestation provider (sells certificates)",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "chain-decode:1",
@@ -940,7 +940,7 @@
       "commit": "feat(dashboard): snapshot projection",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "dashboard-demo:2",
@@ -977,7 +977,7 @@
       "commit": "feat(dashboard): http + websocket server with kill-switch",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "dashboard-demo:3",
@@ -1011,7 +1011,7 @@
       "commit": "feat(dashboard): browser view (renderState + shell)",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "dashboard-demo:4",
@@ -1066,7 +1066,7 @@
       "commit": "feat(dashboard): demo system wiring + money-shot e2e test",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "dashboard-demo:5",
@@ -1250,7 +1250,7 @@
       "commit": "feat(live): createLiveEnvironment (dynamic SDK import, control null)",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "live-artifacts:4",
@@ -1288,7 +1288,7 @@
       "commit": "feat(live): human-gated live smoke script",
       "human_gate": true,
       "allow_empty": false,
-      "status": "pending"
+      "status": "human-pending"
     },
     {
       "id": "live-artifacts:5",
