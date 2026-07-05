@@ -46,7 +46,7 @@
       "commit": "chore(foundation): scaffold strict-ESM TypeScript package",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "foundation:2",
@@ -84,7 +84,7 @@
       "commit": "feat(foundation): domain order and event types",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "foundation:3",
@@ -203,7 +203,7 @@
       "commit": "feat(foundation): DEADMAN_MODE resolver",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "foundation:6",
@@ -234,7 +234,7 @@
       "commit": "feat(foundation): .env.example with env names only",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "mock-cap:1",
@@ -268,7 +268,7 @@
       "commit": "feat(mock-cap): controllable Clock (Manual + System)",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "mock-cap:2",
@@ -823,7 +823,7 @@
       "commit": "feat(chain): sourced CAPCore/CAPVault ABIs and addresses",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "chain-decode:2",
@@ -1319,7 +1319,7 @@
       "commit": "docs(live): register-agents runbook",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     }
   ]
 }

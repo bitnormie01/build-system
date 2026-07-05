@@ -2,7 +2,8 @@
 // Parses the plan documents (task-contract.md §1 grammar), PROJECTS them into
 // docs/superpowers/manifest.json (so manifest⇄plan equality holds by construction), and runs all five
 // Stage-4 checks. Plain Node ESM, no deps. Run from the repo root: `node docs/superpowers/validate.mjs`.
-import { readFileSync, writeFileSync } from 'node:fs';
+// Regeneration PRESERVES existing task statuses (so a mid-build re-projection never wipes progress).
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
 const PLANS_DIR = 'docs/superpowers/plans';
 const SPEC = 'docs/superpowers/specs/2026-07-05-deadman-design.md';
@@ -133,6 +134,20 @@ function parsePlan(subsystem) {
 // ---- parse all plans ----
 const tasks = SUBSYSTEMS.flatMap(parsePlan);
 const byId = new Map(tasks.map((t) => [t.id, t]));
+
+// ---- preserve existing statuses across regeneration ----
+if (existsSync(OUT)) {
+  try {
+    const prev = JSON.parse(readFileSync(OUT, 'utf8'));
+    const prevStatus = new Map((prev.tasks ?? []).map((t) => [t.id, t.status]));
+    for (const t of tasks) {
+      const s = prevStatus.get(t.id);
+      if (s) t.status = s;
+    }
+  } catch {
+    /* no prior manifest to preserve */
+  }
+}
 
 // ---- Check 1: valid DAG (deps exist, no cycles) ----
 for (const t of tasks) {

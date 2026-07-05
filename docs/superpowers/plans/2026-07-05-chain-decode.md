@@ -35,8 +35,8 @@ raw logs; `findRefundForExpiry` correlates an expiry with its refund tx by `orde
       ```ts
       import { test, expect } from 'vitest';
       import { CAP_CORE_ADDRESS, CAP_VAULT_ADDRESS, USDC_BASE_ADDRESS, BASE_CHAIN_ID } from './addresses.js';
-      import capcore from './abis/capcore.json';
-      import capvault from './abis/capvault.json';
+      import capcore from './abis/capcore.json' with { type: 'json' };
+      import capvault from './abis/capvault.json' with { type: 'json' };
 
       test('canonical Base mainnet addresses (verbatim from the resource pack)', () => {
         expect(CAP_CORE_ADDRESS).toBe('0xaD46f1Eba2fe9cBB689D2874a52039192F2ac821');
@@ -147,8 +147,8 @@ raw logs; `findRefundForExpiry` correlates an expiry with its refund tx by `orde
       The topic0 values are the real keccak256 of the event signatures (verified with ethers).
       ```ts
       import { test, expect } from 'vitest';
-      import expiry from './expiry-refund.json';
-      import reject from './reject-refund.json';
+      import expiry from './expiry-refund.json' with { type: 'json' };
+      import reject from './reject-refund.json' with { type: 'json' };
 
       const ORDER_EXPIRED = '0x1ad308dc7017610c82d08084545f7176df5e2f08f078c3c8f8926cd7e5555514';
       const ORDER_REJECTED = '0xb1544707a474e6118a9704a2715d102eb87f02b3b079f4bd32f085640173105e';
@@ -251,8 +251,8 @@ raw logs; `findRefundForExpiry` correlates an expiry with its refund tx by `orde
       import { test, expect } from 'vitest';
       import { decodeCapLogs, findRefundForExpiry } from './decode.js';
       import type { RawLog } from './decode.js';
-      import expiry from './fixtures/expiry-refund.json';
-      import reject from './fixtures/reject-refund.json';
+      import expiry from './fixtures/expiry-refund.json' with { type: 'json' };
+      import reject from './fixtures/reject-refund.json' with { type: 'json' };
 
       test('decodes CAPCore and CAPVault events from a mixed log set', () => {
         const decoded = decodeCapLogs(expiry as RawLog[]);
@@ -283,8 +283,8 @@ raw logs; `findRefundForExpiry` correlates an expiry with its refund tx by `orde
       ```ts
       import { Interface } from 'ethers';
       import type { TxHash } from '../domain/types.js';
-      import capcore from './abis/capcore.json';
-      import capvault from './abis/capvault.json';
+      import capcore from './abis/capcore.json' with { type: 'json' };
+      import capvault from './abis/capvault.json' with { type: 'json' };
 
       export interface RawLog {
         topics: string[];
