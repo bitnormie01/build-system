@@ -1,7 +1,7 @@
 import { test, expect } from 'vitest';
 import { CAP_CORE_ADDRESS, CAP_VAULT_ADDRESS, USDC_BASE_ADDRESS, BASE_CHAIN_ID } from './addresses.js';
-import capcore from './abis/capcore.json';
-import capvault from './abis/capvault.json';
+import capcore from './abis/capcore.json' with { type: 'json' };
+import capvault from './abis/capvault.json' with { type: 'json' };
 
 test('canonical Base mainnet addresses (verbatim from the resource pack)', () => {
   expect(CAP_CORE_ADDRESS).toBe('0xaD46f1Eba2fe9cBB689D2874a52039192F2ac821');
