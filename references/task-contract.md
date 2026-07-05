@@ -147,6 +147,13 @@ work fails scope-check or a wrong check passes.
                     never auto-dispatch it (see `conventions.md` §Safety). This is the one
                     safety-critical dispatch field; its **canonical spelling is `human_gate`**
                     (snake_case, like `depends_on`) — no other spelling (`human-gate`) is valid.
+- `gate_profile`  — **optional string, only meaningful on `human_gate: true` tasks.** One of
+                    `deploy | wallet | faucet | account | secret | submission`. Advisory, never
+                    validated: it tells the post-build `gate-concierge` (Step 3) what category of
+                    human-gated work this is, so its gate ledger can map the right tools without
+                    re-deriving the category from the steps. The architect sets it when the category
+                    is obvious; omitting it changes nothing about dispatch or safety — `human_gate`
+                    alone governs pausing.
 - `allow_empty`   — boolean, default `false`. `true` only on tasks that legitimately change no files
                     (rare — verification-only or placeholder tasks). Absent the flag, the kernel fails
                     a task whose worktree contains no declared change.

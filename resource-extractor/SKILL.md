@@ -30,8 +30,16 @@ sponsor docs, and prior art into a committed resource pack before we ideate."
 
 ## The one output — a resource pack
 
-Write everything under `docs/resources/<YYYY-MM-DD>-<event-slug>/`, then commit and push it (the repo
-is the single source of truth — every downstream step syncs and reads it). Files:
+Write everything under `docs/resources/<YYYY-MM-DD>-<event-slug>/` **in the project repo**, then
+commit and push it (the project repo is the single source of truth — every downstream step syncs and
+reads it; `../references/repo-bootstrap.md`). You are usually the **first step that needs the repo**:
+if the kickoff's `REPO:` names one, use it; if none exists, create it now via the user's logged-in
+`gh` — from OUTSIDE the kit checkout (`../references/repo-bootstrap.md` §Creation protocol):
+`gh repo create <event-slug>-<YYYY> --private --description "Hackathon workspace for <event> —
+resource pack, brief, spec/plans, build. (build-system pipeline)" --clone`
+(the project isn't chosen yet, so it's event-named; the seat that later fixes the project name —
+idea-forge, or the architect when Step 0 is skipped — renames it to the project slug). Never write
+the pack into the build-system kit checkout. Files:
 
 - **`INDEX.md`** — table of contents + **provenance for every source**: URL, fetch date, tool used
   (WebFetch / Chrome), primary-vs-secondary, and a one-line confidence/gap note. This is what makes the
@@ -92,8 +100,9 @@ criteria exactly and attach the source URL; never round, summarize, or reconstru
 ### Stage 4 — Write the pack and hand off
 
 - Write the files above; build `INDEX.md` last so it reflects everything captured.
-- **Commit and push** the whole `docs/resources/<...>/` pack. Until it's pushed it doesn't exist for
-  the next session (`../references/conventions.md`).
+- **Commit and push** the whole `docs/resources/<...>/` pack to the **project repo** — resolving or
+  creating it first per `../references/repo-bootstrap.md` (see *The one output* above). Until it's
+  pushed it doesn't exist for the next session (`../references/conventions.md`).
 - Hand off to **idea-forge**: tell the user the pack is committed and that idea-forge should read it as
   its primary source (its Step-1 inputs — hackathon URL, tracks, published judging criteria, prior art
   — are now pre-extracted here, so it forges on accurate resources instead of a one-shot search).
@@ -148,7 +157,9 @@ browser, in this tool-preference order (per this environment's MCP guidance):
   returns.
 - **Strong model.** Reading dense rules and SDK docs accurately is model-bound — run this on your top
   reasoning seat, same as idea-forge and the architect.
-- **The repo is the single source of truth.** Commit and push the pack before handing off.
+- **The project repo is the single source of truth.** Commit and push the pack there before handing
+  off — creating the repo first when none exists (`../references/repo-bootstrap.md`); never into the
+  build-system kit checkout.
 
 ## When NOT to use this skill
 

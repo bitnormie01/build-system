@@ -3,10 +3,11 @@
 This is the kernel's wiring sheet and your map of the system. It documents which kit each role holds
 and what the kernel delivers to whom. **It is not delivered into any pipeline role's context** — the
 architect, mastermind, and executor see only their own kit plus the shared contract. (User-side seats
-are different: the `guide` — the user's mission-control session — and a manager-mode session sit on
-the kernel/human side of the table and hold this map by design; they advise, verify, and unblock, but
-never extract, ideate, plan, or build.) Keeping role boundaries here (not in the pipeline agents) is
-what enforces isolation: no role can peek at another's skills.
+are different: the `guide` — the user's mission-control session — a manager-mode session, and the
+`gate-concierge` — the post-build seat that executes human-gated steps only on the user's per-gate
+consent — sit on the kernel/human side of the table and hold this map by design; they advise, verify,
+unblock, and run consented gates, but never extract, ideate, plan, or build.) Keeping role boundaries
+here (not in the pipeline agents) is what enforces isolation: no role can peek at another's skills.
 
 ## The three roles over one shared structure
 
@@ -47,8 +48,9 @@ itself. Everything below about kernel delivery, rotation, and the effort→CLI-f
 ## The kernel's two jobs (external-pool config)
 
 The kernel is deterministic code, not an LLM. It is the only **pipeline-side** component that knows
-all three kits exist — that's what makes isolation possible. (User-side seats — the `guide` and a
-manager-mode session — also hold the map, by design; see the note at the top of this file.)
+all three kits exist — that's what makes isolation possible. (User-side seats — the `guide`, a
+manager-mode session, and the `gate-concierge` — also hold the map, by design; see the note at the
+top of this file.)
 
 1. **Deliver the right kit at boot.** Before any agent works, the kernel assembles its context:
    that role's `SKILL.md` + `references/task-contract.md` + `references/conventions.md` + (for the
@@ -83,7 +85,9 @@ The kernel's jobs above are mode-independent. What differs is who turns the cran
 
 Every role, every dispatch, follows the same two-sided repo rule (full text in `conventions.md`):
 
-1. **Sync the canonical repo first** — work from it, not from stale local files.
+1. **Resolve, then sync the canonical repo first** — "the repo" is the **project repo**, resolved
+   (and created, if the user provided none) per `repo-bootstrap.md`; never the build-system kit
+   checkout. Work from it, not from stale local files.
 2. **Commit and push before reporting done** — output isn't real until it's in the repo.
 
 This is what lets the architect regenerate the system mid-build and have the next agent that boots

@@ -11,6 +11,7 @@ per task, proves each gate, and commits. This is **Step 2**, after `prompts/INVO
 Step 0 — idea-forge (optional): own session → commits a brief, emits an architect kickoff block.
 Step 1 — architect: fresh session, paste that block → commits spec + plans (+ manifest).
 Step 2 — orchestrator: THIS prompt, fresh session → builds the plan via subagents, commits each task.
+Step 3 — gate-concierge (optional): fresh session after green → runs the human-gated tail, consent per gate.
 ```
 
 The committed repo is the baton between every step — always sync before starting, push before done.
@@ -23,7 +24,8 @@ You are the ORCHESTRATOR for this build, running in Claude Code. Load and follow
 build by dispatching a fresh Claude Code subagent per task (playing the executor role, executor/SKILL.md).
 
 Do this:
-1. Sync the canonical repo and read the spec, plans, conventions.md, and manifest.json if present.
+1. Sync the project repo below (the canonical repo — references/repo-bootstrap.md; never the
+   build-system checkout) and read the spec, plans, conventions.md, and manifest.json if present.
 2. Build the task DAG — prefer the manifest (it carries the human-gate flags); else parse the plans per
    task-contract.md §1 and derive human-gating from task content yourself.
 3. For each dependency-ready task, in order:
@@ -36,7 +38,11 @@ Do this:
    - On failure: classify (flake / executor-miss / plan-bug / human) and retry-with-hint, route back to
      the architect to replan, or ask me. Do not power through or fake green.
 4. Push. Report what was built, what passed its gate, and anything that needs me (human-gate steps,
-   replans, blockers).
+   replans, blockers). Then OFFER Step 3 — the gate-concierge (prompts/INVOKE_GATE_CONCIERGE.md)
+   minimizes the human-gated tail with my per-gate consent — but never launch it or run a gate
+   yourself.
+
+REPO: [the project repo owner/name — from the guide's runsheet / the architect's report]
 
 PLAN LOCATION: [repo path / branch, or "the synced canonical branch"]
 

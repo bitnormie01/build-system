@@ -1,7 +1,7 @@
 # Invoke Architect — copy-paste kickoff prompt
 
 Paste this into a fresh session of your strongest reasoning agent (Opus/Claude — the "mastermind"
-seat, never a cheap executor) to start a build. Fill the four bracketed fields and delete the rest.
+seat, never a cheap executor) to start a build. Fill the five bracketed fields and delete the rest.
 
 ---
 
@@ -11,6 +11,10 @@ Do not write product code. Your only deliverables are: an approved spec, executo
 documents, and docs/superpowers/manifest.json.
 
 PROJECT: [one-line description of what I'm building]
+
+REPO: [the project repo owner/name — sync it and commit everything there. Or "none yet": create it
+via my logged-in gh from the PROJECT slug (private, PROJECT line as description), per
+references/repo-bootstrap.md. Never the build-system checkout.]
 
 DOCS: [path(s) — the resource pack docs/resources/<event>/ and the idea-forge brief if you have them,
 plus any spec / API docs / hackathon rules / existing repo. "none" if fresh]
@@ -48,6 +52,8 @@ me before asking your first brainstorming question.
 ```
 PROJECT: A Four.meme bonding-curve trading agent that scores graduation likelihood and executes on
 PancakeSwap V3.
+
+REPO: none yet — create it via my logged-in gh (private, named from the PROJECT slug)
 
 DOCS: ./docs/curvesniper-brief.md, ./docs/four-meme-contracts.md
 

@@ -26,6 +26,10 @@ Do not write product code or a spec — stop at the brief plus the architect kic
 
 HACKATHON: [name + URL of the rules / judging page]
 
+REPO: [the project repo owner/name (event-named if Step 0a created it) — or "none yet": create the
+project repo via my logged-in gh when you commit the winning brief, per references/repo-bootstrap.md.
+If it's event-named, rename it to the project slug + set its description after the brief lands.]
+
 TRACKS: [up to 3 sponsor / prize tracks to target, or "open"]
 
 TEAM / BUILD CAPACITY: [autonomous multi-agent pool — architect → executor pool → reviewer — plus me;
@@ -38,8 +42,9 @@ RISK APPETITE: [safe-feasible | novel-wow]
 PRIOR ART (optional): [existing / past projects in this space — prior winners, shipped projects,
 sponsor showcases, competitor links; leave blank if none]
 
-If a resource pack exists at docs/resources/<event>/ (from resource-extractor), sync the repo and read
-it FIRST — it pre-fills the hackathon URL, tracks, published judging criteria, and prior art.
+If a resource pack exists at docs/resources/<event>/ (from resource-extractor), sync the project repo
+(REPO above) and read it FIRST — it pre-fills the hackathon URL, tracks, published judging criteria,
+and prior art.
 Run it straight: diverge to ≥20 varied candidates and run the bolder-pass; converge on the external
 weighted rubric (intrinsic buildability highest), NOT on my preference; end in exactly one brief with all
 required fields, emitted in the architect's PROJECT / DOCS / CONSTRAINTS format. Ask me the five

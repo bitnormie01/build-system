@@ -30,9 +30,12 @@ dispatch a subagent per task, prove each gate, and commit."
 
 ## Boot (before any task)
 
-1. **Sync the repo.** Fetch and check out the canonical branch; read the spec, plans, `conventions.md`,
+1. **Sync the project repo.** Resolve it per `../references/repo-bootstrap.md` (the kickoff's `REPO:`
+   field, else the working directory's remote — never the build-system kit checkout; by Step 2 it
+   always exists, so finding none means you're in the wrong directory, not that you should create
+   one). Fetch and check out the canonical branch; read the spec, plans, `conventions.md`,
    and `manifest.json` **if present** — from the synced repo, not stale local files
-   (`../references/conventions.md`). The repo is the single source of truth.
+   (`../references/conventions.md`). The project repo is the single source of truth.
 2. **Build the task list — prefer the manifest.** If a `manifest.json` exists, load its task DAG (the
    validated projection of the plans — `../references/task-contract.md` §2); it also carries the
    **`human_gate` flags** (deploy/key/fund tasks), which live only in the manifest, not in the §1 plan
@@ -104,6 +107,16 @@ If the architect regenerates the plans/manifest during the build, follow the reg
 `../references/roles.md`: quiesce in-flight tasks whose `id`/`files`/`gate`/`provides` changed,
 re-dispatch them fresh, and rebuild any task that consumed a `provides` signature that just changed.
 Prefer to land regenerations at a checkpoint (no task in flight).
+
+## When the build is green (the hand-off you owe the user)
+
+Push, then report: what was built, every gate's proof, and — explicitly — the **human-gated tail**
+that remains (paused `human_gate` tasks plus the campaign gates that never enter a manifest: faucets,
+provider accounts/API keys, wallet setup, the submission). Then **offer Step 3**: the
+`gate-concierge` (`../gate-concierge/SKILL.md`, kickoff `../prompts/INVOKE_GATE_CONCIERGE.md`)
+inventories those gates into a committed ledger with the exact tools per gate and executes each only
+on the user's per-gate "continue". **Offer it — never launch it or run its gates yourself**; starting
+Step 3 is the user's call, same as every consent in this kit.
 
 ## Parallelism (optional)
 

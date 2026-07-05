@@ -22,6 +22,10 @@ build — stop at the committed pack.
 
 HACKATHON: [name + primary URL(s): rules/handbook, tracks page]
 
+REPO: [the project repo owner/name if one exists — or "create it": no project repo yet, so create
+<event-slug>-<YYYY> private via my logged-in gh and commit the pack there, per
+references/repo-bootstrap.md. Never commit the pack into the build-system checkout.]
+
 TARGET SPONSORS/TRACKS (optional): [the sponsors whose SDK docs matter most, or "all major tracks"]
 
 Extract, following inter-related links (rules → tracks → each sponsor → its SDK docs/examples → prior
@@ -40,7 +44,8 @@ Use WebFetch for static pages; use the Chrome browser tools (claude-in-chrome) f
 render, get_page_text/read_page, find+click to expand tabs/accordions/"load more", read_network_requests
 to capture API-loaded JSON. Extraction only: never log in as me, submit a form, register, or move funds;
 label anything gated or unloadable as a gap; quote numbers/criteria verbatim with source URLs; invent
-nothing. Commit and push the pack, then tell me it's ready for idea-forge.
+nothing. Commit and push the pack to the project repo (creating it first if REPO says so), then tell
+me it's ready for idea-forge — and name the repo so it goes in the runsheet.
 ```
 
 ---

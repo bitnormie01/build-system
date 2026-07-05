@@ -1,7 +1,7 @@
 # Invoke Guide — copy-paste kickoff prompt
 
 Paste this into a Claude Code session at the **start of a hackathon campaign** (or whenever you're
-unsure where you are in the pipeline). The guide is your **mission control**: it plans how the four
+unsure where you are in the pipeline). The guide is your **mission control**: it plans how the
 pipeline steps should run for your specific event, prepares each step's filled kickoff, verifies each
 committed artifact, and stays open as your helpdesk between steps. **Keep this session open for the
 whole hackathon** — every pipeline step runs in its own fresh session; you come back here in between.
@@ -9,11 +9,15 @@ whole hackathon** — every pipeline step runs in its own fresh session; you com
 ## Where it sits
 
 ```
-        ┌──────────────── guide (THIS session — stays open, advises, verifies) ────────────────┐
-        │                                                                                       │
-Step 0a resource-extractor → Step 0 idea-forge → Step 1 architect → Step 2 orchestrator
-        (fresh session)       (fresh session)     (fresh session)    (fresh session)
+        ┌──────────────── guide (THIS session — stays open, advises, verifies) ─────────────────────────────┐
+        │                                                                                                    │
+Step 0a resource-extractor → Step 0 idea-forge → Step 1 architect → Step 2 orchestrator → Step 3 gate-concierge
+        (fresh session)       (fresh session)     (fresh session)    (fresh session)       (fresh session)
 ```
+
+All artifacts live in the **project repo** — created via your logged-in `gh` by the first step that
+needs it when you don't provide one (`references/repo-bootstrap.md`); the build-system checkout is
+doctrine only.
 
 ---
 
@@ -24,6 +28,9 @@ or product code in this session).
 
 HACKATHON: [name + URL — or "not chosen yet" and help me pick]
 
+PROJECT REPO: [owner/name if one exists — or "none yet": the first committing step creates it via my
+logged-in gh, per references/repo-bootstrap.md; record it in the runsheet and every kickoff's REPO field]
+
 MY GOAL: [win <track>, ship a portfolio piece, learn <stack> — what success means to me]
 
 MY SKILLS: [e.g. Solidity/DeFi, TypeScript/React, Python/ML]
@@ -32,7 +39,8 @@ CALENDAR: [time I can give it + the event deadline if known]
 
 STATUS: [fresh start | I already have an idea: <one-liner> | pipeline partially run — check the repo]
 
-Start by syncing the repo and detecting pipeline state from the committed artifacts, open/create the
+Start by resolving the project repo (references/repo-bootstrap.md — never the build-system checkout),
+syncing it and detecting pipeline state from the committed artifacts, open/create the
 runsheet under docs/guide/, then give me: (1) your strategy for this event — which steps to run or
 skip, track shortlist (≤3) with reasons, risk-appetite recommendation with reasons, sponsor-depth list
 for extraction; (2) the single next action with its filled kickoff prompt ready to paste. Between
@@ -44,9 +52,12 @@ stuck, diagnose from the repo and give me the concrete fix.
 
 ## Notes on using it
 
-- **One open seat, four fresh sessions.** The guide stays open; each pipeline step (0a extractor,
-  0 idea-forge, 1 architect, 2 orchestrator) runs in its own fresh session from the kickoff the guide
-  hands you. The baton between steps is always a committed, pushed artifact.
+- **One open seat, five fresh sessions.** The guide stays open; each pipeline step (0a extractor,
+  0 idea-forge, 1 architect, 2 orchestrator, 3 gate-concierge) runs in its own fresh session from the
+  kickoff the guide hands you. The baton between steps is always a committed, pushed artifact.
+- **After the build goes green, Step 3 shrinks your to-do list.** The gate-concierge reports every
+  human-gated task left (faucets, deploy, API keys, submission) with the exact tools it would use,
+  then runs only the ones you green-light, one consent at a time.
 - **It recommends, you decide.** Track picks, risk appetite, review mode — the guide gives a
   recommendation with reasons; the choices stay yours.
 - **It owns the calendar call.** idea-forge deliberately never reasons about your deadline; the guide

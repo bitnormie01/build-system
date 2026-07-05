@@ -6,8 +6,15 @@ spec, plans, and a task manifest. The **mastermind** owns correctness and integr
 separate deterministic **kernel** (your code — speced, not in here) — see **Two ways to run it** below.
 
 Each role boots with an isolated, scoped skill kit and the shared structure to follow. The only thing
-they share is the architect's output, and they read and write it through the **git repo**, which is the
-single source of truth.
+they share is the architect's output, and they read and write it through the **project repo**, which is
+the single source of truth. That repo is **not this build-system repo** — when the user doesn't provide
+one, the first pipeline step that needs it creates it via the user's logged-in `gh`, named from the
+event or the chosen project (`references/repo-bootstrap.md`).
+
+After the build goes green, an optional **Step 3** — the `gate-concierge` — minimizes the human-gated
+tail (faucets, testnet deploy, provider accounts / API keys, wallet setup, the hackathon submission):
+it reports every gate with the exact tools it would use, then executes only what the user green-lights,
+one consent per gate (`gate-concierge/SKILL.md`).
 
 ## Two ways to run it
 
@@ -43,6 +50,7 @@ build-system/
 ├── idea-forge/SKILL.md         # Step 0 (optional): blank start -> one scoped hackathon brief
 ├── architect/SKILL.md          # Step 1: idea+docs -> spec, plans, manifest.json (runs once, top model)
 ├── orchestrator/SKILL.md       # Step 2 (Claude-Code-native): drive the build in-session via subagents
+├── gate-concierge/SKILL.md     # Step 3 (optional): minimize the human-gated tail — gate ledger first, then consent-per-gate execution
 ├── mastermind/SKILL.md         # failure-judgment doctrine (external-pool escalation; orchestrator reuses it inline)
 ├── executor/SKILL.md           # build one task, test-first, prove the gate (dispatched to each subagent)
 ├── prompts/                    # copy-paste kickoffs
@@ -50,10 +58,12 @@ build-system/
 │   ├── INVOKE_RESOURCE_EXTRACTOR.md
 │   ├── INVOKE_IDEA_FORGE.md
 │   ├── INVOKE_ARCHITECT.md
-│   └── INVOKE_ORCHESTRATOR.md
+│   ├── INVOKE_ORCHESTRATOR.md
+│   └── INVOKE_GATE_CONCIERGE.md
 └── references/                 # SHARED structure (not skills) — all roles follow these
     ├── task-contract.md        # plan grammar + manifest DAG + executor prompt (the bridge)
     ├── conventions.md          # coding + decomposition rules + repo-as-source-of-truth
+    ├── repo-bootstrap.md       # WHICH repo is canonical + who creates it (gh) when the user provides none
     ├── roles.md                # role wiring + the two run configurations
     ├── ideation-rubric.md      # idea-forge's weighted decider
     ├── pipeline-fallback.md    # condensed spec/plan checklist (summary of the vendored method)
@@ -64,8 +74,8 @@ build-system/
 ## How the kernel uses it
 
 The kernel is the only pipeline-side component that knows all three kits exist — that is what enforces
-isolation (user-side seats — the `guide` and a manager-mode session — hold the map by design; see
-`references/roles.md`). It has two jobs:
+isolation (user-side seats — the `guide`, a manager-mode session, and the `gate-concierge` — hold the
+map by design; see `references/roles.md`). It has two jobs:
 
 1. **Deliver the right kit at boot** — assemble each agent's context: its own `SKILL.md` +
    `task-contract.md` + `conventions.md` (+ the executor's one task and required signatures). It
@@ -81,7 +91,9 @@ the kernel still owns gates, scoped commits, and rotation.
 
 ## The one rule everything depends on
 
-The repo is the single source of truth. Every role, every dispatch: **sync the canonical repo before
+The repo is the single source of truth — and "the repo" means the **project repo**
+(`references/repo-bootstrap.md`), never this build-system checkout, which is doctrine only. Every
+role, every dispatch: **resolve and sync the canonical project repo before
 starting; commit and push before reporting done.** Local files are never trusted. This is what lets
 the architect regenerate the system mid-build and have the next agent that boots pick it up
 automatically — it pulled, so it sees it.

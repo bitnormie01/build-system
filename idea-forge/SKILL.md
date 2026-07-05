@@ -40,7 +40,8 @@ until you have all five **required** inputs (1–5). They set the rubric weights
 buildable here. Input 6 is **optional** and never gates generation.
 
 **If a resource pack exists** at `docs/resources/<event>/` (produced by `resource-extractor`, Step 0a),
-sync the repo and read it FIRST — it is your primary, pre-verified source. Its `event.md` (published
+sync the project repo (the kickoff's `REPO:` — `../references/repo-bootstrap.md`) and read it FIRST —
+it is your primary, pre-verified source. Its `event.md` (published
 judging criteria + weights), `tracks.md`, and `prior-art.md` satisfy inputs 1, 2, and 6 directly, so
 confirm those back from the pack instead of re-fetching, and use its `sponsors/*` and `seeds.md` as
 accurate divergence fuel and feasibility grounding. Only fetch or search live for what the pack doesn't
@@ -185,6 +186,21 @@ file, then `git add` + `git commit` + `git push` it to the canonical branch, *th
 Writing to disk is not enough; local files are never trusted — the same two-sided repo rule every role
 in this kit runs on.
 
+**The repo you push to is the project repo — and this is the step that names it**
+(`../references/repo-bootstrap.md`). The winning brief is the moment the project gets a name, so:
+
+- **Step 0a ran and created an event-named repo** (`<event-slug>-<YYYY>`): right after pushing the
+  brief, upgrade it — `gh repo rename <project-slug> -R <owner>/<event-slug>-<YYYY> --yes`, then
+  `gh repo edit <owner>/<project-slug> --description "<the brief's one-line solution>"`, then
+  `git remote set-url origin <new URL>` — and state the new name so the guide records it in the
+  runsheet. Always pass the explicit `-R <owner>/<repo>` target: the bare form resolves the repo
+  from the cwd's origin, and run from the wrong directory (the kit checkout) it would rename
+  **build-system** with `--yes` suppressing the confirmation. (Skip the rename if the user provided
+  the repo themselves — only pipeline-created repos get renamed.)
+- **No project repo exists** (Step 0a skipped): create it now, project-named —
+  `gh repo create <project-slug> --private --description "<one-line solution>" --clone` — and commit
+  the brief there. Never commit the brief into the build-system kit checkout.
+
 Then **offer the hand-off**: "Hand this to the architect?" and emit the kickoff block below, filled
 from the brief. **Paste it into a new, fresh session — the architect does not continue this
 conversation**; it plans from the committed brief as the single source of truth, with a clean context
@@ -197,6 +213,8 @@ Do not write product code. Your only deliverables are: an approved spec, executo
 documents, and docs/superpowers/manifest.json.
 
 PROJECT: <one-line solution>
+
+REPO: <owner>/<project-slug> — the project repo (canonical; sync it before reading anything)
 
 DOCS: docs/idea-forge/<YYYY-MM-DD>-<slug>-brief.md, docs/resources/<event>/ (the resource pack, if extracted), <hackathon URL>
 

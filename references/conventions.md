@@ -55,11 +55,17 @@ prompt. They are the standing rules a stateless executor needs but can't infer.
 - **Never put a private key, mnemonic, or secret in plaintext** in a plan, task, prompt, commit, or
   log. Plans reference secrets only as env var names (e.g. `DEPLOYER_PK`), never values.
 - A key that has been exposed anywhere is **compromised** — the plan must treat it as burned and
-  rotate, never reuse.
+  rotate, never reuse. (A campaign **burner wallet** — fresh, testnet-only, faucet-funded — is
+  created as disposable, so exposure burns nothing of value; the minimize-exposure and never-commit
+  rules still apply to it — see `gate-concierge/SKILL.md`.)
 - Deployment / key-operation / fund-movement steps are flagged `human_gate: true` in the manifest
   (canonical spelling — snake_case, defined in `task-contract.md` §2; never `human-gate`). The
   autonomous pool prepares them but a human runs them. Executors never broadcast signed transactions
-  or move funds autonomously.
+  or move funds autonomously. "A human runs them" has two valid forms: the user executes the step
+  directly, or the user gives an explicit per-gate "continue" to the **gate-concierge** — a
+  user-side seat (`gate-concierge/SKILL.md`) that executes it under their eyes with their granted
+  tooling. Either way the pipeline itself never auto-runs a gated step, and consent never carries
+  from one gate to the next.
 
 ## Spec / plan hygiene
 
@@ -71,7 +77,10 @@ prompt. They are the standing rules a stateless executor needs but can't infer.
 
 ## The repo is the single source of truth
 
-These files don't live "on disk somewhere" — they live in the **git repo**. Local working copies go
+These files don't live "on disk somewhere" — they live in the **git repo**. "The repo" means the
+**project repo**, never the build-system kit checkout — `repo-bootstrap.md` defines the
+distinction, the boot-time resolution order, and how the first step that needs it creates the
+project repo via the user's logged-in `gh` when none was provided. Local working copies go
 stale the moment the architect regenerates the system or another worker commits. So every agent, in
 every role, obeys the same two-sided rule:
 

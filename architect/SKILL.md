@@ -79,6 +79,16 @@ Run these four stages in order. Do not start a stage until the previous one is a
 
 ### Stage 1 — Ingest
 
+- **Resolve the project repo first** (`../references/repo-bootstrap.md`): the kickoff's `REPO:`
+  field, else the working directory's remote — never the build-system kit checkout. Sync it and read
+  the brief/pack from it. If no project repo exists (the user came straight to you with an idea,
+  Steps 0a/0 skipped), create it once the `PROJECT:` line is confirmed:
+  `gh repo create <project-slug> --private --description "<PROJECT one-liner>" --clone` — announce
+  what you created. If the resolved repo is **pipeline-created and still event-named** (Step 0a ran
+  but Step 0 was skipped, so idea-forge's rename never happened), perform that upgrade yourself once
+  `PROJECT:` is confirmed — the rename + description commands in
+  `../references/repo-bootstrap.md` §The rename step — and report the new name for the runsheet.
+  Everything you produce commits there.
 - Read the project idea and **every** reference doc the user pointed at (specs, API docs,
   hackathon rules, existing code). If a docs folder was given, list it and read the relevant files
   before asking anything.
@@ -127,7 +137,10 @@ Run these four stages in order. Do not start a stage until the previous one is a
     helpers.
   - the **dispatch-control fields where they apply** (manifest level): `human_gate: true` on every
     deploy / key-operation / fund-movement task — the kernel/orchestrator pauses these for a human,
-    never auto-runs them; `provider` (external-pool only — in Claude-Code-native mode there is one
+    never auto-runs them — plus, on each such task, the advisory `gate_profile`
+    (`deploy|wallet|faucet|account|secret|submission`, `../references/task-contract.md` §2) when the
+    category is obvious, so the Step-3 gate-concierge can map tools without re-deriving it;
+    `provider` (external-pool only — in Claude-Code-native mode there is one
     provider, so omit it) only when a task genuinely needs a specific pool: the external-pool topology
     is a rotating Codex executor pool plus one strong Claude seat, so leave tasks unpinned by default
     and pin `claude` only for work that truly needs the strong model; `allow_empty: true` only on
@@ -167,9 +180,10 @@ Run these four stages in order. Do not start a stage until the previous one is a
      `human_gate: true` (canonical snake_case; `../references/task-contract.md` §2).
 
   Fix and re-validate until clean; a manifest that fails any check is not done.
-- **Commit and push the whole system to the repo** — spec, plans, and the `manifest.json` (whenever you
-  generated one; that is the default — see above). The repo is
-  the single source of truth (`../references/conventions.md`); the mastermind and executors pull from
+- **Commit and push the whole system to the project repo** — spec, plans, and the `manifest.json`
+  (whenever you generated one; that is the default — see above). The project repo is
+  the single source of truth (`../references/conventions.md`, `../references/repo-bootstrap.md`);
+  the mastermind and executors pull from
   it, so until you've pushed, the system doesn't exist for them. Regenerating later is just another
   commit — agents that boot afterward pick it up automatically.
 - **Hand off to the build — two supported configurations; pick per the user's setup:**

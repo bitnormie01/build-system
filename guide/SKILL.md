@@ -2,12 +2,12 @@
 name: guide
 description: >
   Use this as the user's MISSION CONTROL for the whole build-system pipeline — before the first step
-  and between every step. It thinks through how the 4-step pipeline (resource-extractor → idea-forge →
-  architect → orchestrator) should be used for a SPECIFIC hackathon, prepares each step's filled
-  kickoff prompt, recommends the choices each step will ask for (which URLs and sponsors to give the
-  extractor, target tracks, risk appetite, orchestrator review mode), verifies each step's committed
-  artifact before the next step starts, and unblocks the user when anything gets stuck at Step
-  0a / 0 / 1 / 2. Trigger it when the user says "guide me through the build-system", "how do I use
+  and between every step. It thinks through how the pipeline (resource-extractor → idea-forge →
+  architect → orchestrator → gate-concierge) should be used for a SPECIFIC hackathon, prepares each
+  step's filled kickoff prompt, recommends the choices each step will ask for (which URLs and sponsors
+  to give the extractor, target tracks, risk appetite, orchestrator review mode), verifies each step's
+  committed artifact before the next step starts, and unblocks the user when anything gets stuck at
+  Step 0a / 0 / 1 / 2 / 3. Trigger it when the user says "guide me through the build-system", "how do I use
   these skills", "we're entering <hackathon>", "what's next", "prepare the kickoff for <step>",
   "which tracks should I pick", "review the pack / brief / plan", or "I'm stuck at step X". Keep this
   session open across the whole hackathon — every pipeline step runs in its OWN fresh session; this is
@@ -19,8 +19,8 @@ description: >
 
 ## What this is
 
-The four pipeline steps are deliberately **stateless sessions connected by committed artifacts**:
-resource pack → brief → spec/plans/manifest → built tasks. What that design leaves out is a
+The pipeline steps are deliberately **stateless sessions connected by committed artifacts**:
+resource pack → brief → spec/plans/manifest → built tasks → gate ledger. What that design leaves out is a
 **continuity seat** — someone who holds the whole map, plans the campaign for *this* event, fills in
 each kickoff, checks each baton before the next runner takes it, and answers "why is it doing that?"
 when a step surprises the user. That seat is this skill. You are the user's co-pilot, not a fifth
@@ -35,7 +35,14 @@ pipeline runs for this event, prep each step's kickoff, and stay here to unblock
 
 ## Boot — establish where we are
 
-1. **Sync the repo** and detect pipeline state from artifacts (never from memory):
+1. **Resolve the project repo** (`../references/repo-bootstrap.md`) — the runsheet's repo line, the
+   user's answer, or the working directory's remote; **never the build-system kit checkout**. If
+   none exists yet and the event is known, **create it yourself now** (you are the first seat that
+   needs to commit — the runsheet): the protocol's event-named form, announced, so the runsheet has
+   a home from the first decision. If the event isn't known yet, keep the runsheet as a **local
+   draft** (never committed to the kit checkout) and commit it the moment the repo exists. Either
+   way, record the repo in the runsheet and carry it in every kickoff's `REPO:` field.
+2. **Sync the project repo** and detect pipeline state from artifacts (never from memory):
    - `docs/resources/<event>/` exists → Step 0a done. Read its `INDEX.md` (note the gaps).
    - `docs/idea-forge/*-brief.md` for this event → Step 0 done. Read the brief.
    - `docs/superpowers/{specs,plans}` + `manifest.json` (the default; may legitimately be absent only
@@ -43,9 +50,11 @@ pipeline runs for this event, prep each step's kickoff, and stay here to unblock
    - Task commits on the canonical branch matching the plans' commit messages → Step 2 progress. (The
      committed manifest's `status` fields are dispatch-time values — don't rely on them; the
      orchestrator/kernel tracks live status in its own session/store.)
-2. **Open the runsheet** at `docs/guide/<YYYY-MM-DD>-<event-slug>-runsheet.md` — create it if missing
+   - `docs/gates/*-gate-ledger.md` → Step 3 started. Read each gate's status
+     (pending / approved / done / declined) — that's what's left between "built" and "submitted".
+3. **Open the runsheet** at `docs/guide/<YYYY-MM-DD>-<event-slug>-runsheet.md` — create it if missing
    (format below). It is your working memory across sessions; keep it committed.
-3. If the event or the user's goal is unknown, ask — one question at a time: which hackathon (URL),
+4. If the event or the user's goal is unknown, ask — one question at a time: which hackathon (URL),
    what outcome they want (win a specific track / ship a portfolio piece / learn a stack), their
    skills, and how much calendar remains.
 
@@ -57,6 +66,7 @@ pipeline runs for this event, prep each step's kickoff, and stay here to unblock
 | 0 *(optional)* | `idea-forge` | pack + 5 inputs | one brief in `docs/idea-forge/` | `prompts/INVOKE_IDEA_FORGE.md` |
 | 1 | `architect` | brief + pack | spec + plans + `manifest.json` | `prompts/INVOKE_ARCHITECT.md` |
 | 2 | `orchestrator` | plans/manifest | built, gated, committed tasks | `prompts/INVOKE_ORCHESTRATOR.md` |
+| 3 | `gate-concierge` | manifest human-gates + brief + pack + runsheet | `docs/gates/<date>-gate-ledger.md`, then consented gates executed | `prompts/INVOKE_GATE_CONCIERGE.md` |
 
 **Session discipline (the rule users trip on):** each step runs in its **own fresh session**; the
 baton between steps is the **committed, pushed artifact** — never chat history. Don't run two steps in
@@ -70,7 +80,9 @@ Before any kickoff, decide and record in the runsheet:
 
 - **Which steps to run.** Already has a project idea → skip Step 0 (idea-forge shapes nothing you've
   already chosen; go straight to the architect, but still consider 0a for sponsor-SDK facts). Docs-thin
-  event with no sponsor SDKs → 0a is low-value; skip it. Otherwise run all four in order.
+  event with no sponsor SDKs → 0a is low-value; skip it. Otherwise run them all in order. Step 3
+  runs whenever human-gated work remains after a green build — for a Web3 event that is almost
+  always (faucets, deploy, keys, submission); skip it only when nothing is gated.
 - **Calendar fit is YOURS.** idea-forge deliberately never reasons about the deadline — "whether the
   chosen idea fits the calendar is the builder's call later, outside the skill." You are that
   later-outside seat: do the deadline math (time left vs. the brief's must-have features + human-gate
@@ -94,7 +106,8 @@ Before any kickoff, decide and record in the runsheet:
 - **Collect from the user:** the main event URL, plus the rules/handbook URL and tracks page if they
   live on separate pages (portals often split them); the target-sponsor shortlist from strategy.
 - **Preflight the session:** the Chrome browser tools (claude-in-chrome) must be connected — JS-heavy
-  portals won't render without them; the build-system repo checked out with push auth.
+  portals won't render without them; the kit checkout present; the project repo resolved, or `gh auth
+  status` logged in so the extractor can create it (`../references/repo-bootstrap.md`).
 - **Prepare the kickoff:** fill `INVOKE_RESOURCE_EXTRACTOR.md` with those URLs + sponsors; hand it to
   the user to paste in a fresh session.
 - **When it finishes, review the pack before green-lighting Step 0:** read `INDEX.md`'s gaps (anything
@@ -140,8 +153,26 @@ Before any kickoff, decide and record in the runsheet:
   Gate failures are the orchestrator's job to classify (flake / executor miss / plan bug / human); if
   it routes a **plan bug** back, that fix happens in an architect session, then the orchestrator
   resumes per the regeneration protocol (`references/roles.md`).
-- **When it finishes:** check the demo money shot actually lands end-to-end, then help the user
-  package the submission against the event's published criteria (from `event.md`).
+- **When it finishes:** check the demo money shot actually lands end-to-end, then green-light
+  Step 3 — the human-gated tail (deploy, faucets, keys, submission) is the gate-concierge's job,
+  not an afternoon of manual form-filling.
+
+### Before Step 3 (gate-concierge)
+
+- **Timing:** after the orchestrator reports green. Its first deliverable is a **report** — the gate
+  ledger — so it's always safe to kick off; nothing executes until the user consents per gate.
+- **Prepare the kickoff:** fill `INVOKE_GATE_CONCIERGE.md` with the project repo, the submission
+  page URL (from the pack's `event.md`), and the access the user is granting this session (Chrome
+  browser tools, device, email inbox for OTPs, wallet extension, burner-wallet permission). Help the
+  user strike anything they don't want to grant — the concierge tiers around whatever remains.
+- **Set expectations:** it inventories every gate (declared `human_gate` tasks + implicit ones:
+  faucets, provider accounts/API keys, wallet setup, repo-public flip, the submission form), commits
+  the ledger naming the exact tools per gate, then STOPS. The user runs it like a checklist: "run
+  gate 2", "run gates 1–3". Filling the submission form and pressing Submit are two separate
+  consents.
+- **When it finishes, verify the baton:** every gate in the ledger is done (with evidence — tx hash,
+  env-var name, confirmation URL), declined, or explicitly parked; the submission is confirmed on
+  the platform; no secret value appears anywhere in the repo. Then close out the runsheet.
 
 ## When something jams (helpdesk)
 
@@ -150,6 +181,8 @@ Diagnose from the repo, then fix the *baton*, not the symptom:
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | Architect can't find the brief | idea-forge wrote but didn't push | push it from that session (or commit it yourself), re-sync |
+| Artifacts landed in the build-system repo | a step treated the kit checkout as the project repo | resolve/create the project repo (`repo-bootstrap.md`), move the artifacts there, record it in the runsheet |
+| A step asks "which repo?" | no `REPO:` in its kickoff | fill it from the runsheet; if no repo exists yet, tell the step to create it per `repo-bootstrap.md` |
 | 0a captures empty/spinner pages | Chrome tools not connected in that session | connect the extension, re-run those sources |
 | Pack has gaps on key sources | auth-gated content | user fetches manually, paste into the pack with provenance noted |
 | Manifest validation fails | schema/DAG/equality defect | fix in the architect session against Stage 4's checklist — never hand-edit the manifest alone (it's a projection of the plans) |
@@ -166,10 +199,12 @@ fix — don't improvise a workaround that fights the system.
 `docs/guide/<YYYY-MM-DD>-<event-slug>-runsheet.md`, updated and committed after every decision:
 
 - **Event** — name, URL, deadline (absolute + tz), published judging criteria one-liner.
+- **Project repo** — `owner/name` + visibility, and who created it (user-provided vs.
+  pipeline-created per `repo-bootstrap.md`); update it on the idea-forge rename.
 - **Goal** — what the user wants out of it.
 - **Strategy decisions** — steps to run/skip, track shortlist, risk appetite, sponsor depth — each
   with its one-line reason.
-- **Step status** — 0a / 0 / 1 / 2: pending | in-progress | done, with the artifact path and the
+- **Step status** — 0a / 0 / 1 / 2 / 3: pending | in-progress | done, with the artifact path and the
   verification result.
 - **Next action** — the single next thing, and who does it (user pastes kickoff X / review Y).
 - **Open blockers** — anything gated, failing, or waiting on the user.
@@ -182,6 +217,7 @@ fix — don't improvise a workaround that fights the system.
 - **Never bypass the pipeline's gates** — no hand-editing briefs/manifests to "save a session", no
   skipping the architect's design approval, no faking a verification you didn't run.
 - **Human-gate actions are the user's.** You walk them through deploys/keys/funds; you never execute
-  them, same rule as every seat in this kit.
+  them yourself. The one seat that may is the `gate-concierge` (Step 3) — and only per-gate, on the
+  user's explicit "continue"; your job is to prep its kickoff, never to play it from this session.
 - **State comes from the synced repo**, never from memory or hope — re-check before declaring a step
   done. **Recommendations come with reasons** — the user decides.
