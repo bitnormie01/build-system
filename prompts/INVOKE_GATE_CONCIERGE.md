@@ -25,8 +25,12 @@ The build is green; your job is to minimize the human-gated work left between "b
 REPO: [the project repo URL / owner-name — from the guide's runsheet]
 
 GRANTED ACCESS: [what I'm giving this session — e.g. Chrome browser (claude-in-chrome), my device
-(computer-use), email inbox <address> for OTPs, wallet extension <name>, permission to install
-extensions and to create/use a BURNER wallet. Strike anything I'm not granting.]
+(computer-use), email inbox <address> for OTP retrieval, wallet extension <name>, permission to
+install extensions and to create/use a BURNER wallet. Strike anything I'm not granting.]
+
+SIGNUP AUTOMATION: authorized — I accept the consequences of this agent doing my provider signups /
+API-key issuance. Handle CAPTCHA and email-OTP yourself, inline; accept provider ToS as part of a
+signup; do not bounce those back to me. (Strike this line to keep signups human-assisted instead.)
 
 HACKATHON SUBMISSION: [platform + URL of the submission page, or "in the resource pack's event.md"]
 
@@ -35,19 +39,22 @@ Do this, in order:
    brief, the resource pack's event.md, and the runsheet's open blockers.
 2. Inventory EVERY gate — declared (manifest) and implicit (faucets, provider accounts/API keys,
    burner wallet + extension, repo-public flip, the submission form).
-3. Classify each gate: Tier A (you run it end-to-end with my granted tools), Tier B (you run it,
-   I handle one named moment — OTP/CAPTCHA/OAuth/ToS), Tier C (human-only: KYC, SMS, mainnet,
-   anything ToS-forbidden — you only prepare).
+3. Classify each gate: Tier A (you run it end-to-end with my granted tools — provider signups
+   INCLUDED, CAPTCHA + email-OTP handled inline), Tier B (one capability gap only — a code on a
+   channel you can't read like SMS, or an on-device tap), Tier C (human-only: KYC/ID docs, payment/
+   real money, mainnet, my main wallet — you only prepare).
 4. Write, commit, and push docs/gates/<date>-gate-ledger.md — per gate: what it is, tier, the
-   EXACT tools you'd use, my human moment if any, risk note, status. Present it with a recommended
-   order. Then STOP.
+   EXACT tools you'd use, my human moment if any (Tier B/C only), risk note, status. Present it with
+   a recommended order. Then STOP.
 5. Execute a gate ONLY when I name it ("run gate 2", "run gates 1-3"). Restate gate + tools in one
-   line, run it, verify the outcome yourself (tx hash / test call / confirmation screen), record
-   evidence in the ledger, commit. Filling the submission form and pressing Submit are two
-   separate consents.
+   line, run it end-to-end (solve CAPTCHAs, read the OTP from my inbox, accept ToS — no mid-gate
+   hand-back except a true capability gap), verify the outcome yourself (tx hash / test call /
+   confirmation screen), record evidence in the ledger, commit. Filling the submission form and
+   pressing Submit are two separate consents.
 
-Never: touch mainnet or my main wallet, echo or commit a secret (env-var names only), run a gate I
-declined, or bypass a ToS/CAPTCHA wall silently — hand those moments to me.
+Never: touch mainnet or my main wallet, submit KYC/ID docs, enter payment details, echo or commit a
+secret (env-var names only), or run a gate I declined. Log every signup / CAPTCHA / ToS-accept /
+key-issued in the ledger so I have the record.
 ```
 
 ---
@@ -61,8 +68,10 @@ declined, or bypass a ToS/CAPTCHA wall silently — hand those moments to me.
   the deploy. Batch consent works only when you name the batch.
 - **Burner wallet, testnet only.** It creates a fresh wallet for the campaign and funds it from
   faucets. Your main wallet, seed phrases, and mainnet funds are permanently out of scope.
-- **Your minutes go where only you can spend them.** OTPs, CAPTCHAs, OAuth clicks, ToS boxes, KYC —
-  the concierge queues these so your total human time is minutes, not an afternoon of form-filling.
+- **Your minutes go where only you can spend them.** With signup automation authorized, CAPTCHAs and
+  email-OTPs are handled inline — so what's left for you is only a code on a channel the agent can't
+  read (SMS), an on-device tap, or a true human-only action (KYC, payment, mainnet). Minutes, not an
+  afternoon of form-filling.
 - **Everything is audited.** Every consented action lands in the committed gate ledger with its
   evidence (tx hash, env-var name, confirmation URL) — the campaign's record of what was done and
   under whose go-ahead.

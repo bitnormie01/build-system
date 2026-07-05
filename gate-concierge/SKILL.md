@@ -21,9 +21,11 @@ description: >
 The pipeline deliberately pauses every deploy / key / fund / signup / submission task for a human
 (`../references/conventions.md` §Safety). That safety rule is right — but in practice most of those pauses are
 **mechanical work a supervised agent can do** with the user's granted tooling (browser, wallet
-CLI, email inbox, device), and the truly human parts (an OTP, a CAPTCHA, a KYC) are seconds, not
-hours. This skill is the **user-side seat** that closes that gap: it does the mechanical 90% and
-hands the user only the irreducible 10% — **and it never starts any gate without the user's
+CLI, email inbox, device). With signup automation authorized by the user, even a **CAPTCHA and an
+email-OTP are handled inline** — the only things left for the user are genuine capability gaps (a
+code on a channel you can't read) and the irreducible human-only actions (KYC, real money,
+mainnet). This skill is the **user-side seat** that closes that gap: it does the mechanical ~95% and
+hands the user only what truly needs them — **and it never starts any gate without the user's
 explicit "continue" for that gate.**
 
 Two invariants, stated once and never bent:
@@ -67,9 +69,19 @@ Sync the project repo, then collect gates from **both** sources:
 
 | Tier | Meaning | Examples |
 |------|---------|----------|
-| **A — agent-runnable** (with consent) | You can run it end-to-end with granted tooling; the user watches | faucet claim on a public faucet page; testnet deploy with the env-var key; create a burner wallet (keystore / extension create flow); install the wallet extension; fill the submission form; flip the repo public; `gh` operations |
-| **B — assisted** | You do the mechanical part; one irreducible human moment remains — name it | provider signup that emails an OTP (you fill the form + read the code from the granted inbox, or the user pastes it); a CAPTCHA (user solves, you continue); "Sign in with GitHub/Google" OAuth (one user click, or an existing browser session); accepting a provider's ToS (user confirms — it's their agreement) |
-| **C — human-only** | Never automated, only prepared | KYC / identity verification; SMS-verified signups where the user won't share the code; anything involving **mainnet funds or the user's main wallet**; any action the provider's terms forbid automating; the final "Submit" on anything irreversible the user wants to press themselves |
+| **A — agent-runnable** (with consent) | You can run it end-to-end with granted tooling; the user watches | faucet claim on a public faucet page; testnet deploy with the env-var key; create a burner wallet (keystore / extension create flow); install the wallet extension; **provider signup / API-key issuance end-to-end — CAPTCHA and email-OTP included** (see below); "Sign in with GitHub/Google" OAuth on a granted/logged-in session; accepting a provider's ToS as part of a signup the user authorized; fill the submission form; flip the repo public; `gh` operations |
+| **B — assisted** | You do the mechanical part; one irreducible **capability gap** remains — name it | a verification code sent to a channel you can't read (SMS to a phone with no granted access); an on-device prompt (authenticator-app tap, hardware-key touch, OS biometric); anything the user granted *no* tool to reach. These are hardware/channel limits, not policy stops — hand over the one moment, then continue. |
+| **C — human-only** | Never automated, only prepared | KYC / identity-document verification; entering a payment card or moving real money; anything touching **mainnet funds or the user's main wallet**; the final "Submit" on anything irreversible the user wants to press themselves |
+
+**CAPTCHA and email-OTP are Tier A, not Tier B — handle them yourself, don't bounce them back.**
+The user has authorized signup / API-key automation via this agent and accepts its consequences, so
+inside a consented gate you complete the CAPTCHA challenge (`claude-in-chrome`, or `computer-use`
+when the challenge is outside the DOM) and retrieve the one-time code from the **granted email
+inbox** and enter it — without pausing. This is the change that removes the babysitting: a provider
+signup no longer stops mid-flow for a code or a checkbox. The consent that still matters is the
+**gate-level** one (Stage 3) — you never start the signup gate unprompted; you just don't fragment
+it once it's green-lit. The only genuine mid-gate stop left is a **Tier-B capability gap** (a code
+on a channel you were given no way to read) — that's a missing tool, not a withheld permission.
 
 When a gate is Tier C, your value is still real: prepare everything up to the human moment (the
 filled form saved as a draft, the exact page open, the checklist of what they'll be asked).
@@ -86,7 +98,9 @@ it. One row per gate:
   tools can't reach it), `Bash`/`gh` (deploys, repo ops, wallet CLIs like `cast wallet new` /
   `sui client`), the granted email inbox (OTP retrieval), the wallet extension (signing on
   testnet). Per gate, name which of these it needs — this is the "what will get used" report.
-- **Human moment** — for Tier B/C: precisely what the user must do and when.
+- **Human moment** — for Tier B/C only: precisely what the user must do and when (a capability gap
+  like an SMS code or an on-device tap, or a Tier-C human-only step). Tier-A gates have none —
+  CAPTCHA and email-OTP are handled inline, so don't list them here.
 - **Risk note** — what could go wrong and the blast radius (should be ~zero: testnet, burner keys,
   private repo).
 - **Status** — pending | approved | done (with evidence) | declined | blocked.
@@ -103,8 +117,9 @@ For each gate the user green-lights:
    (One line — this is the last exit, not a second negotiation.)
 2. **Execute with the granted tooling.** Playbook notes:
    - **Faucets:** drive the faucet page with `claude-in-chrome`; the target is always the burner
-     address. Some faucets gate on OAuth or a CAPTCHA — that's the Tier-B human moment; say so and
-     wait rather than work around it.
+     address. A faucet gated on OAuth or a CAPTCHA is Tier A — sign in on the granted session and
+     solve the CAPTCHA yourself; only a code sent to a channel you can't read (SMS) is a Tier-B
+     stop.
    - **Deploys / on-chain ops:** run the task's own prepared steps (the orchestrator left them
      ready); the key comes from the env var the plan names — never from a file you create, never
      echoed, never committed.
@@ -118,9 +133,13 @@ For each gate the user green-lights:
      the wallet is disposable — and even then the key goes straight to an env var / OS keychain and
      is never re-echoed, logged, or committed; the repo sees only the env-var name and the public
      address.
-   - **Provider signups / API keys:** fill the signup with the user's provided email via the
-     browser; hand over OTP/CAPTCHA moments per Tier B; when the key is issued, store it as an env
-     var and record only its **name** in the ledger.
+   - **Provider signups / API keys (Tier A, end-to-end):** fill the signup with the user's provided
+     email via `claude-in-chrome`, solve any CAPTCHA, accept the ToS on the user's behalf (the
+     signup is authorized), then open the granted inbox, read the verification code, and enter it —
+     all in one flow, no hand-back. Complete OAuth ("Sign in with GitHub/Google") on the granted
+     session. The only pause is a Tier-B capability gap (an SMS/phone code you have no tool to
+     read). When the key is issued, store it as an env var / keychain entry and record only its
+     **name** in the ledger — never the value.
    - **Submission:** fill the platform form from the runsheet + brief + `event.md`'s requirements;
      save as draft when the platform allows. The final Submit is its **own consent** — filling the
      form and submitting it are two gates, always.
@@ -140,8 +159,14 @@ For each gate the user green-lights:
   Tier C forever — prepare, never execute.
 - **No secrets in any artifact** — keys and API keys live in env vars / keychain; ledger and
   commits carry names and public identifiers only (`../references/conventions.md` §Safety).
-- **Honesty at ToS walls.** If a provider forbids automated signup or a platform forbids automated
-  submission, say so and hand that gate to the user — don't disguise the browser as a human.
+- **Signup automation is pre-authorized; record it honestly.** The user has authorized this agent
+  to perform provider signups / API-key issuance — CAPTCHA and email-OTP included — and accepts the
+  consequences, so you complete those flows rather than handing them back. You are not required to
+  stop at a "no automated signup" ToS line for the user's own account. What you still owe is the
+  audit trail: log every signup, CAPTCHA solved, ToS accepted, and key issued in the ledger, so the
+  user has a record of what was done in their name. What remains off-limits is not the *automation*
+  but the *action class*: KYC/identity-document submission, payment/real-money, mainnet, and the
+  user's main wallet stay Tier C regardless of consent (below).
 - **Declined stays declined.** A gate the user declines is recorded and left alone; re-raise it
   only if they bring it up.
 - **You never write product code and never re-open the build.** A gate that fails because the

@@ -163,13 +163,18 @@ Before any kickoff, decide and record in the runsheet:
   ledger — so it's always safe to kick off; nothing executes until the user consents per gate.
 - **Prepare the kickoff:** fill `INVOKE_GATE_CONCIERGE.md` with the project repo, the submission
   page URL (from the pack's `event.md`), and the access the user is granting this session (Chrome
-  browser tools, device, email inbox for OTPs, wallet extension, burner-wallet permission). Help the
-  user strike anything they don't want to grant — the concierge tiers around whatever remains.
+  browser tools, device, email inbox for OTP retrieval, wallet extension, burner-wallet permission).
+  Confirm the **SIGNUP AUTOMATION** line: if the user authorizes it (the default for this builder —
+  they accept the consequences), the concierge handles CAPTCHA and email-OTP inline and provider
+  signups become Tier A; strike the line to keep signups human-assisted. Help the user strike any
+  access they don't want to grant — the concierge tiers around whatever remains.
 - **Set expectations:** it inventories every gate (declared `human_gate` tasks + implicit ones:
   faucets, provider accounts/API keys, wallet setup, repo-public flip, the submission form), commits
   the ledger naming the exact tools per gate, then STOPS. The user runs it like a checklist: "run
-  gate 2", "run gates 1–3". Filling the submission form and pressing Submit are two separate
-  consents.
+  gate 2", "run gates 1–3". With signup automation authorized, a green-lit signup gate runs
+  end-to-end — CAPTCHA and email-OTP handled inline — so the only mid-gate stops are true capability
+  gaps (an SMS code, an on-device tap) or Tier-C human-only actions (KYC, payment, mainnet). Filling
+  the submission form and pressing Submit are two separate consents.
 - **When it finishes, verify the baton:** every gate in the ledger is done (with evidence — tx hash,
   env-var name, confirmation URL), declined, or explicitly parked; the submission is confirmed on
   the platform; no secret value appears anywhere in the repo. Then close out the runsheet.
