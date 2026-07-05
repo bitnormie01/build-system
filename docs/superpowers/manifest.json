@@ -134,7 +134,7 @@
       "commit": "feat(foundation): CapClient seam interface",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "foundation:4",
@@ -171,7 +171,7 @@
       "commit": "feat(foundation): uptime certificate types",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "foundation:5",
@@ -301,7 +301,7 @@
       "commit": "feat(mock-cap): id & keccak256 hash factory",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "mock-cap:3",
@@ -857,7 +857,7 @@
       "commit": "feat(chain): recorded expiry/reject log fixtures",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "chain-decode:3",
@@ -1150,7 +1150,7 @@
       "commit": "feat(live): SDK structural interface + event-type mapping",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "live-artifacts:2",
