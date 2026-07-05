@@ -98,6 +98,18 @@ where still open, the simpler option that preserves the demo money shot wins. Sa
   compile step; `esbuild` to bundle the browser frontend TS → one ESM file served by the dashboard.
 - **Why:** Standard, fast, offline. Node 22.21 is present (≥20 ✓). Avoids a heavyweight build pipeline.
 
+### D12. Amendment: subagent effort → model mapping (Agent tool has no `effort` param)
+- **Finding:** In this environment the Agent tool exposes a `model` parameter (`opus|sonnet|haiku|fable`)
+  but **no `effort` parameter**, unlike the orchestrator skill's assumption
+  (`task-contract.md` §6 / orchestrator SKILL "set the subagent's effort").
+- **Decision:** Map each task's `**Effort:**` to a model: `high`/`xhigh` → **opus**; `low`/`medium` →
+  **sonnet**; reviewer/gate subagents → **opus**. `effort` stays a first-class field in the plans and
+  manifest (the contract requires it and Stage-4 validates it); it drives model selection at dispatch
+  instead of a CLI/effort flag. I (Opus) re-run every gate and review every diff regardless of executor model.
+- **Why:** Preserves the contract's effort semantics (budget/capability throttle) with the tool surface
+  actually available. Sonnet for routine TDD tasks is fast and capable; opus for genuinely subtle/
+  security-sensitive work. Logged as a Stage-2/3/4 amendment per the autonomy contract.
+
 ### Stage-gate amendment invoked: autonomous approval (Stage 2)
 - Per the run's Stage-2 amendment, user approval is delegated. The design is presented in-session; a
   spec-reviewer subagent checks the written spec against the brief (money shot intact, out-of-scope
