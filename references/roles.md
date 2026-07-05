@@ -4,7 +4,8 @@ This is the kernel's wiring sheet and your map of the system. It documents which
 and what the kernel delivers to whom. **It is not delivered into any pipeline role's context** — the
 architect, mastermind, and executor see only their own kit plus the shared contract. (User-side seats
 are different: the `guide` — the user's mission-control session — a manager-mode session, and the
-`gate-concierge` — the post-build seat that executes human-gated steps only on the user's per-gate
+`gate-concierge` — the Step-3 seat (a preflight pass after the architect, a closing pass after the
+build) that executes human-gated steps only on the user's per-gate
 consent — sit on the kernel/human side of the table and hold this map by design; they advise, verify,
 unblock, and run consented gates, but never extract, ideate, plan, or build.) Keeping role boundaries
 here (not in the pipeline agents) is what enforces isolation: no role can peek at another's skills.

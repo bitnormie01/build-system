@@ -11,10 +11,14 @@ the single source of truth. That repo is **not this build-system repo** — when
 one, the first pipeline step that needs it creates it via the user's logged-in `gh`, named from the
 event or the chosen project (`references/repo-bootstrap.md`).
 
-After the build goes green, an optional **Step 3** — the `gate-concierge` — minimizes the human-gated
-tail (faucets, testnet deploy, provider accounts / API keys, wallet setup, the hackathon submission):
-it reports every gate with the exact tools it would use, then executes only what the user green-lights,
-one consent per gate (`gate-concierge/SKILL.md`).
+An optional **Step 3** — the `gate-concierge` — minimizes the human-gated tail (faucets, testnet
+deploy, provider accounts / API keys, wallet setup, the hackathon submission): it reports every gate
+with the exact tools it would use, then executes only what the user green-lights, one consent per
+gate (`gate-concierge/SKILL.md`). It runs in two passes: a **preflight** right after the architect
+commits the plans (wallet / faucets / keys land in parallel while the build runs, guided by the
+cross-campaign faucet library in `references/faucets/`) and a **closing** pass after the build goes
+green (deploy, repo-flip, submission — pasted from the architect's pre-filled
+`docs/gates/submission-draft.md`).
 
 ## Two ways to run it
 
@@ -64,6 +68,7 @@ build-system/
     ├── task-contract.md        # plan grammar + manifest DAG + executor prompt (the bridge)
     ├── conventions.md          # coding + decomposition rules + repo-as-source-of-truth
     ├── repo-bootstrap.md       # WHICH repo is canonical + who creates it (gh) when the user provides none
+    ├── faucets/                # cross-campaign faucet playbooks — read before claiming, write back after (grows one commit per event)
     ├── roles.md                # role wiring + the two run configurations
     ├── ideation-rubric.md      # idea-forge's weighted decider
     ├── pipeline-fallback.md    # condensed spec/plan checklist (summary of the vendored method)
@@ -92,7 +97,8 @@ the kernel still owns gates, scoped commits, and rotation.
 ## The one rule everything depends on
 
 The repo is the single source of truth — and "the repo" means the **project repo**
-(`references/repo-bootstrap.md`), never this build-system checkout, which is doctrine only. Every
+(`references/repo-bootstrap.md`), never this build-system checkout, which is doctrine only (its one
+sanctioned write-back: faucet playbook entries under `references/faucets/`). Every
 role, every dispatch: **resolve and sync the canonical project repo before
 starting; commit and push before reporting done.** Local files are never trusted. This is what lets
 the architect regenerate the system mid-build and have the next agent that boots pick it up

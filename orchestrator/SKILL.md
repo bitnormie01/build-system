@@ -112,9 +112,12 @@ Prefer to land regenerations at a checkpoint (no task in flight).
 
 Push, then report: what was built, every gate's proof, and — explicitly — the **human-gated tail**
 that remains (paused `human_gate` tasks plus the campaign gates that never enter a manifest: faucets,
-provider accounts/API keys, wallet setup, the submission). Then **offer Step 3**: the
-`gate-concierge` (`../gate-concierge/SKILL.md`, kickoff `../prompts/INVOKE_GATE_CONCIERGE.md`)
-inventories those gates into a committed ledger with the exact tools per gate and executes each only
+provider accounts/API keys, wallet setup, the submission). A concierge **preflight pass** may
+already have run in parallel — check `docs/gates/*-gate-ledger.md`: done rows (wallet, faucets,
+keys) come off the tail; report only what's genuinely left. Then **offer Step 3's closing pass**:
+the `gate-concierge` (`../gate-concierge/SKILL.md`, kickoff `../prompts/INVOKE_GATE_CONCIERGE.md`,
+`MODE: closing`)
+inventories those gates into the committed ledger with the exact tools per gate and executes each only
 on the user's per-gate "continue". **Offer it — never launch it or run its gates yourself**; starting
 Step 3 is the user's call, same as every consent in this kit.
 

@@ -55,9 +55,11 @@ stuck, diagnose from the repo and give me the concrete fix.
 - **One open seat, five fresh sessions.** The guide stays open; each pipeline step (0a extractor,
   0 idea-forge, 1 architect, 2 orchestrator, 3 gate-concierge) runs in its own fresh session from the
   kickoff the guide hands you. The baton between steps is always a committed, pushed artifact.
-- **After the build goes green, Step 3 shrinks your to-do list.** The gate-concierge reports every
-  human-gated task left (faucets, deploy, API keys, submission) with the exact tools it would use,
-  then runs only the ones you green-light, one consent at a time.
+- **Step 3 shrinks your to-do list — in two passes.** The gate-concierge reports every human-gated
+  task with the exact tools it would use, then runs only the ones you green-light, one consent at a
+  time. Its **preflight pass** runs right after the architect commits plans (wallet, faucets, API
+  keys land in parallel while the build runs); its **closing pass** runs after green (deploy,
+  repo-flip, submission).
 - **It recommends, you decide.** Track picks, risk appetite, review mode — the guide gives a
   recommendation with reasons; the choices stay yours.
 - **It owns the calendar call.** idea-forge deliberately never reasons about your deadline; the guide

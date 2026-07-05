@@ -180,8 +180,20 @@ Run these four stages in order. Do not start a stage until the previous one is a
      `human_gate: true` (canonical snake_case; `../references/task-contract.md` §2).
 
   Fix and re-validate until clean; a manifest that fails any check is not done.
-- **Commit and push the whole system to the project repo** — spec, plans, and the `manifest.json`
-  (whenever you generated one; that is the default — see above). The project repo is
+- **Emit the submission draft (hackathon builds).** When the build targets a hackathon (a brief or
+  resource pack exists), also write `docs/gates/submission-draft.md` — the platform form,
+  pre-answered: every field the event's submission requires (from the pack's `event.md`, verbatim
+  where it specifies format) filled from the brief and spec — project name, one-liner, description,
+  target track(s)/bounties, tech stack, team. Facts that don't exist until the build lands — demo
+  video URL, deployed addresses, live demo link, the public repo URL — are marked
+  `TBD-post-build:<what>`, one per line, nothing else deferred. (This is the one artifact where
+  deferred fields are correct: they are named build outputs, not vague work — the no-placeholders
+  rule for plan tasks is untouched.) The Step-3 gate-concierge resolves the TBDs at the closing
+  pass and pastes the draft into the platform, so submission day is a paste and a click, not
+  authorship under deadline.
+- **Commit and push the whole system to the project repo** — spec, plans, the `manifest.json`
+  (whenever you generated one; that is the default — see above), and — hackathon builds —
+  `docs/gates/submission-draft.md`. The project repo is
   the single source of truth (`../references/conventions.md`, `../references/repo-bootstrap.md`);
   the mastermind and executors pull from
   it, so until you've pushed, the system doesn't exist for them. Regenerating later is just another
@@ -189,10 +201,13 @@ Run these four stages in order. Do not start a stage until the previous one is a
 - **Hand off to the build — two supported configurations; pick per the user's setup:**
   - **Claude-Code-native (default):** the plan is built *in Claude Code itself* by the `orchestrator`
     (`../orchestrator/SKILL.md`) — the main session dispatches a subagent per task, proves each gate,
-    and commits. End by confirming the spec/plans (+ the `manifest.json` — the default) are committed
+    and commits. End by confirming the spec/plans (+ the `manifest.json` — the default; + the
+    submission draft on a hackathon build) are committed
     and pushed,
     and offer to start the orchestrator (continue here, or a fresh session via
-    `../prompts/INVOKE_ORCHESTRATOR.md`). No external kernel needed.
+    `../prompts/INVOKE_ORCHESTRATOR.md`) — and remind the user the concierge's preflight pass
+    (`../prompts/INVOKE_GATE_CONCIERGE.md`, MODE: preflight) can now run in parallel. No external
+    kernel needed.
   - **External-pool (optional):** for a separate deterministic kernel + multi-account executor pool,
     stop at the reviewed, pushed `manifest.json` and hand it to that kernel — do not execute here.
 
@@ -211,6 +226,8 @@ docs/superpowers/
 ├── plans/
 │   └── YYYY-MM-DD-<subsystem>.md         # one per subsystem, bite-sized TDD tasks
 └── manifest.json                          # the task DAG for the orchestrator (Stage 4)
+docs/gates/
+└── submission-draft.md                    # hackathon builds: the platform form pre-answered (Stage 4)
 ```
 
 ## Hard rules

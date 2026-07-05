@@ -210,7 +210,8 @@ and `prompts/INVOKE_ARCHITECT.md` ingest, so Step 0 feeds Step 1 with no reforma
 ```
 You are the ARCHITECT for this build. Load and follow architect/SKILL.md (and its references/).
 Do not write product code. Your only deliverables are: an approved spec, executor-ready plan
-documents, and docs/superpowers/manifest.json.
+documents, docs/superpowers/manifest.json, and the pre-filled docs/gates/submission-draft.md
+(build-time facts marked TBD-post-build).
 
 PROJECT: <one-line solution>
 

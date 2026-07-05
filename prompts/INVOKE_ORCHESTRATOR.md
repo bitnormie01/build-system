@@ -11,7 +11,8 @@ per task, proves each gate, and commits. This is **Step 2**, after `prompts/INVO
 Step 0 — idea-forge (optional): own session → commits a brief, emits an architect kickoff block.
 Step 1 — architect: fresh session, paste that block → commits spec + plans (+ manifest).
 Step 2 — orchestrator: THIS prompt, fresh session → builds the plan via subagents, commits each task.
-Step 3 — gate-concierge (optional): fresh session after green → runs the human-gated tail, consent per gate.
+Step 3 — gate-concierge (optional, two passes): preflight may already run in parallel with Step 2
+         (wallet/faucets/keys); the closing pass follows green (deploy, submission) — consent per gate.
 ```
 
 The committed repo is the baton between every step — always sync before starting, push before done.

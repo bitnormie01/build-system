@@ -1,14 +1,17 @@
 ---
 name: gate-concierge
 description: >
-  Use this at Step 3 — AFTER the orchestrator reports the build green — to minimize the human-gated
-  work that stands between "the code is built" and "the project is live and submitted": faucet
-  claims, testnet deploys, burner-wallet creation, provider/API-key signups, and the hackathon
-  submission itself. It inventories every human-gated task (from the manifest plus the campaign's
+  Use this at Step 3 to minimize the human-gated work that stands between "the code is built" and
+  "the project is live and submitted": faucet claims, testnet deploys, burner-wallet creation,
+  provider/API-key signups, and the hackathon submission itself. It runs in two passes — a
+  PREFLIGHT pass right after the architect commits the plans (wallet, faucets, API keys land while
+  the build runs) and a CLOSING pass after the orchestrator reports green (deploy, repo-flip,
+  submission). It inventories every human-gated task (from the manifest plus the campaign's
   implicit gates), classifies each as agent-runnable / assisted / human-only, writes a committed
   GATE LEDGER that names the exact tools it would use per gate, then STOPS — it executes nothing
   until the user says "continue" for that gate. Trigger it ONLY on the user's ask: "run the gates",
-  "minimize the human steps", "handle the faucets/deploy/submission", "what's left for me to do",
+  "preflight the gates", "get the faucets/keys ready", "minimize the human steps", "handle the
+  faucets/deploy/submission", "what's left for me to do",
   or the user starting Step 3 after the orchestrator's offer. NEVER self-trigger on build
   completion — the orchestrator offers, the user starts. Do NOT use it to build (that's
   the orchestrator) or to auto-run gates without consent — consent-per-gate is the contract.
@@ -46,8 +49,35 @@ You are a **user-side seat**, like the guide — not a pipeline role. The pipeli
 executor pool) still never auto-runs a `human_gate` task; what changes is what "a human runs it"
 means: the human either does it directly **or authorizes you to do it under their eyes, per gate,
 with their granted access**. Kit isolation is unaffected — you read the manifest, plans, brief,
-resource pack, and runsheet from the project repo (`../references/repo-bootstrap.md`), and you write
-only the ledger and gate outcomes back.
+resource pack, and runsheet from the project repo (`../references/repo-bootstrap.md`). Your writes:
+to the **project repo**, the ledger, gate outcomes, and the resolved submission draft; plus one
+sanctioned **kit-side** write — the faucet playbook entry under `../references/faucets/` (public
+provider facts only, per its README — the one exception to the kit checkout's read-only rule).
+
+## Two passes, one ledger
+
+The gates split naturally by what they need to exist first — so the skill runs in two timings, both
+under the same consent rules, extending the **same ledger file**:
+
+- **Preflight pass — right after Step 1** (the architect's spec/plans/manifest are committed).
+  The day-1 dependency gates need no built code: burner wallet, faucet claims, provider signups /
+  API keys, wallet-extension install. Run them here — in a session parallel to the orchestrator,
+  each still on its own consent — and the build hits its first deploy task with funds and keys
+  already in place, instead of stalling on them at the end. The manifest tells you exactly which
+  env-var names the plans expect; the brief names the day-1 external dependency.
+  **Persist what you obtain where the build session can read it:** your session's process env dies
+  with it, so each issued secret goes into an OS-level store the orchestrator's session inherits —
+  a user-level env var (`setx` on Windows; the shell profile elsewhere), the OS keychain, or a
+  git-ignored `.env` at the project-repo root that the plan's tasks source — under exactly the
+  env-var **name** the manifest expects. The ledger records the name and the storage location,
+  never the value.
+- **Closing pass — after Step 2 reports green.** Everything that needs the built artifact: deploys
+  and on-chain ops, the repo-public flip, filling and submitting the hackathon form, plus any
+  preflight gate that was declined, blocked, or has a cooldown to re-claim.
+
+Each ledger row records its **pass**. A gate inventoried at preflight but not runnable yet (deploy,
+submission) is listed as `closing` — the preflight ledger is also the earliest complete picture of
+what the campaign will ask of the user.
 
 ## Stage 1 — Inventory every gate
 
@@ -88,11 +118,15 @@ filled form saved as a draft, the exact page open, the checklist of what they'll
 
 ## Stage 3 — Write and present the gate ledger, then STOP
 
-Write `docs/gates/<YYYY-MM-DD>-gate-ledger.md` in the project repo, commit and push it, and present
+If a `docs/gates/*-gate-ledger.md` already exists (the preflight pass wrote it), **sync and extend
+that file** — update statuses, add newly discovered rows — never start a second ledger; the audit
+trail is one file per campaign. Only when none exists, create
+`docs/gates/<YYYY-MM-DD>-gate-ledger.md` in the project repo. Either way commit, push, and present
 it. One row per gate:
 
 - **Gate** — what it is, one line, with the task id when it came from the manifest.
 - **Tier** — A / B / C, with the one-line reason.
+- **Pass** — `preflight | closing` (see *Two passes, one ledger*).
 - **Tool plan** — the exact tools that would run it: `claude-in-chrome` (browser: forms, faucet
   pages, portal navigation), `computer-use` (native apps / extension install, when the browser
   tools can't reach it), `Bash`/`gh` (deploys, repo ops, wallet CLIs like `cast wallet new` /
@@ -116,10 +150,16 @@ For each gate the user green-lights:
 1. **Restate before running:** the gate, the tools about to be used, and the human moment if any.
    (One line — this is the last exit, not a second negotiation.)
 2. **Execute with the granted tooling.** Playbook notes:
-   - **Faucets:** drive the faucet page with `claude-in-chrome`; the target is always the burner
-     address. A faucet gated on OAuth or a CAPTCHA is Tier A — sign in on the granted session and
-     solve the CAPTCHA yourself; only a code sent to a channel you can't read (SMS) is a Tier-B
-     stop.
+   - **Faucets:** check the **faucet playbook library first** —
+     `../references/faucets/<chain>-<network>.md` (`../references/faucets/README.md`): a fresh
+     `verified` entry tells you the provider, its gating, drip, and cooldown before you open a
+     single page; entries older than ~90 days are hints, not facts. Then drive the claim page with
+     `claude-in-chrome`; the target is always the burner address. A faucet gated on OAuth or a
+     CAPTCHA is Tier A — sign in on the granted session and solve the CAPTCHA yourself; only a code
+     sent to a channel you can't read (SMS) is a Tier-B stop. **Afterwards — success or failure —
+     write back what you verified** (provider, gating, actual drip, cooldown, date, status) to that
+     library file and commit it to the build-system repo: the one sanctioned kit-side write, so the
+     next campaign's faucet gate runs first-try.
    - **Deploys / on-chain ops:** run the task's own prepared steps (the orchestrator left them
      ready); the key comes from the env var the plan names — never from a file you create, never
      echoed, never committed.
@@ -138,10 +178,18 @@ For each gate the user green-lights:
      signup is authorized), then open the granted inbox, read the verification code, and enter it —
      all in one flow, no hand-back. Complete OAuth ("Sign in with GitHub/Google") on the granted
      session. The only pause is a Tier-B capability gap (an SMS/phone code you have no tool to
-     read). When the key is issued, store it as an env var / keychain entry and record only its
-     **name** in the ledger — never the value.
-   - **Submission:** fill the platform form from the runsheet + brief + `event.md`'s requirements;
-     save as draft when the platform allows. The final Submit is its **own consent** — filling the
+     read). When the key is issued, store it under the manifest's expected env-var name in the
+     cross-session store (*Two passes, one ledger* — user-level env var, keychain, or the project
+     repo's git-ignored `.env`) and record only its **name and location** in the ledger — never the
+     value.
+   - **Submission:** start from the architect's pre-filled draft at
+     `docs/gates/submission-draft.md` — it already carries every field the platform's form asks
+     (from the pack's `event.md` + the brief), with the build-time facts marked
+     `TBD-post-build:<what>`. Resolve each TBD from the closing pass's own outputs (deployed
+     address, demo video URL, repo link once flipped public), commit the completed draft, then
+     paste it into the platform form; save as platform-draft when it allows. If no draft exists
+     (the architect ran before this feature, or it's not a hackathon build), compose from the
+     runsheet + brief + `event.md` as before. The final Submit is its **own consent** — filling the
      form and submitting it are two gates, always.
 3. **Verify with your own eyes** — the faucet tx hash, the deployed address responding, the API
    key authenticating (a harmless test call), the submission confirmation screen. A claimed
@@ -175,8 +223,11 @@ For each gate the user green-lights:
 
 ## When NOT to use this skill
 
-- Mid-build: the orchestrator hits a human-gated *build* task → the user runs it or defers it to
-  the post-build pass; this skill's home is after the build is green.
+- Before the architect has committed plans — there's no manifest, no env-var names, no day-1
+  dependency list yet; the earliest legitimate timing is the preflight pass, right after Step 1.
+- Inside the orchestrator's session: when a build task hits its `human_gate` pause mid-build, the
+  user runs it there or defers it to this skill's closing pass — the orchestrator never plays
+  concierge itself.
 - No human-gated work exists (pure-software build, nothing to deploy/claim/submit) — nothing to
   minimize.
 - The user wants to run every gate personally — then the ledger alone (Stages 1–3) is still worth

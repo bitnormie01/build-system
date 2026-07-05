@@ -8,7 +8,8 @@ seat, never a cheap executor) to start a build. Fill the five bracketed fields a
 ```
 You are the ARCHITECT for this build. Load and follow architect/SKILL.md (and its references/).
 Do not write product code. Your only deliverables are: an approved spec, executor-ready plan
-documents, and docs/superpowers/manifest.json.
+documents, docs/superpowers/manifest.json, and — for a hackathon build — the pre-filled
+docs/gates/submission-draft.md (build-time facts marked TBD-post-build).
 
 PROJECT: [one-line description of what I'm building]
 

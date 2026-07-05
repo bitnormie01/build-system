@@ -66,7 +66,7 @@ pipeline runs for this event, prep each step's kickoff, and stay here to unblock
 | 0 *(optional)* | `idea-forge` | pack + 5 inputs | one brief in `docs/idea-forge/` | `prompts/INVOKE_IDEA_FORGE.md` |
 | 1 | `architect` | brief + pack | spec + plans + `manifest.json` | `prompts/INVOKE_ARCHITECT.md` |
 | 2 | `orchestrator` | plans/manifest | built, gated, committed tasks | `prompts/INVOKE_ORCHESTRATOR.md` |
-| 3 | `gate-concierge` | manifest human-gates + brief + pack + runsheet | `docs/gates/<date>-gate-ledger.md`, then consented gates executed | `prompts/INVOKE_GATE_CONCIERGE.md` |
+| 3 *(two passes: preflight after Step 1, closing after Step 2)* | `gate-concierge` | manifest human-gates + brief + pack + runsheet + `docs/gates/submission-draft.md` | `docs/gates/<date>-gate-ledger.md`, then consented gates executed | `prompts/INVOKE_GATE_CONCIERGE.md` |
 
 **Session discipline (the rule users trip on):** each step runs in its **own fresh session**; the
 baton between steps is the **committed, pushed artifact** — never chat history. Don't run two steps in
@@ -81,8 +81,9 @@ Before any kickoff, decide and record in the runsheet:
 - **Which steps to run.** Already has a project idea → skip Step 0 (idea-forge shapes nothing you've
   already chosen; go straight to the architect, but still consider 0a for sponsor-SDK facts). Docs-thin
   event with no sponsor SDKs → 0a is low-value; skip it. Otherwise run them all in order. Step 3
-  runs whenever human-gated work remains after a green build — for a Web3 event that is almost
-  always (faucets, deploy, keys, submission); skip it only when nothing is gated.
+  runs whenever human-gated work exists — for a Web3 event that is almost always — in two passes:
+  preflight (wallet, faucets, keys) right after Step 1, closing (deploy, submission) after the green
+  build; skip it only when nothing is gated.
 - **Calendar fit is YOURS.** idea-forge deliberately never reasons about the deadline — "whether the
   chosen idea fits the calendar is the builder's call later, outside the skill." You are that
   later-outside seat: do the deadline math (time left vs. the brief's must-have features + human-gate
@@ -138,7 +139,9 @@ Before any kickoff, decide and record in the runsheet:
   specs produce drifting builds.
 - **When it finishes, verify the baton:** spec + plans + `manifest.json` committed and pushed; Stage-4
   validation reported clean (DAG, requires matching, manifest⇄plan equality, effort present); every
-  deploy/key/fund task carries `human_gate: true`; effort assignments look sane (not everything high).
+  deploy/key/fund task carries `human_gate: true`; effort assignments look sane (not everything high);
+  for a hackathon build, `docs/gates/submission-draft.md` exists with every platform field answered
+  and only named `TBD-post-build:` facts deferred.
   A missing manifest is acceptable **only** for a native build with no deploy/key/fund tasks (the
   architect's documented skip path) — confirm that condition actually holds, and note that the
   orchestrator will then derive human-gating from task content.
@@ -147,20 +150,31 @@ Before any kickoff, decide and record in the runsheet:
 
 - **Recommend the review mode:** `checkpoint` (user sees each gate-passed diff before commit) for a
   first build or anything security-sensitive; `autonomous` once the pipeline has earned trust.
-- **Preflight:** testnet funds/faucets requested (day-1 external dependency from the brief), env-var
-  secrets set locally (never in the repo), repo synced.
+- **Preflight — recommend the concierge's preflight pass, in parallel.** The day-1 dependencies
+  (burner wallet, faucet funds, provider API keys) no longer wait for the build: prepare an
+  `INVOKE_GATE_CONCIERGE.md` kickoff with `MODE: preflight` for a parallel session, so those gates
+  run — each on the user's consent — while the orchestrator builds. The preflight persists each
+  secret in a cross-session store (user-level env var, keychain, or the project repo's git-ignored
+  `.env`) under the manifest's expected name, and the ledger says where — make sure the
+  orchestrator session loads from there before its first deploy-adjacent task. Never in the repo;
+  repo synced.
 - **During the build:** human-gate steps pause for the user — walk them through running each one.
   Gate failures are the orchestrator's job to classify (flake / executor miss / plan bug / human); if
   it routes a **plan bug** back, that fix happens in an architect session, then the orchestrator
   resumes per the regeneration protocol (`references/roles.md`).
 - **When it finishes:** check the demo money shot actually lands end-to-end, then green-light
-  Step 3 — the human-gated tail (deploy, faucets, keys, submission) is the gate-concierge's job,
-  not an afternoon of manual form-filling.
+  Step 3's closing pass — deploy, repo-flip, submission, plus anything the preflight pass left
+  pending (the gate ledger in `docs/gates/` says which) — the gate-concierge's job, not an
+  afternoon of manual form-filling.
 
 ### Before Step 3 (gate-concierge)
 
-- **Timing:** after the orchestrator reports green. Its first deliverable is a **report** — the gate
-  ledger — so it's always safe to kick off; nothing executes until the user consents per gate.
+- **Timing — two passes.** The **preflight pass** runs right after Step 1's baton is verified
+  (wallet, faucets, API keys — in parallel with the build; you prepared that kickoff in *Before
+  Step 2*). The **closing pass** runs after the orchestrator reports green (deploy, repo-flip,
+  submission, plus anything preflight left pending). Either way its first deliverable is a
+  **report** — the gate ledger — so it's always safe to kick off; nothing executes until the user
+  consents per gate.
 - **Prepare the kickoff:** fill `INVOKE_GATE_CONCIERGE.md` with the project repo, the submission
   page URL (from the pack's `event.md`), and the access the user is granting this session (Chrome
   browser tools, device, email inbox for OTP retrieval, wallet extension, burner-wallet permission).
