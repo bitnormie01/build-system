@@ -1,0 +1,1325 @@
+{
+  "project": "deadman",
+  "spec": "docs/superpowers/specs/2026-07-05-deadman-design.md",
+  "generated_by": "docs/superpowers/validate.mjs",
+  "subsystems": [
+    "foundation",
+    "mock-cap",
+    "heartbeat",
+    "downtime-attestation",
+    "chain-decode",
+    "dashboard-demo",
+    "live-artifacts"
+  ],
+  "tasks": [
+    {
+      "id": "foundation:1",
+      "subsystem": "foundation",
+      "title": "Scaffold the package",
+      "plan": "docs/superpowers/plans/2026-07-05-foundation.md",
+      "depends_on": [],
+      "effort": "low",
+      "files": {
+        "create": [
+          "package.json",
+          "tsconfig.json",
+          "vitest.config.ts",
+          ".gitignore",
+          ".gitattributes",
+          "package-lock.json"
+        ],
+        "modify": [],
+        "test": [
+          "src/smoke.test.ts"
+        ]
+      },
+      "provides": [
+        "package.json",
+        "tsconfig.json",
+        "vitest.config.ts"
+      ],
+      "requires": [],
+      "gate": {
+        "run": "npx vitest run src/smoke.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "chore(foundation): scaffold strict-ESM TypeScript package",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "foundation:2",
+      "subsystem": "foundation",
+      "title": "Domain order & event types",
+      "plan": "docs/superpowers/plans/2026-07-05-foundation.md",
+      "depends_on": [
+        "foundation:1"
+      ],
+      "effort": "low",
+      "files": {
+        "create": [
+          "src/domain/types.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/domain/types.test.ts"
+        ]
+      },
+      "provides": [
+        "Did",
+        "OrderId",
+        "NegotiationId",
+        "TxHash",
+        "OrderStatus",
+        "EventType",
+        "Order",
+        "CapEvent"
+      ],
+      "requires": [],
+      "gate": {
+        "run": "npx vitest run src/domain/types.test.ts",
+        "expect": "PASS — \"2 passed\""
+      },
+      "commit": "feat(foundation): domain order and event types",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "foundation:3",
+      "subsystem": "foundation",
+      "title": "CapClient seam interface",
+      "plan": "docs/superpowers/plans/2026-07-05-foundation.md",
+      "depends_on": [
+        "foundation:2"
+      ],
+      "effort": "low",
+      "files": {
+        "create": [
+          "src/domain/cap-client.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/domain/cap-client.test.ts"
+        ]
+      },
+      "provides": [
+        "CapClient",
+        "CapEventStream",
+        "NegotiateRequest",
+        "Negotiation",
+        "NegotiationStatus",
+        "AcceptResult",
+        "PayResult",
+        "DeliverRequest",
+        "DeliverResult",
+        "Delivery",
+        "ListOrdersOpts"
+      ],
+      "requires": [
+        "Did",
+        "OrderId",
+        "NegotiationId",
+        "TxHash",
+        "OrderStatus",
+        "EventType",
+        "Order",
+        "CapEvent"
+      ],
+      "gate": {
+        "run": "npx vitest run src/domain/cap-client.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(foundation): CapClient seam interface",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "foundation:4",
+      "subsystem": "foundation",
+      "title": "Uptime certificate types",
+      "plan": "docs/superpowers/plans/2026-07-05-foundation.md",
+      "depends_on": [
+        "foundation:2"
+      ],
+      "effort": "low",
+      "files": {
+        "create": [
+          "src/domain/certificate.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/domain/certificate.test.ts"
+        ]
+      },
+      "provides": [
+        "UptimeCertificate",
+        "DowntimeIncident",
+        "UptimeStatus"
+      ],
+      "requires": [
+        "Did",
+        "OrderId",
+        "TxHash"
+      ],
+      "gate": {
+        "run": "npx vitest run src/domain/certificate.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(foundation): uptime certificate types",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "foundation:5",
+      "subsystem": "foundation",
+      "title": "Mode resolver",
+      "plan": "docs/superpowers/plans/2026-07-05-foundation.md",
+      "depends_on": [
+        "foundation:1"
+      ],
+      "effort": "low",
+      "files": {
+        "create": [
+          "src/config/mode.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/config/mode.test.ts"
+        ]
+      },
+      "provides": [
+        "DeadmanMode",
+        "resolveMode"
+      ],
+      "requires": [],
+      "gate": {
+        "run": "npx vitest run src/config/mode.test.ts",
+        "expect": "PASS — \"3 passed\""
+      },
+      "commit": "feat(foundation): DEADMAN_MODE resolver",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "foundation:6",
+      "subsystem": "foundation",
+      "title": "Environment template (env NAMES only — safety gate)",
+      "plan": "docs/superpowers/plans/2026-07-05-foundation.md",
+      "depends_on": [
+        "foundation:1"
+      ],
+      "effort": "low",
+      "files": {
+        "create": [
+          ".env.example"
+        ],
+        "modify": [],
+        "test": [
+          "src/config/env-example.test.ts"
+        ]
+      },
+      "provides": [
+        ".env.example"
+      ],
+      "requires": [],
+      "gate": {
+        "run": "npx vitest run src/config/env-example.test.ts",
+        "expect": "PASS — \"2 passed\""
+      },
+      "commit": "feat(foundation): .env.example with env names only",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "mock-cap:1",
+      "subsystem": "mock-cap",
+      "title": "Controllable clock",
+      "plan": "docs/superpowers/plans/2026-07-05-mock-cap.md",
+      "depends_on": [
+        "foundation:1"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/cap/clock.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/cap/clock.test.ts"
+        ]
+      },
+      "provides": [
+        "Clock",
+        "TimerHandle",
+        "ManualClock",
+        "SystemClock"
+      ],
+      "requires": [],
+      "gate": {
+        "run": "npx vitest run src/cap/clock.test.ts",
+        "expect": "PASS — \"3 passed\""
+      },
+      "commit": "feat(mock-cap): controllable Clock (Manual + System)",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "mock-cap:2",
+      "subsystem": "mock-cap",
+      "title": "Id & hash factory",
+      "plan": "docs/superpowers/plans/2026-07-05-mock-cap.md",
+      "depends_on": [
+        "foundation:2"
+      ],
+      "effort": "low",
+      "files": {
+        "create": [
+          "src/cap/ids.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/cap/ids.test.ts"
+        ]
+      },
+      "provides": [
+        "IdFactory"
+      ],
+      "requires": [
+        "TxHash"
+      ],
+      "gate": {
+        "run": "npx vitest run src/cap/ids.test.ts",
+        "expect": "PASS — \"3 passed\""
+      },
+      "commit": "feat(mock-cap): id & keccak256 hash factory",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "mock-cap:3",
+      "subsystem": "mock-cap",
+      "title": "Scoped event bus",
+      "plan": "docs/superpowers/plans/2026-07-05-mock-cap.md",
+      "depends_on": [
+        "foundation:2",
+        "foundation:3"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/cap/event-bus.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/cap/event-bus.test.ts"
+        ]
+      },
+      "provides": [
+        "CapEventBus"
+      ],
+      "requires": [
+        "CapEvent",
+        "Did",
+        "EventType",
+        "CapEventStream"
+      ],
+      "gate": {
+        "run": "npx vitest run src/cap/event-bus.test.ts",
+        "expect": "PASS — \"2 passed\""
+      },
+      "commit": "feat(mock-cap): per-DID scoped event bus",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "mock-cap:4",
+      "subsystem": "mock-cap",
+      "title": "Mock CAP service (lifecycle state machine)",
+      "plan": "docs/superpowers/plans/2026-07-05-mock-cap.md",
+      "depends_on": [
+        "mock-cap:1",
+        "mock-cap:2",
+        "mock-cap:3",
+        "foundation:2",
+        "foundation:3"
+      ],
+      "effort": "high",
+      "files": {
+        "create": [
+          "src/cap/mock-service.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/cap/mock-service.test.ts"
+        ]
+      },
+      "provides": [
+        "MockCapService",
+        "MockServiceConfig",
+        "TargetOptions"
+      ],
+      "requires": [
+        "Clock",
+        "TimerHandle",
+        "IdFactory",
+        "CapEventBus",
+        "Order",
+        "CapEvent",
+        "EventType",
+        "Did",
+        "OrderId",
+        "NegotiationId",
+        "NegotiateRequest",
+        "Negotiation",
+        "AcceptResult",
+        "PayResult",
+        "DeliverRequest",
+        "DeliverResult",
+        "Delivery",
+        "ListOrdersOpts",
+        "CapEventStream"
+      ],
+      "gate": {
+        "run": "npx vitest run src/cap/mock-service.test.ts",
+        "expect": "PASS — \"4 passed\""
+      },
+      "commit": "feat(mock-cap): offline lifecycle state machine",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "mock-cap:5",
+      "subsystem": "mock-cap",
+      "title": "MockCapClient",
+      "plan": "docs/superpowers/plans/2026-07-05-mock-cap.md",
+      "depends_on": [
+        "mock-cap:4",
+        "foundation:2",
+        "foundation:3"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/cap/mock-client.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/cap/mock-client.test.ts"
+        ]
+      },
+      "provides": [
+        "MockCapClient"
+      ],
+      "requires": [
+        "MockCapService",
+        "CapClient",
+        "CapEventStream",
+        "NegotiateRequest",
+        "Negotiation",
+        "AcceptResult",
+        "PayResult",
+        "DeliverRequest",
+        "DeliverResult",
+        "Delivery",
+        "ListOrdersOpts",
+        "Did",
+        "OrderId",
+        "NegotiationId",
+        "Order"
+      ],
+      "gate": {
+        "run": "npx vitest run src/cap/mock-client.test.ts",
+        "expect": "PASS — \"2 passed\""
+      },
+      "commit": "feat(mock-cap): MockCapClient over the shared service",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "mock-cap:6",
+      "subsystem": "mock-cap",
+      "title": "Mock environment & control surface",
+      "plan": "docs/superpowers/plans/2026-07-05-mock-cap.md",
+      "depends_on": [
+        "mock-cap:1",
+        "mock-cap:2",
+        "mock-cap:3",
+        "mock-cap:4",
+        "mock-cap:5",
+        "foundation:2",
+        "foundation:3"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/cap/environment.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/cap/environment.test.ts"
+        ]
+      },
+      "provides": [
+        "CapEnvironment",
+        "MockControl",
+        "MockEnvironmentConfig",
+        "createMockEnvironment"
+      ],
+      "requires": [
+        "Clock",
+        "SystemClock",
+        "IdFactory",
+        "CapEventBus",
+        "MockCapService",
+        "MockServiceConfig",
+        "TargetOptions",
+        "MockCapClient",
+        "CapClient",
+        "Did"
+      ],
+      "gate": {
+        "run": "npx vitest run src/cap/environment.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(mock-cap): CapEnvironment + createMockEnvironment",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "heartbeat:1",
+      "subsystem": "heartbeat",
+      "title": "Requester shard (serialized payOrder)",
+      "plan": "docs/superpowers/plans/2026-07-05-heartbeat.md",
+      "depends_on": [
+        "foundation:2",
+        "foundation:3"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/heartbeat/requester-shard.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/heartbeat/requester-shard.test.ts"
+        ]
+      },
+      "provides": [
+        "RequesterShard"
+      ],
+      "requires": [
+        "CapClient",
+        "Did",
+        "Negotiation",
+        "PayResult"
+      ],
+      "gate": {
+        "run": "npx vitest run src/heartbeat/requester-shard.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(heartbeat): requester shard with serialized payOrder",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "heartbeat:2",
+      "subsystem": "heartbeat",
+      "title": "Target monitor (rolling in-flight)",
+      "plan": "docs/superpowers/plans/2026-07-05-heartbeat.md",
+      "depends_on": [
+        "heartbeat:1",
+        "mock-cap:1",
+        "mock-cap:6",
+        "foundation:2",
+        "foundation:3"
+      ],
+      "effort": "high",
+      "files": {
+        "create": [
+          "src/heartbeat/target-monitor.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/heartbeat/target-monitor.test.ts"
+        ]
+      },
+      "provides": [
+        "TargetMonitor",
+        "MonitorState",
+        "MonitorConfig"
+      ],
+      "requires": [
+        "RequesterShard",
+        "createMockEnvironment",
+        "ManualClock",
+        "CapEvent",
+        "EventType",
+        "OrderStatus",
+        "CapEventStream",
+        "Did"
+      ],
+      "gate": {
+        "run": "npx vitest run src/heartbeat/target-monitor.test.ts",
+        "expect": "PASS — \"2 passed\""
+      },
+      "commit": "feat(heartbeat): rolling in-flight target monitor",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "heartbeat:3",
+      "subsystem": "heartbeat",
+      "title": "Heartbeat engine (sharding + aggregation)",
+      "plan": "docs/superpowers/plans/2026-07-05-heartbeat.md",
+      "depends_on": [
+        "heartbeat:1",
+        "heartbeat:2",
+        "mock-cap:1",
+        "mock-cap:6",
+        "foundation:2"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/heartbeat/heartbeat-engine.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/heartbeat/heartbeat-engine.test.ts"
+        ]
+      },
+      "provides": [
+        "HeartbeatEngine",
+        "EngineTarget"
+      ],
+      "requires": [
+        "RequesterShard",
+        "TargetMonitor",
+        "MonitorState",
+        "createMockEnvironment",
+        "ManualClock",
+        "Did"
+      ],
+      "gate": {
+        "run": "npx vitest run src/heartbeat/heartbeat-engine.test.ts",
+        "expect": "PASS — \"2 passed\""
+      },
+      "commit": "feat(heartbeat): sharded heartbeat engine",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "downtime-attestation:1",
+      "subsystem": "downtime-attestation",
+      "title": "Attestation store",
+      "plan": "docs/superpowers/plans/2026-07-05-downtime-attestation.md",
+      "depends_on": [
+        "foundation:2",
+        "foundation:4"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/attestation/attestation-store.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/attestation/attestation-store.test.ts"
+        ]
+      },
+      "provides": [
+        "AttestationStore",
+        "TargetRecord"
+      ],
+      "requires": [
+        "DowntimeIncident",
+        "Did",
+        "OrderStatus"
+      ],
+      "gate": {
+        "run": "npx vitest run src/attestation/attestation-store.test.ts",
+        "expect": "PASS — \"3 passed\""
+      },
+      "commit": "feat(attestation): per-target uptime store",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "downtime-attestation:2",
+      "subsystem": "downtime-attestation",
+      "title": "Downtime detector (expiry-keyed) — the thesis test",
+      "plan": "docs/superpowers/plans/2026-07-05-downtime-attestation.md",
+      "depends_on": [
+        "downtime-attestation:1",
+        "mock-cap:1",
+        "mock-cap:6",
+        "foundation:2",
+        "foundation:3"
+      ],
+      "effort": "high",
+      "files": {
+        "create": [
+          "src/attestation/downtime-detector.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/attestation/downtime-detector.test.ts"
+        ]
+      },
+      "provides": [
+        "DowntimeDetector"
+      ],
+      "requires": [
+        "AttestationStore",
+        "CapEventStream",
+        "CapEvent",
+        "EventType",
+        "Did",
+        "createMockEnvironment",
+        "ManualClock"
+      ],
+      "gate": {
+        "run": "npx vitest run src/attestation/downtime-detector.test.ts",
+        "expect": "PASS — \"2 passed\""
+      },
+      "commit": "feat(attestation): expiry-keyed downtime detector",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "downtime-attestation:3",
+      "subsystem": "downtime-attestation",
+      "title": "Certificate builder",
+      "plan": "docs/superpowers/plans/2026-07-05-downtime-attestation.md",
+      "depends_on": [
+        "downtime-attestation:1",
+        "foundation:2",
+        "foundation:4"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/attestation/certificate-builder.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/attestation/certificate-builder.test.ts"
+        ]
+      },
+      "provides": [
+        "buildCertificate"
+      ],
+      "requires": [
+        "AttestationStore",
+        "UptimeCertificate",
+        "UptimeStatus",
+        "DowntimeIncident",
+        "Did"
+      ],
+      "gate": {
+        "run": "npx vitest run src/attestation/certificate-builder.test.ts",
+        "expect": "PASS — \"4 passed\""
+      },
+      "commit": "feat(attestation): uptime certificate builder",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "downtime-attestation:4",
+      "subsystem": "downtime-attestation",
+      "title": "Attestation provider (Deadman sells certificates)",
+      "plan": "docs/superpowers/plans/2026-07-05-downtime-attestation.md",
+      "depends_on": [
+        "downtime-attestation:1",
+        "downtime-attestation:3",
+        "mock-cap:1",
+        "mock-cap:6",
+        "foundation:2",
+        "foundation:3",
+        "foundation:4"
+      ],
+      "effort": "high",
+      "files": {
+        "create": [
+          "src/attestation/attestation-provider.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/attestation/attestation-provider.test.ts"
+        ]
+      },
+      "provides": [
+        "AttestationProvider"
+      ],
+      "requires": [
+        "AttestationStore",
+        "buildCertificate",
+        "CapClient",
+        "CapEventStream",
+        "EventType",
+        "Did",
+        "UptimeCertificate",
+        "createMockEnvironment",
+        "ManualClock"
+      ],
+      "gate": {
+        "run": "npx vitest run src/attestation/attestation-provider.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(attestation): Deadman attestation provider (sells certificates)",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "chain-decode:1",
+      "subsystem": "chain-decode",
+      "title": "Sourced ABIs & canonical addresses",
+      "plan": "docs/superpowers/plans/2026-07-05-chain-decode.md",
+      "depends_on": [
+        "foundation:1"
+      ],
+      "effort": "low",
+      "files": {
+        "create": [
+          "src/chain/abis/capcore.json",
+          "src/chain/abis/capvault.json",
+          "src/chain/addresses.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/chain/addresses.test.ts"
+        ]
+      },
+      "provides": [
+        "CAP_CORE_ADDRESS",
+        "CAP_VAULT_ADDRESS",
+        "USDC_BASE_ADDRESS",
+        "BASE_CHAIN_ID"
+      ],
+      "requires": [],
+      "gate": {
+        "run": "npx vitest run src/chain/addresses.test.ts",
+        "expect": "PASS — \"2 passed\""
+      },
+      "commit": "feat(chain): sourced CAPCore/CAPVault ABIs and addresses",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "chain-decode:2",
+      "subsystem": "chain-decode",
+      "title": "Recorded log fixtures",
+      "plan": "docs/superpowers/plans/2026-07-05-chain-decode.md",
+      "depends_on": [
+        "chain-decode:1",
+        "foundation:1"
+      ],
+      "effort": "low",
+      "files": {
+        "create": [
+          "src/chain/fixtures/expiry-refund.json",
+          "src/chain/fixtures/reject-refund.json"
+        ],
+        "modify": [],
+        "test": [
+          "src/chain/fixtures/fixtures.test.ts"
+        ]
+      },
+      "provides": [
+        "expiry-refund.json",
+        "reject-refund.json"
+      ],
+      "requires": [],
+      "gate": {
+        "run": "npx vitest run src/chain/fixtures/fixtures.test.ts",
+        "expect": "PASS — \"2 passed\""
+      },
+      "commit": "feat(chain): recorded expiry/reject log fixtures",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "chain-decode:3",
+      "subsystem": "chain-decode",
+      "title": "Log decoder & refund-for-expiry correlation",
+      "plan": "docs/superpowers/plans/2026-07-05-chain-decode.md",
+      "depends_on": [
+        "chain-decode:1",
+        "chain-decode:2",
+        "foundation:2"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/chain/decode.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/chain/decode.test.ts"
+        ]
+      },
+      "provides": [
+        "decodeCapLogs",
+        "findRefundForExpiry",
+        "RawLog",
+        "CapDecodedEvent"
+      ],
+      "requires": [
+        "TxHash"
+      ],
+      "gate": {
+        "run": "npx vitest run src/chain/decode.test.ts",
+        "expect": "PASS — \"4 passed\""
+      },
+      "commit": "feat(chain): CAP log decoder + refund-for-expiry correlation",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "dashboard-demo:1",
+      "subsystem": "dashboard-demo",
+      "title": "Dashboard snapshot projection",
+      "plan": "docs/superpowers/plans/2026-07-05-dashboard-demo.md",
+      "depends_on": [
+        "heartbeat:2",
+        "downtime-attestation:1",
+        "downtime-attestation:3",
+        "foundation:2",
+        "foundation:4"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/dashboard/snapshot.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/dashboard/snapshot.test.ts"
+        ]
+      },
+      "provides": [
+        "buildSnapshot",
+        "DashboardSnapshot",
+        "TargetView"
+      ],
+      "requires": [
+        "MonitorState",
+        "AttestationStore",
+        "buildCertificate",
+        "UptimeStatus",
+        "DowntimeIncident",
+        "Did",
+        "OrderStatus"
+      ],
+      "gate": {
+        "run": "npx vitest run src/dashboard/snapshot.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(dashboard): snapshot projection",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "dashboard-demo:2",
+      "subsystem": "dashboard-demo",
+      "title": "Dashboard HTTP + WebSocket server",
+      "plan": "docs/superpowers/plans/2026-07-05-dashboard-demo.md",
+      "depends_on": [
+        "dashboard-demo:1",
+        "mock-cap:6",
+        "foundation:1"
+      ],
+      "effort": "high",
+      "files": {
+        "create": [
+          "src/dashboard/server.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/dashboard/server.test.ts"
+        ]
+      },
+      "provides": [
+        "DashboardServer",
+        "DashboardServerDeps"
+      ],
+      "requires": [
+        "DashboardSnapshot",
+        "MockControl"
+      ],
+      "gate": {
+        "run": "npx vitest run src/dashboard/server.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(dashboard): http + websocket server with kill-switch",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "dashboard-demo:3",
+      "subsystem": "dashboard-demo",
+      "title": "Browser view (renderState + shell)",
+      "plan": "docs/superpowers/plans/2026-07-05-dashboard-demo.md",
+      "depends_on": [
+        "dashboard-demo:1"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/dashboard/view/app.ts",
+          "src/dashboard/public/index.html"
+        ],
+        "modify": [],
+        "test": [
+          "src/dashboard/view/app.test.ts"
+        ]
+      },
+      "provides": [
+        "renderState"
+      ],
+      "requires": [
+        "DashboardSnapshot"
+      ],
+      "gate": {
+        "run": "npx vitest run src/dashboard/view/app.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(dashboard): browser view (renderState + shell)",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "dashboard-demo:4",
+      "subsystem": "dashboard-demo",
+      "title": "Demo system wiring + money-shot end-to-end test",
+      "plan": "docs/superpowers/plans/2026-07-05-dashboard-demo.md",
+      "depends_on": [
+        "dashboard-demo:1",
+        "mock-cap:1",
+        "mock-cap:6",
+        "heartbeat:1",
+        "heartbeat:3",
+        "downtime-attestation:1",
+        "downtime-attestation:2",
+        "downtime-attestation:4",
+        "foundation:2"
+      ],
+      "effort": "high",
+      "files": {
+        "create": [
+          "src/dashboard/demo-system.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/dashboard/demo-system.test.ts"
+        ]
+      },
+      "provides": [
+        "buildDemoSystem",
+        "DemoSystem",
+        "DemoConfig"
+      ],
+      "requires": [
+        "CapEnvironment",
+        "MockControl",
+        "createMockEnvironment",
+        "ManualClock",
+        "RequesterShard",
+        "HeartbeatEngine",
+        "EngineTarget",
+        "DowntimeDetector",
+        "AttestationStore",
+        "AttestationProvider",
+        "buildSnapshot",
+        "DashboardSnapshot",
+        "Did"
+      ],
+      "gate": {
+        "run": "npx vitest run src/dashboard/demo-system.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(dashboard): demo system wiring + money-shot e2e test",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "dashboard-demo:5",
+      "subsystem": "dashboard-demo",
+      "title": "Real-time demo entrypoint",
+      "plan": "docs/superpowers/plans/2026-07-05-dashboard-demo.md",
+      "depends_on": [
+        "dashboard-demo:1",
+        "dashboard-demo:2",
+        "dashboard-demo:4",
+        "mock-cap:6",
+        "foundation:5"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/dashboard/main.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/dashboard/main.test.ts"
+        ]
+      },
+      "provides": [
+        "startDemo"
+      ],
+      "requires": [
+        "resolveMode",
+        "createMockEnvironment",
+        "buildDemoSystem",
+        "DemoSystem",
+        "DashboardServer",
+        "DashboardSnapshot"
+      ],
+      "gate": {
+        "run": "npx vitest run src/dashboard/main.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(dashboard): real-time mock demo entrypoint",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "live-artifacts:1",
+      "subsystem": "live-artifacts",
+      "title": "SDK structural interface + event-type mapping",
+      "plan": "docs/superpowers/plans/2026-07-05-live-artifacts.md",
+      "depends_on": [
+        "foundation:2"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "src/live/sdk-agent-client.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/live/sdk-agent-client.test.ts"
+        ]
+      },
+      "provides": [
+        "SdkAgentClient",
+        "SdkStream",
+        "SdkEvent",
+        "SdkOrder",
+        "SdkNegotiation",
+        "SdkNegotiateRequest",
+        "SdkAcceptResult",
+        "SdkPayResult",
+        "SdkDeliverResult",
+        "mapSdkEventType"
+      ],
+      "requires": [
+        "EventType"
+      ],
+      "gate": {
+        "run": "npx vitest run src/live/sdk-agent-client.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(live): SDK structural interface + event-type mapping",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "live-artifacts:2",
+      "subsystem": "live-artifacts",
+      "title": "LiveCapClient (SDK adapter)",
+      "plan": "docs/superpowers/plans/2026-07-05-live-artifacts.md",
+      "depends_on": [
+        "live-artifacts:1",
+        "foundation:2",
+        "foundation:3"
+      ],
+      "effort": "high",
+      "files": {
+        "create": [
+          "src/live/live-cap-client.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/live/live-cap-client.test.ts"
+        ]
+      },
+      "provides": [
+        "LiveCapClient"
+      ],
+      "requires": [
+        "SdkAgentClient",
+        "SdkStream",
+        "SdkEvent",
+        "SdkOrder",
+        "mapSdkEventType",
+        "CapClient",
+        "CapEventStream",
+        "NegotiateRequest",
+        "Negotiation",
+        "NegotiationStatus",
+        "AcceptResult",
+        "PayResult",
+        "DeliverRequest",
+        "DeliverResult",
+        "Delivery",
+        "ListOrdersOpts",
+        "Order",
+        "OrderStatus",
+        "CapEvent",
+        "EventType",
+        "Did",
+        "OrderId",
+        "NegotiationId",
+        "TxHash"
+      ],
+      "gate": {
+        "run": "npx vitest run src/live/live-cap-client.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "feat(live): LiveCapClient SDK adapter (fake-tested, offline)",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "live-artifacts:3",
+      "subsystem": "live-artifacts",
+      "title": "Live environment (dynamic SDK import; control null)",
+      "plan": "docs/superpowers/plans/2026-07-05-live-artifacts.md",
+      "depends_on": [
+        "live-artifacts:1",
+        "live-artifacts:2",
+        "mock-cap:6",
+        "foundation:2",
+        "foundation:3"
+      ],
+      "effort": "high",
+      "files": {
+        "create": [
+          "src/live/live-environment.ts"
+        ],
+        "modify": [],
+        "test": [
+          "src/live/live-environment.test.ts"
+        ]
+      },
+      "provides": [
+        "createLiveEnvironment",
+        "LiveEnvironmentConfig"
+      ],
+      "requires": [
+        "SdkAgentClient",
+        "LiveCapClient",
+        "CapEnvironment",
+        "CapClient",
+        "Did"
+      ],
+      "gate": {
+        "run": "npx vitest run src/live/live-environment.test.ts",
+        "expect": "PASS — \"2 passed\""
+      },
+      "commit": "feat(live): createLiveEnvironment (dynamic SDK import, control null)",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "live-artifacts:4",
+      "subsystem": "live-artifacts",
+      "title": "Live smoke script (HUMAN-GATED — built and type-checked, never run)",
+      "plan": "docs/superpowers/plans/2026-07-05-live-artifacts.md",
+      "depends_on": [
+        "live-artifacts:3",
+        "chain-decode:1",
+        "chain-decode:3",
+        "foundation:5"
+      ],
+      "effort": "medium",
+      "files": {
+        "create": [
+          "scripts/live-smoke.ts"
+        ],
+        "modify": [],
+        "test": []
+      },
+      "provides": [
+        "scripts/live-smoke.ts"
+      ],
+      "requires": [
+        "createLiveEnvironment",
+        "findRefundForExpiry",
+        "RawLog",
+        "CAP_VAULT_ADDRESS",
+        "resolveMode"
+      ],
+      "gate": {
+        "run": "npx tsc --noEmit",
+        "expect": "PASS — no type errors (the script is NOT run; it is human-gated)."
+      },
+      "commit": "feat(live): human-gated live smoke script",
+      "human_gate": true,
+      "allow_empty": false,
+      "status": "pending"
+    },
+    {
+      "id": "live-artifacts:5",
+      "subsystem": "live-artifacts",
+      "title": "Register-agents runbook",
+      "plan": "docs/superpowers/plans/2026-07-05-live-artifacts.md",
+      "depends_on": [
+        "foundation:1"
+      ],
+      "effort": "low",
+      "files": {
+        "create": [
+          "docs/runbooks/register-agents.md"
+        ],
+        "modify": [],
+        "test": [
+          "src/live/register-runbook.test.ts"
+        ]
+      },
+      "provides": [
+        "register-agents.md"
+      ],
+      "requires": [],
+      "gate": {
+        "run": "npx vitest run src/live/register-runbook.test.ts",
+        "expect": "PASS — \"1 passed\""
+      },
+      "commit": "docs(live): register-agents runbook",
+      "human_gate": false,
+      "allow_empty": false,
+      "status": "pending"
+    }
+  ]
+}
