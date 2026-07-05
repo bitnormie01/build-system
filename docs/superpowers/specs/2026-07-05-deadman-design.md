@@ -203,6 +203,7 @@ export interface CapClient {
   rejectNegotiation(negotiationId: NegotiationId, reason: string): Promise<void>;
   payOrder(orderId: OrderId): Promise<PayResult>;
   deliverOrder(req: DeliverRequest): Promise<DeliverResult>;
+  rejectOrder(orderId: OrderId, reason: string): Promise<void>;
   getOrder(orderId: OrderId): Promise<Order>;
   listOrders(opts?: ListOrdersOpts): Promise<Order[]>;
   getDelivery(orderId: OrderId): Promise<Delivery>;
@@ -264,12 +265,19 @@ ethers, typed `TxHash`). Lifecycle:
   `order_created`). A killed target still auto-accepts (acceptance ≠ delivery) so the kill choreography
   (kill *after* escrow locks) is what produces the refund proof.
 - `payOrder` → `paid`, sets `paidAt`, emits `order_paid`, **schedules SLA expiry** at `slaMinutes` via the
-  clock. If the provider is an alive target, schedules an auto-`deliverOrder` shortly after pay.
-- `deliverOrder` → `completed`, sets `deliveryHash` (keccak256 of payload), emits `order_completed`,
-  cancels the pending SLA timer.
+  clock. For a registered target it also schedules an auto-deliver shortly after pay. **The auto-deliver
+  re-checks target liveness at fire time** (it does not deliver eagerly): if the target is alive it
+  delivers; if the target was killed in the interim it does nothing, so the order stays `paid` and expires
+  at SLA. This is the kill-switch mechanism — `killTarget` only flips the liveness flag; no timer cancellation
+  is required, which is why a kill *after* escrow locks reliably yields a refund proof.
+- `deliverOrder` (provider) → `completed`, sets `deliveryHash` (keccak256 of payload), emits
+  `order_completed`, cancels the pending SLA timer (a delivered order can no longer expire).
 - SLA timer fires while still `paid` → `expired`, sets `refundTxHash` (a generated CAPVault refund tx
-  hash), emits `order_expired`.
-- `rejectNegotiation`/`rejectOrder`-from-paid → `rejected`, sets `refundTxHash`, emits `order_rejected`.
+  hash), emits `order_expired`. This is the ONLY producer of `order_expired`.
+- `rejectNegotiation(id, reason)` (before pay) and `rejectOrder(orderId, reason)` (provider-reject from
+  `paid`, per the SDK's "paid → Provider only" rule) → `rejected`, sets `refundTxHash`, emits
+  `order_rejected`. **`rejectOrder` is on the `CapClient` interface (§6);** it is the trigger the §7.4
+  reject≠downtime test uses to prove a refund without an expiry is not counted as downtime.
 Control surface (NOT on `CapClient`): `registerTarget(did, {alive})`, `killTarget(did)`,
 `reviveTarget(did)`, `advanceClock(ms)`. `MockCapClient(service, selfDid)` is a per-agent view over the
 shared service. `selectCapClient(deps)` returns the mode-appropriate client.
@@ -329,8 +337,8 @@ whole thesis proven with no browser.
 
 ### 7.7 live-artifacts
 `SdkAgentClient` — a local structural interface mirroring the documented SDK surface (`negotiateOrder`,
-`acceptNegotiation`, `rejectNegotiation`, `payOrder`, `deliverOrder`, `getOrder`, `listOrders`,
-`getDelivery`, `connectWebSocket`). `LiveCapClient(sdk: SdkAgentClient, selfDid)` maps `CapClient` →
+`acceptNegotiation`, `rejectNegotiation`, `payOrder`, `deliverOrder`, `rejectOrder`, `getOrder`,
+`listOrders`, `getDelivery`, `connectWebSocket`). `LiveCapClient(sdk: SdkAgentClient, selfDid)` maps `CapClient` →
 SDK calls and SDK events → `CapEvent`; **unit-tested against a fake `SdkAgentClient`, fully offline**.
 `scripts/live-smoke.ts` dynamically imports `@croo-network/sdk`, builds `LiveCapClient`s from env keys, and
 runs one heartbeat + one forced SLA-expiry + prints the refund tx — **`human_gate: true`, never run by the

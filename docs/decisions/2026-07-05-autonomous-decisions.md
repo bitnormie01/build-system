@@ -115,3 +115,12 @@ where still open, the simpler option that preserves the demo money shot wins. Sa
   spec-reviewer subagent checks the written spec against the brief (money shot intact, out-of-scope
   honored, mock-first requirements encoded, no external blockers). Self-approve on a clean review; fix +
   re-review otherwise (max 2 cycles).
+- **Outcome (cycle 1):** spec-reviewer (opus) returned **Approved** — all five brief-conformance gates
+  PASS, safety airtight, money shot intact, out-of-scope honored. Two advisory (non-blocking)
+  recommendations were incorporated because they remove real downstream ambiguity:
+  1. Added `rejectOrder(orderId, reason): Promise<void>` to the `CapClient` interface (spec §6, foundation
+     Task 3) — a real SDK method; it is the trigger the §7.4 reject≠downtime negative test needs.
+  2. Specified the kill mechanism (spec §7.2): the mock's auto-deliver **re-checks target liveness at fire
+     time**, so `killTarget` only flips a flag and a kill after escrow-lock reliably yields a refund proof;
+     no timer cancellation required.
+  Self-approved on the clean review + brief conformance. No second cycle needed.
