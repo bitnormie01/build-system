@@ -1108,7 +1108,7 @@
       "commit": "feat(dashboard): real-time mock demo entrypoint",
       "human_gate": false,
       "allow_empty": false,
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "live-artifacts:1",
