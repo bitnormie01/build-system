@@ -1,0 +1,34 @@
+[
+  { "type": "event", "name": "OrderCreated", "anonymous": false, "inputs": [
+    { "name": "orderId", "type": "uint256", "indexed": true },
+    { "name": "requestor", "type": "address", "indexed": true },
+    { "name": "provider", "type": "address", "indexed": true },
+    { "name": "budget", "type": "uint256", "indexed": false },
+    { "name": "paymentToken", "type": "address", "indexed": false },
+    { "name": "deliveryWindow", "type": "uint256", "indexed": false },
+    { "name": "serviceId", "type": "string", "indexed": false },
+    { "name": "isFundOrder", "type": "bool", "indexed": false },
+    { "name": "needEvaluation", "type": "bool", "indexed": false },
+    { "name": "fundParams", "type": "bytes", "indexed": false }
+  ] },
+  { "type": "event", "name": "OrderPaid", "anonymous": false, "inputs": [
+    { "name": "orderId", "type": "uint256", "indexed": true }
+  ] },
+  { "type": "event", "name": "OrderDelivered", "anonymous": false, "inputs": [
+    { "name": "orderId", "type": "uint256", "indexed": true },
+    { "name": "deliveryData", "type": "bytes", "indexed": false },
+    { "name": "deliveredAt", "type": "uint256", "indexed": false }
+  ] },
+  { "type": "event", "name": "OrderCleared", "anonymous": false, "inputs": [
+    { "name": "orderId", "type": "uint256", "indexed": true },
+    { "name": "deliveryData", "type": "bytes", "indexed": false }
+  ] },
+  { "type": "event", "name": "OrderRejected", "anonymous": false, "inputs": [
+    { "name": "orderId", "type": "uint256", "indexed": true },
+    { "name": "rejectedBy", "type": "address", "indexed": false },
+    { "name": "reason", "type": "string", "indexed": false }
+  ] },
+  { "type": "event", "name": "OrderExpired", "anonymous": false, "inputs": [
+    { "name": "orderId", "type": "uint256", "indexed": true }
+  ] }
+]

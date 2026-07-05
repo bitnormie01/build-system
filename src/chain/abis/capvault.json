@@ -1,0 +1,19 @@
+[
+  { "type": "event", "name": "EscrowLocked", "anonymous": false, "inputs": [
+    { "name": "orderId", "type": "uint256", "indexed": true },
+    { "name": "token", "type": "address", "indexed": false },
+    { "name": "amount", "type": "uint256", "indexed": false }
+  ] },
+  { "type": "event", "name": "PaymentReleased", "anonymous": false, "inputs": [
+    { "name": "orderId", "type": "uint256", "indexed": true },
+    { "name": "provider", "type": "address", "indexed": false },
+    { "name": "providerAmount", "type": "uint256", "indexed": false },
+    { "name": "treasury", "type": "address", "indexed": false },
+    { "name": "platformFee", "type": "uint256", "indexed": false }
+  ] },
+  { "type": "event", "name": "EscrowRefunded", "anonymous": false, "inputs": [
+    { "name": "orderId", "type": "uint256", "indexed": true },
+    { "name": "requestor", "type": "address", "indexed": false },
+    { "name": "amount", "type": "uint256", "indexed": false }
+  ] }
+]
