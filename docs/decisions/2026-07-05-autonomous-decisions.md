@@ -148,3 +148,31 @@ where still open, the simpler option that preserves the demo money shot wins. Sa
   at foundation:1; zero unmatched requires char-for-char; projection equality by construction; Effort on
   every task; `human_gate:true` only on live-artifacts:4, the live smoke). Effort mix: 10 low / 14 medium /
   8 high.
+
+---
+
+## Phase 2 — Orchestrator (build) outcome
+
+- **Execution strategy (amendment):** dispatched executor subagents in parallel for disjoint-file ready
+  tasks, but kept orchestrator **verification strictly serial** — every gate re-run one at a time by the
+  orchestrator (Opus) as the authoritative check, explicit-path commits per task, and periodic full
+  `tsc --noEmit` + full-suite baselines on a clean tree. tsc-gated tasks (pure-type files, live smoke) used a
+  scoped `tsc | grep <file>` self-check while other executors were mid-build; the orchestrator ran the full
+  `tsc` after the tree settled. Rationale: parallelism cut wall-clock without risking concurrent-tsc/tree
+  races, since the authoritative gate is always the orchestrator's serial re-run.
+- **Effort→model:** low/medium tasks → sonnet; high tasks (mock-service, LiveCapClient, target-monitor,
+  detector, provider, server, money-shot E2E) → opus. All 32 gates re-verified by Opus regardless.
+- **Plan bug found + fixed (1 retry total):** chain-decode JSON imports needed `with { type: 'json' }` under
+  NodeNext — caught by the orchestrator's periodic full `tsc` (vitest/esbuild masked it). Routed to the
+  architect seat: plan fixed, manifest re-validated (statuses preserved), `chain-decode:1` re-dispatched.
+- **human_gate handling:** `live-artifacts:4` (live smoke) built + type-checked by a normal executor, its
+  live execution recorded as `human-pending` and routed to HUMAN_TODO.md; never run. Downstream depended
+  only on the mock seam, so nothing blocked.
+- **Result:** 31/32 done + 1 human-pending; full `tsc` clean; 58 tests passing; frontend builds; **money
+  shot verified live** by driving `POST /api/kill` against the running demo server (killed target → DOWN
+  citing refund tx `0xc6db…1fc6e`; healthy + declining targets unaffected).
+
+## Phase 3 — reports
+
+- Wrote [docs/reports/2026-07-05-autonomous-run-report.md](../reports/2026-07-05-autonomous-run-report.md)
+  and [HUMAN_TODO.md](../../HUMAN_TODO.md). No live action taken; run stops here.
