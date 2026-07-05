@@ -77,7 +77,8 @@ ws ^8.18, `@croo-network/sdk` ^0.2 (optionalDependency), Node ≥ 20.
           "noEmit": true,
           "types": ["node"]
         },
-        "include": ["src", "scripts"]
+        "include": ["src", "scripts"],
+        "exclude": ["node_modules", "dist", "src/dashboard/view"]
       }
       ```
       `vitest.config.ts`:
