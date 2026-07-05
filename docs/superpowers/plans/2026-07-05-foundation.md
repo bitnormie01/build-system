@@ -155,13 +155,13 @@ ws ^8.18, `@croo-network/sdk` ^0.2 (optionalDependency), Node ≥ 20.
       test('Order and CapEvent shapes accept a valid value', () => {
         const order: Order = {
           id: 'o1', negotiationId: 'n1', requesterDid: 'did:req', providerDid: 'did:prov',
-          amountUsdc: '0.01', slaMinutes: 1, status: 'paid', createdAt: 1, paidAt: 2,
+          amountUsdc: '0.01', slaMinutes: 1, status: 'paid', requirements: null, createdAt: 1, paidAt: 2,
           resolvedAt: null, deliveryHash: null, refundTxHash: null,
         };
         const event: CapEvent = {
           type: EventType.OrderExpired, orderId: 'o1', negotiationId: 'n1',
           requesterDid: 'did:req', providerDid: 'did:prov', status: 'expired',
-          refundTxHash: '0xabc', deliveryHash: null, timestamp: 3,
+          slaMinutes: 1, refundTxHash: '0xabc', deliveryHash: null, timestamp: 3,
         };
         expect(order.status).toBe('paid');
         expect(event.type).toBe('order_expired');
@@ -197,6 +197,7 @@ ws ^8.18, `@croo-network/sdk` ^0.2 (optionalDependency), Node ≥ 20.
         amountUsdc: string;
         slaMinutes: number;
         status: OrderStatus;
+        requirements: string | null;
         createdAt: number;
         paidAt: number | null;
         resolvedAt: number | null;
@@ -211,6 +212,7 @@ ws ^8.18, `@croo-network/sdk` ^0.2 (optionalDependency), Node ≥ 20.
         requesterDid: Did;
         providerDid: Did;
         status: OrderStatus;
+        slaMinutes: number;
         refundTxHash: TxHash | null;
         deliveryHash: TxHash | null;
         timestamp: number;
@@ -257,8 +259,8 @@ ws ^8.18, `@croo-network/sdk` ^0.2 (optionalDependency), Node ≥ 20.
         async rejectOrder() {},
         async getOrder(orderId) {
           return { id: orderId, negotiationId: 'n1', requesterDid: 'did:req', providerDid: 'did:prov',
-            amountUsdc: '0.01', slaMinutes: 1, status: 'created', createdAt: 0, paidAt: null,
-            resolvedAt: null, deliveryHash: null, refundTxHash: null };
+            amountUsdc: '0.01', slaMinutes: 1, status: 'created', requirements: null, createdAt: 0,
+            paidAt: null, resolvedAt: null, deliveryHash: null, refundTxHash: null };
         },
         async listOrders() { return []; },
         async getDelivery(orderId) { return { orderId, deliveryHash: '0xdead', payload: {} }; },
@@ -287,6 +289,7 @@ ws ^8.18, `@croo-network/sdk` ^0.2 (optionalDependency), Node ≥ 20.
         providerDid: Did;
         amountUsdc: string;
         slaMinutes: number;
+        requirements?: string;
       }
       export type NegotiationStatus = 'pending' | 'accepted' | 'rejected' | 'expired';
       export interface Negotiation {

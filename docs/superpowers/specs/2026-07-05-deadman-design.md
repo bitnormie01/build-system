@@ -143,6 +143,7 @@ export interface Order {
   amountUsdc: string;
   slaMinutes: number;
   status: OrderStatus;
+  requirements: string | null;   // buyer's request detail (e.g. the target DID for an attestation)
   createdAt: number;
   paidAt: number | null;
   resolvedAt: number | null;
@@ -157,6 +158,7 @@ export interface CapEvent {
   requesterDid: Did;
   providerDid: Did;
   status: OrderStatus;
+  slaMinutes: number;            // SLA of the order/negotiation this event concerns
   refundTxHash: TxHash | null;
   deliveryHash: TxHash | null;
   timestamp: number;
@@ -174,6 +176,7 @@ export interface NegotiateRequest {
   providerDid: Did;
   amountUsdc: string;
   slaMinutes: number;
+  requirements?: string;   // optional request detail carried onto the order (e.g. target DID)
 }
 export type NegotiationStatus = 'pending' | 'accepted' | 'rejected' | 'expired';
 export interface Negotiation {
@@ -245,8 +248,16 @@ export type DeadmanMode = 'mock' | 'live';
 export function resolveMode(env: NodeJS.ProcessEnv): DeadmanMode; // default 'mock'; throws on invalid
 ```
 
-`selectCapClient` (mock-cap) returns a `CapClient` per the resolved mode; the live branch constructs
-`LiveCapClient` and is the only place the SDK is touched.
+**Environment selection (composition root, not a product module).** mock-cap exports a `CapEnvironment`
+(`forAgent(did): CapClient`, `control: MockControl | null`, `close()`) and `createMockEnvironment(config)`
+(one shared `MockCapService`; `forAgent` returns a `MockCapClient` bound to that DID; `control` exposes the
+target kill/revive surface). live-artifacts exports `createLiveEnvironment(config)` (builds `LiveCapClient`s
+from env keys; `control: null`). The **only** mode branch lives at the composition root
+(`src/dashboard/main.ts`, and `scripts/live-smoke.ts`): both call `resolveMode`; `mock` →
+`createMockEnvironment`; `live` → `createLiveEnvironment`, reached through a **dynamic import with a
+non-literal specifier** so neither the live module nor `@croo-network/sdk` is loaded (or type-resolved)
+on the mock path. Product modules (heartbeat, downtime, provider) receive a `CapClient`/`CapEnvironment`
+and never branch on the mode — they are mode-blind.
 
 ## 7. Per-subsystem design
 
