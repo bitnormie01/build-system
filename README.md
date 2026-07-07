@@ -116,3 +116,10 @@ architect ──commit──> repo (spec/plans/manifest) <──pull── maste
 
 The kernel + manifest parser is the separate build; `references/task-contract.md` §5 specifies the
 grammar it targets.
+
+## Planned upgrades (approved PRDs, not yet built)
+
+- **Portfolio mode & fleet manager** — N-projects-per-hackathon campaigns (shared hub repo,
+  portfolio-aware idea-forge, read-only fleet-manager seat, per-owner kickoff deck). The
+  implementation contract is `docs/prd/2026-07-06-portfolio-mode-and-fleet-manager-prd.md` —
+  a future session implements from that file alone; read its §0 before touching anything.
