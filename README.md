@@ -123,3 +123,9 @@ grammar it targets.
   portfolio-aware idea-forge, read-only fleet-manager seat, per-owner kickoff deck). The
   implementation contract is `docs/prd/2026-07-06-portfolio-mode-and-fleet-manager-prd.md` —
   a future session implements from that file alone; read its §0 before touching anything.
+- **Demo studio** — autonomous demo-video recording (scene-gated Playwright screencast + ffmpeg
+  gfxcapture), Remotion assembly with TTS narration + word-timed captions, frame-level QC loop,
+  consented upload resolving the submission draft's demo-video TBD. Contract:
+  `docs/prd/2026-07-09-demo-studio-prd.md` — grounded in a 35-agent live dependency-research
+  pass (2026-07-09); its §0.3 freshness rule mandates re-verifying the §13 fact sheet at
+  implementation time.
