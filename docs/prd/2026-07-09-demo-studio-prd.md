@@ -63,7 +63,7 @@ The four subsystems and the current-as-of-2026-07-09 primitives they stand on:
 |---|---|---|
 | Browser capture | **Playwright ≥1.59 `page.screencast`** — JPEG frames at `quality:100` piped to ffmpeg, two-pass H.264 mp4 | `recordVideo` is BANNED here: hardcoded ~1 Mbit/s single-threaded VP8, 800×800 default scaling — unusable for YouTube-bound footage |
 | Native/window capture | **ffmpeg 8.1 `gfxcapture`** (window by `window_exe`/`window_title` regex) and `ddagrab` (desktop) — both `-f lavfi` sources emitting D3D11 frames; probe hw encoder (nvenc/amf/qsv) else `hwdownload,format=bgra` + libx264 | `gdigrab` demoted to zero-GPU fallback; `-f ddagrab` is a wrong invocation; **no WASAPI** exists in ffmpeg — native scenes record SILENT (narration is TTS anyway) |
-| Assembly | **Remotion 4.0.x pinned+aligned** — `<Video>`/`<Audio>` from `@remotion/media` (Mediabunny), `getMediaMetadata()` for audio-first timing, `@remotion/captions` `Caption` objects built directly from TTS timestamps | `<OffthreadVideo>` is now the *fallback*, not the recommendation; `getAudioDurationInSeconds` is deprecated; output h264 (VP8/VP9 encode is very slow) |
+| Assembly | **Remotion 4.0.x pinned+aligned** — `<Video>`/`<Audio>` from `@remotion/media` (Mediabunny), `mediabunny` `computeDuration()` for audio-first timing, `@remotion/captions` `Caption` objects built directly from TTS timestamps | `<OffthreadVideo>` is now the *fallback*, not the recommendation; `getAudioDurationInSeconds` is deprecated (use the `mediabunny` package, not a Remotion export); output h264 (VP8/VP9 encode is very slow) |
 | Wallet-on-camera | **dappwright 2.13.6** (pins MetaMask 13.17.0; cache the zip at bootstrap) via `launchPersistentContext` + `channel:'chromium'` **headed**; fallback: a **vendored ~150-LOC viem-backed EIP-1193/6963 injected provider** doing real testnet txs with no extension UI | Synpress is rejected (6-month release gap, 125 open issues, older MetaMask pin); MetaMask ships multi-release weeks — never automate against "latest"; MV2 support is gone (Playwright 1.55) |
 
 **The scene is the unit of everything.** Each scene = capture script + gate assertion + narration
@@ -106,7 +106,8 @@ runs after the orchestrator reports green (its input is a working app). Stages:
    **foreground, do-not-disturb session** — the kickoff says so and the user consents to it as a
    gate.
 4. **Narration + captions.** TTS per scene through one **word-timing adapter interface** (§4);
-   scene durations derive from narration lengths via `getMediaMetadata()` (audio-first timing).
+   scene durations derive from narration lengths via the `mediabunny` package's `computeDuration()`
+   (audio-first timing).
    Captions built directly as `@remotion/captions` `Caption` objects from the TTS timestamps — no
    transcription pass for agent-generated narration.
 5. **Assembly.** Remotion project under `demo/` in the project repo (committed code; renders
@@ -278,7 +279,7 @@ that can change; `[local]` = verified on the user's actual machine.
 | 1 | Remotion `[pin]` | 4.0.487 latest (releases every 1–3 days; 5.0 unreleased, migration page is "planned changes") | registry.npmjs.org/remotion/latest; remotion.dev/docs/5-0-migration | Pin one exact 4.0.x across ALL `@remotion/*` (aligned versions required) |
 | 2 | Remotion license `[policy]` | Free tier: individuals, ≤3-employee for-profits, non-profits; local `npx remotion render` needs no key; Automators tier $0.01/render+$100/mo min if ever productized | remotion.dev LICENSE.md; remotion.pro/license | User qualifies free as an individual; PRD scoped to personal tooling |
 | 3 | Remotion media | `<OffthreadVideo>` docs: "For new video usage, prefer `<Video>` from @remotion/media" (Mediabunny/WebCodecs; Media Parser deprecated Feb 2026); OffthreadVideo is the automatic render fallback | remotion.dev/docs/offthreadvideo; /docs/media/video | Embed clips with `@remotion/media` `<Video>`; keep fallback enabled (VFR webm edge cases) |
-| 4 | Audio timing | `getAudioDurationInSeconds` **deprecated** → `getMediaMetadata()` (Mediabunny) | remotion.dev/docs/get-audio-duration-in-seconds | Audio-first timing uses getMediaMetadata() |
+| 4 | Audio timing | `getAudioDurationInSeconds` (`@remotion/media-utils`) **deprecated**; get duration from the **`mediabunny`** package directly (`new Input({source:new UrlSource(url),formats:ALL_FORMATS}).computeDuration()`) — `getMediaMetadata` is a helper you implement over mediabunny, **not** a `@remotion/media-utils` export | remotion.dev/docs/mediabunny/metadata; /docs/get-audio-duration-in-seconds | Audio-first timing uses `mediabunny` `computeDuration()`; exact snippet in demo-stack.md |
 | 5 | Remotion render | CLI auto-installs Chrome Headless Shell (4.0.452+ uses Chrome 149); pass composition id explicitly (else interactive prompt); h264 default; VP8/VP9 encode "very slow"; `npx remotion benchmark` for --concurrency | remotion.dev/docs/cli/render; /docs/performance | Bootstrap: `npx remotion browser ensure`; output h264; QC renders at low res |
 | 6 | Playwright `[pin]` | 1.61.1 (Node ≥18; 18 deprecated) | registry.npmjs.org; GitHub releases | Pin ≥1.59 <2 (screencast floor), Node 20/22 |
 | 7 | recordVideo | Hardcoded ~1 Mbit/s single-thread VP8, 800×800 default scale; tuning refused (issues #31424/#17217) | github.com/microsoft/playwright/issues/31424 | **Banned** as capture path |

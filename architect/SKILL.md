@@ -188,9 +188,10 @@ Run these four stages in order. Do not start a stage until the previous one is a
   video URL, deployed addresses, live demo link, the public repo URL — are marked
   `TBD-post-build:<what>`, one per line, nothing else deferred. (This is the one artifact where
   deferred fields are correct: they are named build outputs, not vague work — the no-placeholders
-  rule for plan tasks is untouched.) The Step-3 gate-concierge resolves the TBDs at the closing
-  pass and pastes the draft into the platform, so submission day is a paste and a click, not
-  authorship under deadline.
+  rule for plan tasks is untouched.) The post-build seats resolve the TBDs — `demo-studio` (Step 2.5)
+  fills the demo-video URL, the Step-3 gate-concierge resolves the rest at the closing pass and pastes
+  the draft into the platform — so submission day is a paste and a click, not authorship under
+  deadline.
 - **Commit and push the whole system to the project repo** — spec, plans, the `manifest.json`
   (whenever you generated one; that is the default — see above), and — hackathon builds —
   `docs/gates/submission-draft.md`. The project repo is

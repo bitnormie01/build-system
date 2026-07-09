@@ -114,12 +114,14 @@ Push, then report: what was built, every gate's proof, and — explicitly — th
 that remains (paused `human_gate` tasks plus the campaign gates that never enter a manifest: faucets,
 provider accounts/API keys, wallet setup, the submission). A concierge **preflight pass** may
 already have run in parallel — check `docs/gates/*-gate-ledger.md`: done rows (wallet, faucets,
-keys) come off the tail; report only what's genuinely left. Then **offer Step 3's closing pass**:
-the `gate-concierge` (`../gate-concierge/SKILL.md`, kickoff `../prompts/INVOKE_GATE_CONCIERGE.md`,
-`MODE: closing`)
+keys) come off the tail; report only what's genuinely left. Then **offer the two post-build seats**:
+**Step 2.5 `demo-studio`** (`../demo-studio/SKILL.md`, kickoff `../prompts/INVOKE_DEMO_STUDIO.md`) to
+record the demo video — it must land before the submission, since it fills the demo-video URL — and
+**Step 3's closing pass**, the `gate-concierge` (`../gate-concierge/SKILL.md`, kickoff
+`../prompts/INVOKE_GATE_CONCIERGE.md`, `MODE: closing`), which
 inventories those gates into the committed ledger with the exact tools per gate and executes each only
-on the user's per-gate "continue". **Offer it — never launch it or run its gates yourself**; starting
-Step 3 is the user's call, same as every consent in this kit.
+on the user's per-gate "continue". **Offer them — never launch either or run its gates/recording
+yourself**; starting a post-build seat is the user's call, same as every consent in this kit.
 
 ## Parallelism (optional)
 

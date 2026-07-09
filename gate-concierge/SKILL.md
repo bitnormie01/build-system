@@ -52,7 +52,8 @@ with their granted access**. Kit isolation is unaffected — you read the manife
 resource pack, and runsheet from the project repo (`../references/repo-bootstrap.md`). Your writes:
 to the **project repo**, the ledger, gate outcomes, and the resolved submission draft; plus one
 sanctioned **kit-side** write — the faucet playbook entry under `../references/faucets/` (public
-provider facts only, per its README — the one exception to the kit checkout's read-only rule).
+provider facts only, per its README — one of the kit's reference-library carve-outs to the read-only
+rule; `../references/repo-bootstrap.md`).
 
 ## Two passes, one ledger
 
@@ -90,10 +91,14 @@ Sync the project repo, then collect gates from **both** sources:
 - **Implicit campaign gates** — the ones that never appear in a manifest because they aren't code
   tasks: testnet faucet claims (the brief's day-1 external dependency), provider accounts / API
   keys the stack needs (an RPC endpoint, an indexer, an oracle dashboard), wallet setup (burner
-  wallet + extension), the demo recording's prerequisites, flipping the repo public, and the
+  wallet + extension), flipping the repo public, and the
   **hackathon submission itself** (the platform form — Dorahacks/Devfolio/ETHGlobal — with its
   required fields from the resource pack's `event.md`). Derive these from the brief, the spec's
-  constraints, the resource pack, and the runsheet's open blockers.
+  constraints, the resource pack, and the runsheet's open blockers. **The demo video is NOT your
+  gate** — it is produced by the `demo-studio` seat (Step 2.5, `../demo-studio/SKILL.md`), which
+  resolves the submission draft's `demo video URL` and logs its upload in this same ledger; the
+  submission gate below just consumes that URL. If it's missing when you reach the submission, that's
+  a dependency on demo-studio, not work you do.
 
 ## Stage 2 — Classify each gate into a tier
 
@@ -186,7 +191,10 @@ For each gate the user green-lights:
      `docs/gates/submission-draft.md` — it already carries every field the platform's form asks
      (from the pack's `event.md` + the brief), with the build-time facts marked
      `TBD-post-build:<what>`. Resolve each TBD from the closing pass's own outputs (deployed
-     address, demo video URL, repo link once flipped public), commit the completed draft, then
+     address, repo link once flipped public) — **except the `demo video URL`, which `demo-studio`
+     (Step 2.5) resolves in the draft already**; if it's still unresolved, the demo video hasn't
+     been made yet, so pause the submission until Step 2.5 runs rather than submitting without it.
+     Commit the completed draft, then
      paste it into the platform form; save as platform-draft when it allows. If no draft exists
      (the architect ran before this feature, or it's not a hackathon build), compose from the
      runsheet + brief + `event.md` as before. The final Submit is its **own consent** — filling the

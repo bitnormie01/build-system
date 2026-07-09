@@ -9,10 +9,10 @@ whole hackathon** — every pipeline step runs in its own fresh session; you com
 ## Where it sits
 
 ```
-        ┌──────────────── guide (THIS session — stays open, advises, verifies) ─────────────────────────────┐
-        │                                                                                                    │
-Step 0a resource-extractor → Step 0 idea-forge → Step 1 architect → Step 2 orchestrator → Step 3 gate-concierge
-        (fresh session)       (fresh session)     (fresh session)    (fresh session)       (fresh session)
+        ┌──────────────── guide (THIS session — stays open, advises, verifies) ──────────────────────────────────────────────┐
+        │                                                                                                                     │
+Step 0a resource-extractor → Step 0 idea-forge → Step 1 architect → Step 2 orchestrator → Step 2.5 demo-studio → Step 3 gate-concierge
+        (fresh session)       (fresh session)     (fresh session)    (fresh session)       (fresh session)       (fresh session)
 ```
 
 All artifacts live in the **project repo** — created via your logged-in `gh` by the first step that
@@ -52,9 +52,13 @@ stuck, diagnose from the repo and give me the concrete fix.
 
 ## Notes on using it
 
-- **One open seat, five fresh sessions.** The guide stays open; each pipeline step (0a extractor,
-  0 idea-forge, 1 architect, 2 orchestrator, 3 gate-concierge) runs in its own fresh session from the
-  kickoff the guide hands you. The baton between steps is always a committed, pushed artifact.
+- **One open seat, six fresh sessions.** The guide stays open; each pipeline step (0a extractor,
+  0 idea-forge, 1 architect, 2 orchestrator, 2.5 demo-studio, 3 gate-concierge) runs in its own fresh
+  session from the kickoff the guide hands you. The baton between steps is always a committed, pushed
+  artifact.
+- **Step 2.5 makes the demo video for you.** After the green build, demo-studio scripts, records,
+  narrates, and assembles the demo video on your machine, shows you the final cut, and on a separate
+  consent uploads it — filling the submission's demo-video URL. Nothing publishes before you watch.
 - **Step 3 shrinks your to-do list — in two passes.** The gate-concierge reports every human-gated
   task with the exact tools it would use, then runs only the ones you green-light, one consent at a
   time. Its **preflight pass** runs right after the architect commits plans (wallet, faucets, API

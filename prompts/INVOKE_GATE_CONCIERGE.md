@@ -13,8 +13,12 @@ the exact tools per gate, then executes **only** the gates you green-light, one 
 Step 1 — architect: plans + manifest committed.
 Step 3 (preflight) — THIS prompt, MODE: preflight, parallel session → wallet/faucets/keys while Step 2 builds.
 Step 2 — orchestrator: build green, human-gated tasks paused/pending.
+Step 2.5 — demo-studio: records the demo video, resolves the submission draft's demo-video URL.
 Step 3 (closing)   — THIS prompt, MODE: closing → deploy, repo-flip, submission — each on your "continue".
 ```
+
+The demo video is **not** a concierge gate — `demo-studio` (Step 2.5) makes it and fills the
+submission draft's `demo video URL`; the closing pass's submission gate just consumes that URL.
 
 For browser-driven gates (faucet pages, signups, the submission portal) connect the Chrome browser
 tools (claude-in-chrome) in this session; for extension installs or native apps, computer-use.
@@ -64,8 +68,10 @@ Do this, in order:
    hand-back except a true capability gap), verify the outcome yourself (tx hash / test call /
    confirmation screen), record evidence in the ledger, commit. For faucet gates, read
    references/faucets/<chain>-<network>.md in the build-system kit first and write back what you
-   verified after. For the submission, resolve the draft's TBD-post-build fields, then paste —
-   filling the form and pressing Submit are two separate consents.
+   verified after. For the submission, resolve the draft's TBD-post-build fields — but the
+   demo-video URL comes from demo-studio (Step 2.5); if it's still unresolved, pause the submission
+   until the video is made rather than filing without it — then paste; filling the form and pressing
+   Submit are two separate consents.
 
 Never: touch mainnet or my main wallet, submit KYC/ID docs, enter payment details, echo or commit a
 secret (env-var names only), or run a gate I declined. Log every signup / CAPTCHA / ToS-accept /

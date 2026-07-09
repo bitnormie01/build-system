@@ -11,6 +11,7 @@ per task, proves each gate, and commits. This is **Step 2**, after `prompts/INVO
 Step 0 — idea-forge (optional): own session → commits a brief, emits an architect kickoff block.
 Step 1 — architect: fresh session, paste that block → commits spec + plans (+ manifest).
 Step 2 — orchestrator: THIS prompt, fresh session → builds the plan via subagents, commits each task.
+Step 2.5 — demo-studio (optional): after green → records the demo video, fills the submission's demo-video URL.
 Step 3 — gate-concierge (optional, two passes): preflight may already run in parallel with Step 2
          (wallet/faucets/keys); the closing pass follows green (deploy, submission) — consent per gate.
 ```
@@ -39,9 +40,10 @@ Do this:
    - On failure: classify (flake / executor-miss / plan-bug / human) and retry-with-hint, route back to
      the architect to replan, or ask me. Do not power through or fake green.
 4. Push. Report what was built, what passed its gate, and anything that needs me (human-gate steps,
-   replans, blockers). Then OFFER Step 3 — the gate-concierge (prompts/INVOKE_GATE_CONCIERGE.md)
-   minimizes the human-gated tail with my per-gate consent — but never launch it or run a gate
-   yourself.
+   replans, blockers). Then OFFER the two post-build seats — Step 2.5 demo-studio
+   (prompts/INVOKE_DEMO_STUDIO.md) records the demo video, and Step 3 gate-concierge
+   (prompts/INVOKE_GATE_CONCIERGE.md) minimizes the human-gated tail — both on my per-gate/per-consent
+   go; never launch either or run a gate/recording yourself.
 
 REPO: [the project repo owner/name — from the guide's runsheet / the architect's report]
 

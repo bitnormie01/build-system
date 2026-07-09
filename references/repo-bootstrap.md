@@ -9,10 +9,13 @@ follow this protocol.
 
 - **The kit checkout** — the clone of the `build-system` repo (these skills + references). It is
   **doctrine, read-only**: every session loads its SKILL.md and references from here, and **never
-  commits a project artifact to it**. One narrow exception exists: the gate-concierge's
-  faucet-playbook write-back to `faucets/` — public provider facts only, never a campaign's
-  addresses or keys (`faucets/README.md`). Treating the kit checkout as the project repo is the one
-  historical mistake this file exists to end.
+  commits a project artifact to it**. A narrow exception exists for the **kit's reference
+  libraries** — cross-campaign shared knowledge that grows one commit at a time: `faucets/` (the
+  gate-concierge's faucet write-back), `demo-stack.md` (demo-studio's re-verified tool pins), and
+  `music-kit.md` (cleared-track entries). A session may commit **public facts only** back to these
+  (a working faucet, a re-verified version, a cleared track), never a campaign's addresses, keys, or
+  private data. Everything else is read-only. Treating the kit checkout as the project repo is the
+  one historical mistake this file exists to end.
 - **The project repo** — the canonical repo for THIS build. Every artifact the pipeline produces
   lives here: `docs/resources/<event>/` (the pack), `docs/idea-forge/*-brief.md`,
   `docs/superpowers/{specs,plans}` + `manifest.json`, `docs/guide/*-runsheet.md`,
@@ -88,8 +91,11 @@ created.
 - **The kit checkout is never the project repo.** No resource pack, brief, spec, plan, manifest,
   runsheet, ledger, or product code is ever committed to `build-system`. If you find yourself about
   to `git push` an artifact and `origin` is the build-system repo, you are in the wrong directory —
-  resolve the project repo first. The sole sanctioned kit-side write is a **faucet playbook entry**
-  under `references/faucets/` (public provider facts only, per its README) — nothing else.
+  resolve the project repo first. The only sanctioned kit-side writes are **public-facts-only entries
+  in the kit's reference libraries** — `references/faucets/` (faucet playbooks),
+  `references/demo-stack.md` (re-verified tool pins), and `references/music-kit.md` (cleared-track
+  entries) — never secrets or campaign-private data. Any other artifact committed to `build-system`
+  is the wrong-directory mistake above.
 - **One project repo per campaign.** The guide records it in the runsheet; every kickoff it
   prepares carries it in `REPO:`. Two steps silently working in two different repos breaks the
   single-source-of-truth rule at the root.

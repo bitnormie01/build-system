@@ -3,11 +3,12 @@ name: guide
 description: >
   Use this as the user's MISSION CONTROL for the whole build-system pipeline — before the first step
   and between every step. It thinks through how the pipeline (resource-extractor → idea-forge →
-  architect → orchestrator → gate-concierge) should be used for a SPECIFIC hackathon, prepares each
+  architect → orchestrator → demo-studio → gate-concierge) should be used for a SPECIFIC hackathon,
+  prepares each
   step's filled kickoff prompt, recommends the choices each step will ask for (which URLs and sponsors
   to give the extractor, target tracks, risk appetite, orchestrator review mode), verifies each step's
   committed artifact before the next step starts, and unblocks the user when anything gets stuck at
-  Step 0a / 0 / 1 / 2 / 3. Trigger it when the user says "guide me through the build-system", "how do I use
+  Step 0a / 0 / 1 / 2 / 2.5 / 3. Trigger it when the user says "guide me through the build-system", "how do I use
   these skills", "we're entering <hackathon>", "what's next", "prepare the kickoff for <step>",
   "which tracks should I pick", "review the pack / brief / plan", or "I'm stuck at step X". Keep this
   session open across the whole hackathon — every pipeline step runs in its OWN fresh session; this is
@@ -50,6 +51,8 @@ pipeline runs for this event, prep each step's kickoff, and stay here to unblock
    - Task commits on the canonical branch matching the plans' commit messages → Step 2 progress. (The
      committed manifest's `status` fields are dispatch-time values — don't rely on them; the
      orchestrator/kernel tracks live status in its own session/store.)
+   - `docs/demo/*-demo-script.md` → Step 2.5 (demo-studio) started. Check whether the submission
+     draft's `demo video URL` TBD is resolved — that's whether the video shipped.
    - `docs/gates/*-gate-ledger.md` → Step 3 started. Read each gate's status
      (pending / approved / done / declined) — that's what's left between "built" and "submitted".
 3. **Open the runsheet** at `docs/guide/<YYYY-MM-DD>-<event-slug>-runsheet.md` — create it if missing
@@ -66,6 +69,7 @@ pipeline runs for this event, prep each step's kickoff, and stay here to unblock
 | 0 *(optional)* | `idea-forge` | pack + 5 inputs | one brief in `docs/idea-forge/` | `prompts/INVOKE_IDEA_FORGE.md` |
 | 1 | `architect` | brief + pack | spec + plans + `manifest.json` | `prompts/INVOKE_ARCHITECT.md` |
 | 2 | `orchestrator` | plans/manifest | built, gated, committed tasks | `prompts/INVOKE_ORCHESTRATOR.md` |
+| 2.5 *(optional; after green, needs a demo video)* | `demo-studio` | brief + spec + `event.md` + submission draft | `docs/demo/<date>-demo-script.md`, the `demo/` Remotion project, and — if UPLOAD is authorized — an uploaded video URL resolving the submission draft's TBD (else the rendered file, TBD left for manual resolution) | `prompts/INVOKE_DEMO_STUDIO.md` |
 | 3 *(two passes: preflight after Step 1, closing after Step 2)* | `gate-concierge` | manifest human-gates + brief + pack + runsheet + `docs/gates/submission-draft.md` | `docs/gates/<date>-gate-ledger.md`, then consented gates executed | `prompts/INVOKE_GATE_CONCIERGE.md` |
 
 **Session discipline (the rule users trip on):** each step runs in its **own fresh session**; the
@@ -80,7 +84,10 @@ Before any kickoff, decide and record in the runsheet:
 
 - **Which steps to run.** Already has a project idea → skip Step 0 (idea-forge shapes nothing you've
   already chosen; go straight to the architect, but still consider 0a for sponsor-SDK facts). Docs-thin
-  event with no sponsor SDKs → 0a is low-value; skip it. Otherwise run them all in order. Step 3
+  event with no sponsor SDKs → 0a is low-value; skip it. Otherwise run them all in order. Step 2.5
+  (demo-studio) runs after the green build whenever the submission needs a demo video (almost always
+  for a demo-judged hackathon); skip it only if there's no video to make or the user records it
+  themselves. Step 3
   runs whenever human-gated work exists — for a Web3 event that is almost always — in two passes:
   preflight (wallet, faucets, keys) right after Step 1, closing (deploy, submission) after the green
   build; skip it only when nothing is gated.
@@ -163,9 +170,34 @@ Before any kickoff, decide and record in the runsheet:
   it routes a **plan bug** back, that fix happens in an architect session, then the orchestrator
   resumes per the regeneration protocol (`references/roles.md`).
 - **When it finishes:** check the demo money shot actually lands end-to-end, then green-light
-  Step 3's closing pass — deploy, repo-flip, submission, plus anything the preflight pass left
-  pending (the gate ledger in `docs/gates/` says which) — the gate-concierge's job, not an
-  afternoon of manual form-filling.
+  **Step 2.5 (demo-studio)** to record the demo video, and **Step 3's closing pass** — deploy,
+  repo-flip, submission, plus anything the preflight pass left pending (the gate ledger in
+  `docs/gates/` says which). The submission can't file until the demo video URL is resolved, so
+  Step 2.5 gates Step 3's submission — sequence them that way.
+
+### Before Step 2.5 (demo-studio)
+
+- **Timing:** after the orchestrator reports green (its input is a working app) and before the
+  Step-3 submission gate (which needs the video URL). Run it whenever the submission requires a demo
+  video — the usual case.
+- **Prepare the kickoff:** fill `INVOKE_DEMO_STUDIO.md` with the project repo and the access the user
+  grants this session — the browser tools plus **device access for the foreground recording session**
+  and native/wallet-popup scenes. Confirm the defaults or override: VOICE (Kokoro local default),
+  LENGTH (event-mandated or ~3:00), MUSIC (off by default), WALLET-ON-CAMERA (real MetaMask default),
+  UPLOAD (unlisted YouTube, or strike to keep upload manual). Preflight the stack: read
+  `references/demo-stack.md` and re-verify its `[pin]`/`[policy]` rows if it's been a while (the
+  toolchain moves weekly).
+- **Set expectations:** it writes a demo script for the user to **approve before recording**, records
+  scene-by-scene under a **do-not-disturb foreground session**, assembles a captioned narrated cut,
+  runs a QC loop, and shows the user the final cut — **nothing publishes until the user watches it**,
+  and the upload is a **separate consent** from the recording. A scene that won't pass its gate
+  becomes a placeholder card, never a faked take.
+- **When it finishes, verify the baton:** the demo script is committed and no secret appears in any
+  committed file or on screen. **If UPLOAD was authorized:** the submission draft's `demo video URL`
+  TBD is resolved with a **logged-out-verified** link and the upload is recorded in the gate ledger —
+  then Step 3's submission gate can file. **If upload was kept manual:** the rendered file is handed
+  to the user, the TBD stays open, and Step 3's submission waits until the user resolves it (the
+  concierge pauses the submission on an unresolved demo-video URL).
 
 ### Before Step 3 (gate-concierge)
 
@@ -223,8 +255,8 @@ fix — don't improvise a workaround that fights the system.
 - **Goal** — what the user wants out of it.
 - **Strategy decisions** — steps to run/skip, track shortlist, risk appetite, sponsor depth — each
   with its one-line reason.
-- **Step status** — 0a / 0 / 1 / 2 / 3: pending | in-progress | done, with the artifact path and the
-  verification result.
+- **Step status** — 0a / 0 / 1 / 2 / 2.5 / 3: pending | in-progress | done, with the artifact path
+  and the verification result.
 - **Next action** — the single next thing, and who does it (user pastes kickoff X / review Y).
 - **Open blockers** — anything gated, failing, or waiting on the user.
 
@@ -236,7 +268,8 @@ fix — don't improvise a workaround that fights the system.
 - **Never bypass the pipeline's gates** — no hand-editing briefs/manifests to "save a session", no
   skipping the architect's design approval, no faking a verification you didn't run.
 - **Human-gate actions are the user's.** You walk them through deploys/keys/funds; you never execute
-  them yourself. The one seat that may is the `gate-concierge` (Step 3) — and only per-gate, on the
-  user's explicit "continue"; your job is to prep its kickoff, never to play it from this session.
+  them yourself. The seats that may are the `gate-concierge` (Step 3, per-gate consent) and
+  `demo-studio` (Step 2.5, recording + upload consents) — and only on the user's explicit go; your
+  job is to prep their kickoffs, never to play them from this session.
 - **State comes from the synced repo**, never from memory or hope — re-check before declaring a step
   done. **Recommendations come with reasons** — the user decides.

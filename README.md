@@ -11,6 +11,14 @@ the single source of truth. That repo is **not this build-system repo** — when
 one, the first pipeline step that needs it creates it via the user's logged-in `gh`, named from the
 event or the chosen project (`references/repo-bootstrap.md`).
 
+After the build goes green, an optional **Step 2.5** — the `demo-studio` — produces the hackathon
+demo video autonomously: it scripts the demo from the brief/spec/`event.md`, records the app
+scene-by-scene on the user's machine (Playwright screencast for browser scenes, ffmpeg
+gfxcapture/ddagrab for native/wallet-popup scenes), narrates with TTS and word-timed captions,
+assembles with Remotion, runs a frame-level QC loop, has the user **watch** the final cut, then on a
+separate consent uploads it and resolves the submission draft's demo-video URL
+(`demo-studio/SKILL.md`; pinned toolchain in `references/demo-stack.md`).
+
 An optional **Step 3** — the `gate-concierge` — minimizes the human-gated tail (faucets, testnet
 deploy, provider accounts / API keys, wallet setup, the hackathon submission): it reports every gate
 with the exact tools it would use, then executes only what the user green-lights, one consent per
@@ -18,7 +26,7 @@ gate (`gate-concierge/SKILL.md`). It runs in two passes: a **preflight** right a
 commits the plans (wallet / faucets / keys land in parallel while the build runs, guided by the
 cross-campaign faucet library in `references/faucets/`) and a **closing** pass after the build goes
 green (deploy, repo-flip, submission — pasted from the architect's pre-filled
-`docs/gates/submission-draft.md`).
+`docs/gates/submission-draft.md`, its demo-video URL filled by Step 2.5).
 
 ## Two ways to run it
 
@@ -54,6 +62,7 @@ build-system/
 ├── idea-forge/SKILL.md         # Step 0 (optional): blank start -> one scoped hackathon brief
 ├── architect/SKILL.md          # Step 1: idea+docs -> spec, plans, manifest.json (runs once, top model)
 ├── orchestrator/SKILL.md       # Step 2 (Claude-Code-native): drive the build in-session via subagents
+├── demo-studio/SKILL.md        # Step 2.5 (optional): record + assemble the demo video autonomously — script → capture → Remotion → watch → upload
 ├── gate-concierge/SKILL.md     # Step 3 (optional): minimize the human-gated tail — gate ledger first, then consent-per-gate execution
 ├── mastermind/SKILL.md         # failure-judgment doctrine (external-pool escalation; orchestrator reuses it inline)
 ├── executor/SKILL.md           # build one task, test-first, prove the gate (dispatched to each subagent)
@@ -63,12 +72,15 @@ build-system/
 │   ├── INVOKE_IDEA_FORGE.md
 │   ├── INVOKE_ARCHITECT.md
 │   ├── INVOKE_ORCHESTRATOR.md
+│   ├── INVOKE_DEMO_STUDIO.md
 │   └── INVOKE_GATE_CONCIERGE.md
 └── references/                 # SHARED structure (not skills) — all roles follow these
     ├── task-contract.md        # plan grammar + manifest DAG + executor prompt (the bridge)
     ├── conventions.md          # coding + decomposition rules + repo-as-source-of-truth
     ├── repo-bootstrap.md       # WHICH repo is canonical + who creates it (gh) when the user provides none
     ├── faucets/                # cross-campaign faucet playbooks — read before claiming, write back after (grows one commit per event)
+    ├── demo-stack.md           # demo-studio's pinned toolchain + exact capture/render/upload commands (re-verify before a run)
+    ├── music-kit.md            # curated pre-cleared demo-video music manifest (metadata only; MP3s live off-repo)
     ├── roles.md                # role wiring + the two run configurations
     ├── ideation-rubric.md      # idea-forge's weighted decider
     ├── pipeline-fallback.md    # condensed spec/plan checklist (summary of the vendored method)
@@ -79,8 +91,8 @@ build-system/
 ## How the kernel uses it
 
 The kernel is the only pipeline-side component that knows all three kits exist — that is what enforces
-isolation (user-side seats — the `guide`, a manager-mode session, and the `gate-concierge` — hold the
-map by design; see `references/roles.md`). It has two jobs:
+isolation (user-side seats — the `guide`, a manager-mode session, the `gate-concierge`, and
+`demo-studio` — hold the map by design; see `references/roles.md`). It has two jobs:
 
 1. **Deliver the right kit at boot** — assemble each agent's context: its own `SKILL.md` +
    `task-contract.md` + `conventions.md` (+ the executor's one task and required signatures). It
@@ -123,9 +135,6 @@ grammar it targets.
   portfolio-aware idea-forge, read-only fleet-manager seat, per-owner kickoff deck). The
   implementation contract is `docs/prd/2026-07-06-portfolio-mode-and-fleet-manager-prd.md` —
   a future session implements from that file alone; read its §0 before touching anything.
-- **Demo studio** — autonomous demo-video recording (scene-gated Playwright screencast + ffmpeg
-  gfxcapture), Remotion assembly with TTS narration + word-timed captions, frame-level QC loop,
-  consented upload resolving the submission draft's demo-video TBD. Contract:
-  `docs/prd/2026-07-09-demo-studio-prd.md` — grounded in a 35-agent live dependency-research
-  pass (2026-07-09); its §0.3 freshness rule mandates re-verifying the §13 fact sheet at
-  implementation time.
+*(Demo studio — autonomous demo-video recording — has shipped; see `demo-studio/SKILL.md` and
+`references/demo-stack.md`. Its PRD `docs/prd/2026-07-09-demo-studio-prd.md` remains the design
+record.)*
