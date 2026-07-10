@@ -77,7 +77,8 @@ map, by design; see the note at the top of this file.)
    just a credential; the kit and task come from the single source each time, so a rotation changes
    nothing the executor can observe.
 
-When it dispatches a task, the kernel also sets that task's reasoning **effort** as a launch flag on
+When it dispatches a task, the kernel also sets that task's reasoning **effort** (and its
+`model_tier` binding — `model-routing.md`) as launch flags on
 the CLI invocation (`task.effort` → the per-CLI flag in `task-contract.md` §6) — per dispatch, never
 mutated mid-run. Effort is the budget throttle, so it influences how soon a rotation happens.
 

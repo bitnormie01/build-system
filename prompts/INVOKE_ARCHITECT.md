@@ -1,6 +1,7 @@
 # Invoke Architect — copy-paste kickoff prompt
 
-Paste this into a fresh session of your strongest reasoning agent (Opus/Claude — the "mastermind"
+Paste this into a fresh session of your strongest reasoning agent (the kit's `top` tier,
+references/model-routing.md — the "mastermind"
 seat, never a cheap executor) to start a build. Fill the five bracketed fields and delete the rest.
 
 ---

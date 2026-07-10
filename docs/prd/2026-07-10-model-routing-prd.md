@@ -265,6 +265,24 @@ Modified:
    per campaign.
 5. Step-seat tiers are kit-static in `model-routing.md`; only tier→model binding is per-campaign.
 
+## 11b. Post-review corrections (adversarial review, 2026-07-10 — recorded, implementation is canonical)
+
+1. **§5 probe step 3:** "install them if absent" contradicted the tollgate's probes-are-read-only
+   rule — corrected: the probe only *checks* the variant files' presence; the **install is the
+   dispatcher's boot action** (as §6.3 already said). Tollgate row 15 remains the sole sanctioned
+   probe write.
+2. **§6.1 equality scope:** "when present it joins the byte-match equality set" was one-directional
+   — corrected to **iff**: `model_tier` appears in the manifest iff the plan carries the line; a
+   manifest-only value is invalid (closes the undetectable-drift hole).
+3. **Escalation × pin timing:** the pin rule tracks the *dispatched* effort — a retry escalated to
+   `xhigh|max` runs at `top` immediately.
+4. **§7 scope additions** (consistency-lens conformance, beyond the change map):
+   `pipeline-fallback.md` Stage-4 mirror; guide Before-Step-1 baton checklist; the report list
+   renumbered (Routing = section 4); vendor-name mentions replaced with tier language in
+   architect/idea-forge Hard rules and INVOKE_ARCHITECT/INVOKE_IDEA_FORGE; §4 reviewer pin check
+   keyed on plan-content gating (the flag is manifest-only); variant descriptions made
+   level-neutral so the files differ only in `name:`/`effort:` (§9.3 now passes mechanically).
+
 ## 12. Deferred (do not build)
 
 In-session routing adapters for Codex/Cursor/other harnesses (the gate already makes them safe at

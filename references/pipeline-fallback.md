@@ -51,8 +51,10 @@ For each subsystem, produce a plan file under `docs/superpowers/plans/` followin
 
 - Run the reviewer prompt from `task-contract.md` over each plan; fix blocking issues inline.
 - Emit `docs/superpowers/manifest.json` as a **projection of the plans** (`task-contract.md` §2):
-  every task's `gate`, `files`, `effort`, `provides`, `requires`, and `commit` byte-match its plan
-  block; every deploy/key/fund task carries `human_gate: true`; every task has an `Effort:` line.
+  every task's `gate`, `files`, `effort`, `provides`, `requires`, and `commit` — plus `model_tier`,
+  present iff the plan carries a `Model tier:` line — byte-match its plan
+  block; every deploy/key/fund task carries `human_gate: true`; every task has an `Effort:` line;
+  no gated/security/`xhigh|max` task carries a `Model tier:` below `top` (`model-routing.md`).
 - Validate: clean parse + valid DAG + zero unmatched `requires` + manifest⇄plan equality (kernel
   validator if available, else by hand — see `architect/SKILL.md` Stage 4). Not done until it passes.
 - Stop planning and hand off to the build per architect Stage 4: **Claude-Code-native** (the

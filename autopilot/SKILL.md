@@ -46,10 +46,11 @@ blockers."
    first dispatch.
 3. **Run the campaign tollgate** (`../references/tollgate.md`) — normally you are this campaign's
    first pipeline session: probe the full matrix for the contracted steps **plus row 17** (subagent
-   MCP reach — autopilot campaigns only), write/commit/push the report. If a campaign report
+   MCP reach — autopilot campaigns only) **and row 18** (model/effort routing —
+   `../references/model-routing.md`; write its Routing section), write/commit/push the report. If a campaign report
    already exists (the campaign began in guide mode and switched here), verify and **extend that
-   report** — re-probe the session-scoped rows and row 17, update stamps — never fork a second;
-   one report per campaign. Because this session persists
+   report** — re-probe the session-scoped rows plus rows 17 and 18, update stamps — never fork a
+   second; one report per campaign. Because this session persists
    campaign-long, its session-scoped rows stay valid for every step you dispatch — re-probe them
    cheaply before each browser-heavy dispatch and after any reconnect. Hard-stop on your own
    failing hard rows; report the rest per the protocol.
@@ -83,6 +84,14 @@ MCP-dependent steps (0a, 2.5, 3) run **inline** in this session instead — same
 context triage (prefer inline-late, after the build). Where context won't allow it, apply field 14:
 stop and hand the user that one step as a classic guide-mode kickoff. Degrading one step to manual
 is a reported limitation, never a silent skip.
+
+**Routing** (`../references/model-routing.md`): bind every dispatch per the tollgate report's
+Routing section (row 18). Step-seat tiers are kit-static — Steps 0a, 0, and 1 dispatch at `top`;
+Steps 2.5, 3, and reviewer fan-outs at `standard`; Step 2's tasks per their manifest
+`effort`/`model_tier` fields, with the same binding, logging, and escalation ladder the
+orchestrator doctrine specifies. The contract's **field 16** may pin campaign-wide; a pin never
+overrides a `top` pin, and `routing: inherit` (row-18 FAIL, or any non-Claude-Code harness) means
+every dispatch simply inherits — routing is never a blocker and never a hard stop.
 
 ## The run loop
 
@@ -140,7 +149,8 @@ stays parked.
 Your memory is the committed artifacts — contract, runsheet, tollgate report, gate ledger, batons.
 A compacted or restarted autopilot session re-boots from the synced repo (Boot 1–4 detect
 everything) and continues from the runsheet's step status. Only session-scoped grants
-(tollgate rows 5–8, 12, 17) need re-granting/re-probing in the new session — re-run those rows,
+(tollgate rows 5–8, 12, 17 — plus row 18, whose tier bindings were verified in the dead session)
+need re-granting/re-probing in the new session — re-run those rows,
 update the report, resume.
 
 ## When the campaign finishes

@@ -36,7 +36,8 @@ it; deviations break the parser.
 - Test:   `tests/exact/path/to/file.test.ts`
 
 **Depends on:** Task <M>, Task <K>        # omit if none
-**Effort:** medium                         # none|minimal|low|medium|high|xhigh — match to task difficulty
+**Effort:** medium                         # low|medium|high|xhigh|max — match to task difficulty
+**Model tier:** standard                   # top|standard|fast — optional; absent = standard (references/model-routing.md)
 **Provides:** `mintFor(address,uint256) -> uint256`, `type MarketId = bytes32`
 **Requires:** `OutcomeToken.balanceOf(address) -> uint256`   # signatures pasted in steps below
 
@@ -71,7 +72,8 @@ it; deviations break the parser.
 | `### Task N:`    | Unique integer (or `N.M` for phased). Becomes the task id. |
 | `**Files:**`     | Each line is `Create:` / `Modify:` / `Test:` + a backticked path. |
 | `**Depends on:**`| Comma-separated `Task X` refs. Defines DAG edges. Omit if root. |
-| `**Effort:**`    | Reasoning level the architect assigns to this task. One of `none\|minimal\|low\|medium\|high\|xhigh`. **Required on every task** — the §5 parser defaults a *missing* line to `medium`, so a dropped or mistyped Effort silently downgrades a hard or security-sensitive task; Stage-4 validation and the §4 reviewer flag its absence. The kernel maps it to the right CLI flag at dispatch (see §6). |
+| `**Effort:**`    | Reasoning level the architect assigns to this task. One of `low\|medium\|high\|xhigh\|max` (the kit-canonical ladder — `references/model-routing.md`; `ultracode` is a main-session-only mode, never a per-task value; legacy `none`/`minimal` are no longer emitted and alias to `low` when read). **Required on every task** — the §5 parser defaults a *missing* line to `medium`, so a dropped or mistyped Effort silently downgrades a hard or security-sensitive task; Stage-4 validation and the §4 reviewer flag its absence. The dispatcher maps it to the runtime's effort knob at dispatch (§3, §6). |
+| `**Model tier:**`| **Optional.** One of `top\|standard\|fast` — the abstract model class this task needs (`references/model-routing.md`). Absent = `standard`. **Pin rule:** every `human_gate: true`, security-sensitive, or `effort: xhigh\|max` task is `top` (an absent line on such a task means `top`, and an explicit lower tier on it is a review-blocking issue — §4). Plans never name a vendor model; the dispatcher binds tier→model per campaign. |
 | `**Provides:**`  | Signatures/types/exports this task creates. Downstream tasks may name these. |
 | `**Requires:**`  | Signatures consumed from upstream. MUST also appear inline in the step code. |
 | `- [ ]`          | One atomic step. Code steps carry a fenced block; command steps carry `Run:`/`Expected:`. |
@@ -82,7 +84,9 @@ it; deviations break the parser.
 Stage 4 of the architect emits `docs/superpowers/manifest.json`. This is what the mastermind loads.
 
 **The manifest is a mechanical projection of the plans, never authored independently.** Each task's
-`gate`, `files`, `effort`, `provides`, `requires`, and `commit` MUST match its plan task block
+`gate`, `files`, `effort`, `provides`, `requires`, and `commit` — and `model_tier`, which appears
+in the manifest **iff** the plan carries a `Model tier:` line (a manifest-only `model_tier` is
+authored independently, hence invalid) — MUST match its plan task block
 byte-for-byte — the manifest is the kernel's machine-readable *view* of the same facts the plan states
 for humans and hands to the executor. **Precedence:** the plan is the authored source; the manifest
 governs execution. If the two ever disagree, the manifest is *invalid* — regenerate it from the plans;
@@ -106,6 +110,7 @@ work fails scope-check or a wrong check passes.
       "plan": "docs/superpowers/plans/2026-05-23-pythia-contracts.md",
       "depends_on": [],
       "effort": "low",
+      "model_tier": "fast",
       "files": {
         "create": ["contracts/foundry.toml", "contracts/.gitignore"],
         "modify": [],
@@ -132,6 +137,12 @@ work fails scope-check or a wrong check passes.
                     flag for whichever CLI/account it dispatches to (see §6). This is the main
                     throttle on how fast a task burns an account's budget — match it to difficulty,
                     don't run everything high.
+- `model_tier`    — **optional string, default `standard`.** One of `top | standard | fast` — the
+                    abstract model class (`model-routing.md`); the dispatcher binds it to a real
+                    model per the campaign's Routing section, never from a hardcoded id. Present
+                    **iff** the plan carries a `Model tier:` line, byte-matching it — a
+                    manifest-only value is invalid (§2 equality). The §1 pin rule
+                    applies regardless of what is written here.
 - `gate`          — the command the kernel runs after the executor returns. PASS → commit + mark
                     done; FAIL → retry, then escalate.
 - `files`         — **must be exhaustive.** The kernel's commit is scoped: it stages only the paths
@@ -180,10 +191,13 @@ interfaces it needs** — nothing more, nothing assumed. In Claude-Code-native m
 prompt the `orchestrator` hands each dispatched subagent (Task/Agent tool); in external-pool mode it's
 what the kernel delivers to each pool executor — the same prompt either way.
 
-The executor prompt carries no effort instruction — `task.effort` is not part of the prompt. It is a
-**dispatch parameter**, never something the agent reads or decides: the kernel applies it as a launch
-flag on the CLI invocation (external-pool, §6), and the `orchestrator` sets it as the subagent's
-`effort` parameter when spawning via the Task/Agent tool (Claude-Code-native).
+The executor prompt carries no effort or model instruction — `task.effort` and `task.model_tier`
+are not part of the prompt. They are **dispatch parameters**, never something the agent reads or
+decides: the kernel applies them as launch flags on the CLI invocation (external-pool, §6), and
+the `orchestrator` binds them to the runtime's resolved knobs (Claude-Code-native: the executor
+effort-variant agent type + the per-spawn `model` argument, per the campaign's Routing section —
+`references/model-routing.md`; there is no call-time effort parameter on the Agent tool in
+current builds, which is exactly why the variants exist).
 
 ### 3.1 What the executor returns (worker output protocol)
 
@@ -230,7 +244,13 @@ Check:
 - Files exhaustive: every file the steps create/modify/test appears in `Files:` — the kernel's
   commit is scoped to exactly that list and fails the task on any undeclared change.
 - Effort present:  every task has an `**Effort:**` line — a missing one silently dispatches at
-  `medium` (§5), so a dropped line on a hard or security-sensitive task is a real defect.
+  `medium` (§5), so a dropped line on a hard or security-sensitive task is a real defect. Values
+  are the canonical ladder (`low|medium|high|xhigh|max`); flag legacy `none`/`minimal`.
+- Model-tier pins: every task whose steps deploy, move funds, or use a key/secret (the same content
+  test as the Human-gate bullet — you read the plan; the flag lives only in the manifest), plus any
+  security-sensitive or `effort: xhigh|max` task, must be tier `top` — an explicit
+  `Model tier: standard|fast` on such a task is a blocking issue
+  (§1 pin rule; `references/model-routing.md`). An absent line on other tasks is fine (= standard).
 - Human-gate:      flag any task whose steps deploy, move funds, or use a key/secret — each MUST
   carry `human_gate: true` in the manifest (§2), or the autonomous pool will run it. (You read the
   plan, so you name the tasks that need gating; the manifest generator/validator sets and checks the
@@ -247,14 +267,19 @@ Output:
 
 The grammar above is regex-friendly:
 - Task boundaries: `^### Task (\S+):\s*(.+)$`
-- Effort: `^\*\*Effort:\*\*\s*(none|minimal|low|medium|high|xhigh)` — default to `medium` if absent.
+- Effort: `^\*\*Effort:\*\*\s*(none|minimal|low|medium|high|xhigh|max)` — default to `medium` if
+  absent; map legacy `none`/`minimal` → `low` after parsing (they are accepted for resilience on
+  old plans, never emitted — §1).
+- Model tier: `^\*\*Model tier:\*\*\s*(top|standard|fast)` — optional; default to `standard` if
+  absent (the §1 pin rule still overrides at dispatch).
 - Steps: `^- \[[ x]\] \*\*Step \d+:`
 - Gate: the last step whose body contains `Expected: PASS` (or `Expected: <success string>`).
 - Files: lines matching `^- (Create|Modify|Test):\s*\`(.+?)\``
 
 Map each parsed task to a row in your task table; store `provides`/`requires` as JSON columns so the
 scheduler can resolve the dependency edges and assemble executor context at dispatch. The manifest's
-`gate`, `files`, `effort`, `provides`, `requires`, and `commit` are the **projection** of these parsed
+`gate`, `files`, `effort`, `provides`, `requires`, `commit` — and `model_tier`, present iff the plan
+carries the line — are the **projection** of these parsed
 plan values — they must match the plan byte-for-byte (§2 precedence). The parser defaults a missing
 `Effort:` to `medium` for resilience, but that is a fallback for malformed input, not a license to
 omit it — the producer side (architect Stage 4, §4 reviewer) requires the line on every task.
@@ -262,13 +287,18 @@ omit it — the producer side (architect Stage 4, §4 reviewer) requires the lin
 ## 6. Effort → CLI flag mapping (external-pool kernel dispatch)
 
 **This section is the external-pool config only.** In Claude-Code-native mode there is no CLI dispatch —
-the `orchestrator` sets `task.effort` as the subagent's `effort` parameter on the Task/Agent tool; the
+the `orchestrator` binds `task.effort` via the executor effort-variant agent type and `task.model_tier`
+via the per-spawn `model` argument (§3; `references/model-routing.md`); the
 rest of this section does not apply.
 
-The kernel reads `task.effort` and sets it as a launch flag on the fresh, non-interactive invocation
+The kernel reads `task.effort` (and `task.model_tier`, bound to a concrete model per campaign)
+and sets them as launch flags on the fresh, non-interactive invocation
 for whichever CLI/account runs the task. Effort is set **per dispatch**, never mutated mid-run — each
 task is a one-shot, so "changing effort for the next phase" is just the next task carrying a
-different value. Both CLIs accept the same six levels (`none|minimal|low|medium|high|xhigh`).
+different value. **Each CLI's accepted effort values drift release to release** — the kit-canonical
+ladder is `low|medium|high|xhigh|max` (`references/model-routing.md`), and the kernel adapter
+re-verifies each CLI's accepted set per campaign rather than trusting this file (Claude Code
+additionally accepts `ultracode` on `--effort`, main-session semantics only).
 
 | CLI | Per-task dispatch (effort + model + headless) |
 |-----|-----------------------------------------------|

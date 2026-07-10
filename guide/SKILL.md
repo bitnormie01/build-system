@@ -165,7 +165,8 @@ Before any kickoff, decide and record in the runsheet:
   any planning, then a written spec the user must review. Budget real attention for it; rubber-stamped
   specs produce drifting builds.
 - **When it finishes, verify the baton:** spec + plans + `manifest.json` committed and pushed; Stage-4
-  validation reported clean (DAG, requires matching, manifest⇄plan equality, effort present); every
+  validation reported clean (DAG, requires matching, manifest⇄plan equality, effort present,
+  model-tier pins — no gated/security/`xhigh|max` task below `top`); every
   deploy/key/fund task carries `human_gate: true`; effort assignments look sane (not everything high);
   for a hackathon build, `docs/gates/submission-draft.md` exists with every platform field answered
   and only named `TBD-post-build:` facts deferred.
@@ -178,7 +179,10 @@ Before any kickoff, decide and record in the runsheet:
 - **Re-probe the tollgate's stack rows** (the architect appended them at Stage 4 —
   `../references/tollgate.md`): the project's compilers/CLIs must PASS before any Step-2 kickoff is
   handed over; a missing toolchain caught here is a five-minute fix, caught mid-build it's a
-  pseudo-flake that burns retries.
+  pseudo-flake that burns retries. Check the report's **Routing** section too (matrix row 18 —
+  `../references/model-routing.md`): a missing or failed one is not a blocker (the orchestrator
+  falls back to `routing: inherit`), but a `top`-tier warning there — the main seat's model
+  resolving below top — is worth surfacing to the user before a long build.
 - **Recommend the review mode:** `checkpoint` (user sees each gate-passed diff before commit) for a
   first build or anything security-sensitive; `autonomous` once the pipeline has earned trust.
 - **Preflight — recommend the concierge's preflight pass, in parallel.** The day-1 dependencies

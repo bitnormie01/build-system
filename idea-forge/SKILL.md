@@ -241,7 +241,8 @@ orchestrator builds it. (For an external multi-account pool instead, stop at the
 ## Hard guardrails
 
 - **Strongest model only.** Rubric mapping and buildability judgment are model-bound. Run idea-forge on
-  your top reasoning seat (Opus / Claude). Never let a cheap executor run it — a weak model mis-maps
+  your top reasoning seat (tier `top` — `../references/model-routing.md`). Never let a cheap
+  executor run it — a weak model mis-maps
   the rubric and mis-calls buildability *silently*, and a mis-weighted rubric still produces a
   confident-looking brief. This is the skill's top residual risk.
 - **One brief, never a list.** A ranked list is an intermediate only. The deliverable is one scoped

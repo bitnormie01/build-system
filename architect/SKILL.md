@@ -133,11 +133,20 @@ Run these four stages in order. Do not start a stage until the previous one is a
     its provider's `Provides:` entry character-for-character** — the kernel resolves them by literal
     string equality, so copy-paste the signature, never retype or reformat it. A near-match
     silently degrades the executor's context instead of erroring.
-  - `effort:` — the reasoning level for this task (`none|minimal|low|medium|high|xhigh`). You assign
+  - `effort:` — the reasoning level for this task (`low|medium|high|xhigh|max` — the canonical
+    ladder, `../references/model-routing.md`; never `ultracode`, which is a main-session-only
+    mode, and never the legacy `none`/`minimal`). You assign
     this because you're the only component that knows each task's difficulty: boilerplate/scaffolding
-    `low`, normal feature work `medium`, tricky algorithms or security-sensitive code `high`/`xhigh`.
-    It's the kernel's budget throttle (see `../references/task-contract.md` §6) — don't default
+    `low`, normal feature work `medium`, tricky algorithms or security-sensitive code `high`/`xhigh`
+    (`max` is the rare last rung, not a default).
+    It's the dispatcher's budget throttle (see `../references/task-contract.md` §6) — don't default
     everything to high.
+  - `Model tier:` — the abstract model class (`top|standard|fast`, optional, absent = `standard`;
+    `../references/model-routing.md`). Same don't-default-everything-up discipline as effort.
+    **Pin rule:** every `human_gate: true`, security-sensitive, or `effort: xhigh|max` task is
+    `top` — never write a lower tier on one. `fast` only on provably mechanical `low`-effort work
+    (scaffolding, config). Plans never name a vendor model — tiers bind to models at dispatch,
+    per campaign.
   - a single **gate** command with expected result (this becomes the kernel's acceptance check)
   - an **exhaustive `Files:` list** — the kernel's commit is scoped to exactly these paths (plus
     lockfiles) and fails the task on any undeclared change, so a forgotten file here makes the task
@@ -179,13 +188,18 @@ Run these four stages in order. Do not start a stage until the previous one is a
   2. **Zero unmatched `requires`** — every `requires` string found verbatim in a dependency's
      `provides` (literal string equality; see the character-for-character rule above).
   3. **Manifest ⇄ plan equality** — every task's `gate`, `files`, `effort`, `provides`, `requires`,
-     and `commit` byte-match its plan task block. The manifest is a *projection* of the plans, not a
+     and `commit` — plus `model_tier`, present in the manifest iff the plan carries the line
+     (a manifest-only value is invalid) — byte-match its plan task
+     block. The manifest is a *projection* of the plans, not a
      second draft (`../references/task-contract.md` §2); a drifted field is the one bug the executor
      and kernel can't catch alone.
   4. **Effort present** — every task has an `**Effort:**` line (a missing one silently dispatches at
-     `medium`).
+     `medium`), with canonical values (`low|medium|high|xhigh|max`).
   5. **Human-gate coverage** — every deploy / key-operation / fund-movement task carries
      `human_gate: true` (canonical snake_case; `../references/task-contract.md` §2).
+  6. **Model-tier pin coverage** — no `human_gate: true`, security-sensitive, or `effort: xhigh|max`
+     task carries an explicit `Model tier:` below `top` (the Stage-3 pin rule;
+     `../references/model-routing.md`).
 
   Fix and re-validate until clean; a manifest that fails any check is not done.
 - **Emit the submission draft (hackathon builds).** When the build targets a hackathon (a brief or
@@ -250,7 +264,8 @@ docs/gates/
 ## Hard rules
 
 - **Strongest model only.** Decomposition quality is model-bound. Run the architect on your top
-  reasoning seat (Opus/Claude). Never let a cheap executor write the plan — it produces vague tasks
+  reasoning seat (tier `top` — `../references/model-routing.md`). Never let a cheap executor write
+  the plan — it produces vague tasks
   that drift the whole pool.
 - **No placeholders, ever.** "TODO", "add error handling", "similar to Task N", or a step that
   says *what* without showing *how*, are plan failures. The executor has no context to fill them in.

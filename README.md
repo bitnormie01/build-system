@@ -16,7 +16,10 @@ Every campaign opens with a **requirements tollgate** (`references/tollgate.md`)
 need and commits per-step CLEAR/BLOCKED verdicts — so a missing capability is a fix-hint line on day
 one, not a mid-execution roadblock. Fresh step sessions re-probe their own session cards (MCP
 connections don't survive session boundaries), and the architect appends the project's stack
-requirements for the orchestrator to probe before the first task.
+requirements for the orchestrator to probe before the first task. Spawns are also **routed**
+(`references/model-routing.md`): every subagent dispatch binds a per-task model tier and effort
+level — harness-gated (Claude Code only; anywhere else falls back to inherit), probe-verified, and
+never a blocker.
 
 After the build goes green, an optional **Step 2.5** — the `demo-studio` — produces the hackathon
 demo video autonomously: it scripts the demo from the brief/spec/`event.md`, records the app
@@ -99,6 +102,8 @@ build-system/
     ├── campaign-contract.md    # autopilot's locked instrument: contract schema, intake, consent forms + never-floor, identity checks, $0|funds-allowed
     ├── faucets/                # cross-campaign faucet playbooks — read before claiming, write back after (grows one commit per event)
     ├── tollgate.md             # requirements tollgate — the capability matrix probed at Step 0a (campaign) + per-step session cards
+    ├── model-routing.md        # per-spawn model+effort routing: tiers, harness gate (CLAUDECODE), row-18 probe, escalation ladder
+    ├── agents/                 # executor effort-variant agent templates (copied into the project repo's .claude/agents/ at boot)
     ├── demo-stack.md           # demo-studio's pinned toolchain + exact capture/render/upload commands (re-verify before a run)
     ├── music-kit.md            # curated pre-cleared demo-video music manifest (metadata only; MP3s live off-repo)
     ├── roles.md                # role wiring + the two run configurations

@@ -57,7 +57,7 @@ inputs above one at a time if any are blank, before generating anything.
 
 - **Run it on your top model.** The rubric mapping and buildability calls are model-bound; a weak model
   mis-weights the rubric and still hands you a confident-looking brief. Spend your best reasoning seat
-  (Opus / Claude) here, never a cheap executor.
+  (the kit's `top` tier, references/model-routing.md) here, never a cheap executor.
 - **It diverges before it converges.** Expect a wide candidate list (≥20) and a "make it bolder" pass
   first — that's the point, not noise. It then scores them down to one; the list is scaffolding, the
   brief is the deliverable.

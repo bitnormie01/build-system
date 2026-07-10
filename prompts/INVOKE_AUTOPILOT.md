@@ -60,6 +60,9 @@ key · repo-public flip · recording session (takes over my desktop foreground, 
 ACCESS GRANTED TO THIS SESSION: [chrome browser tools · computer-use/device · email inbox (open in
 the granted browser) · wallet extension — list what you're granting]
 
+ROUTING: [auto (default — per-spawn model/effort per references/model-routing.md) | pin all to
+<model alias>]
+
 FALLBACK POLICY: [stop-and-wait (default) | safe-substitute-and-log]
 
 NOTIFY ME: [in-session (always) + push notification when available | other]
