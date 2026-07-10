@@ -82,7 +82,11 @@ what the campaign will ask of the user.
 
 ## Stage 1 — Inventory every gate
 
-Sync the project repo, then collect gates from **both** sources:
+First, **run your tollgate session card** (`../references/tollgate.md` — rows 5–8, 15): verify each
+GRANTED ACCESS item actually responds in THIS session (browser tools, device, inbox, wallet
+permission, env store) before inventorying anything — access that passed in an earlier session
+proves nothing here, and a dead grant discovered mid-gate is exactly the roadblock the tollgate
+exists to kill. Then sync the project repo and collect gates from **both** sources:
 
 - **Declared gates:** every manifest task with `human_gate: true` (or, no-manifest builds, every
   plan task whose steps deploy, sign, move funds, or touch a key — same content test the

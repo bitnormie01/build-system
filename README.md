@@ -11,6 +11,13 @@ the single source of truth. That repo is **not this build-system repo** — when
 one, the first pipeline step that needs it creates it via the user's logged-in `gh`, named from the
 event or the chosen project (`references/repo-bootstrap.md`).
 
+Every campaign opens with a **requirements tollgate** (`references/tollgate.md`): Step 0a's Stage 0
+(or the guide, when 0a is skipped) probes every access/plugin/MCP/toolchain the planned steps will
+need and commits per-step CLEAR/BLOCKED verdicts — so a missing capability is a fix-hint line on day
+one, not a mid-execution roadblock. Fresh step sessions re-probe their own session cards (MCP
+connections don't survive session boundaries), and the architect appends the project's stack
+requirements for the orchestrator to probe before the first task.
+
 After the build goes green, an optional **Step 2.5** — the `demo-studio` — produces the hackathon
 demo video autonomously: it scripts the demo from the brief/spec/`event.md`, records the app
 scene-by-scene on the user's machine (Playwright screencast for browser scenes, ffmpeg
@@ -79,6 +86,7 @@ build-system/
     ├── conventions.md          # coding + decomposition rules + repo-as-source-of-truth
     ├── repo-bootstrap.md       # WHICH repo is canonical + who creates it (gh) when the user provides none
     ├── faucets/                # cross-campaign faucet playbooks — read before claiming, write back after (grows one commit per event)
+    ├── tollgate.md             # requirements tollgate — the capability matrix probed at Step 0a (campaign) + per-step session cards
     ├── demo-stack.md           # demo-studio's pinned toolchain + exact capture/render/upload commands (re-verify before a run)
     ├── music-kit.md            # curated pre-cleared demo-video music manifest (metadata only; MP3s live off-repo)
     ├── roles.md                # role wiring + the two run configurations

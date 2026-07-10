@@ -40,7 +40,9 @@ CALENDAR: [time I can give it + the event deadline if known]
 STATUS: [fresh start | I already have an idea: <one-liner> | pipeline partially run — check the repo]
 
 Start by resolving the project repo (references/repo-bootstrap.md — never the build-system checkout),
-syncing it and detecting pipeline state from the committed artifacts, open/create the
+syncing it and detecting pipeline state from the committed artifacts, checking the tollgate report
+(references/tollgate.md — Step 0a's Stage 0 creates it; if we skip 0a, run the campaign tollgate
+yourself and commit it; hand over no kickoff for a BLOCKED step), open/create the
 runsheet under docs/guide/, then give me: (1) your strategy for this event — which steps to run or
 skip, track shortlist (≤3) with reasons, risk-appetite recommendation with reasons, sponsor-depth list
 for extraction; (2) the single next action with its filled kickoff prompt ready to paste. Between

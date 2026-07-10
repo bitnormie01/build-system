@@ -28,8 +28,18 @@ references/repo-bootstrap.md. Never commit the pack into the build-system checko
 
 TARGET SPONSORS/TRACKS (optional): [the sponsors whose SDK docs matter most, or "all major tracks"]
 
-Extract, following inter-related links (rules → tracks → each sponsor → its SDK docs/examples → prior
-winners), bounded to the event's ecosystem:
+STEPS PLANNED: [which pipeline steps this campaign will run, from the guide's strategy — e.g.
+"0a, 0, 1, 2, 2.5, 3" — so Stage 0 probes exactly what the campaign needs; "all" if undecided]
+
+FIRST — Stage 0, the campaign tollgate (references/tollgate.md): you are this campaign's first
+pipeline session, so probe the full requirements matrix for the steps planned (tools, MCPs, access,
+toolchain), write + commit + push docs/tollgate/<date>-tollgate.md with per-step CLEAR/BLOCKED
+verdicts and a fix hint per FAIL. Probes are read-only — fix nothing, install nothing, log into
+nothing (sole exception: row 15's throwaway setx variable, removed after). Hard-stop only on YOUR
+OWN failing hard rows (browser tools, repo); report the rest.
+
+Then extract, following inter-related links (rules → tracks → each sponsor → its SDK docs/examples →
+prior winners), bounded to the event's ecosystem:
 - event.md — deadline (absolute + tz), eligibility, submission format, PUBLISHED judging criteria WITH
   exact weights (verbatim), prize structure, testnet-vs-mainnet rules.
 - tracks.md — every track/bounty: sponsor, problem statement, prize, minimum bar to qualify, required tech.
@@ -52,6 +62,11 @@ me it's ready for idea-forge — and name the repo so it goes in the runsheet.
 
 ## Notes on using it
 
+- **The tollgate runs first.** Stage 0 probes every access/plugin/MCP/toolchain the campaign's
+  planned steps need and commits the report — so a missing capability is a fix-hint line today, not
+  a mid-execution roadblock at Step 2 or 3. The guide green-lights every later step against its
+  verdicts; each later session still re-probes its own session card (MCP connections are
+  per-session).
 - **Accuracy is the whole point.** Every judging weight, prize, deadline, and package address is quoted
   verbatim with its source URL and fetch date. A labeled "unknown" beats a confident wrong fact — the
   whole pipeline trusts this pack.

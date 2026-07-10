@@ -39,7 +39,11 @@ upload it once you've watched it and said go."
 The operational ground truth — exact tool versions, the copy-paste ffmpeg/Playwright/Remotion
 commands, and the Windows bootstrap steps — lives in `../references/demo-stack.md`. **Read it before
 running anything**, and honor its freshness rule (re-verify the `[pin]`/`[policy]` rows before a
-real campaign; the toolchain moves weekly). Music lives in `../references/music-kit.md`.
+real campaign; the toolchain moves weekly). Music lives in `../references/music-kit.md`. At boot,
+**run your tollgate session card** (`../references/tollgate.md` — rows 5–6, 8–13, 16: the
+demo-stack probes plus browser/device access, the wallet extension when wallet scenes are on, and
+disk) before Stage 1; a failing hard row stops
+you with the row's fix hint — never discover mid-recording that ffmpeg lacks `gfxcapture`.
 
 ## Where you sit
 

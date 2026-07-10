@@ -192,9 +192,17 @@ Run these four stages in order. Do not start a stage until the previous one is a
   fills the demo-video URL, the Step-3 gate-concierge resolves the rest at the closing pass and pastes
   the draft into the platform — so submission day is a paste and a click, not authorship under
   deadline.
+- **Append the stack requirements to the tollgate report** (campaign builds — when
+  `docs/tollgate/*-tollgate.md` exists; skip silently otherwise). You are the only seat that knows
+  the project's toolchain: from each plan's Tech Stack header, add one row per required CLI/runtime
+  to the report's **Stack requirements** section — name, the version the plans assume, an exact
+  probe (`forge --version`, `sui --version`, `pnpm --version`, …), a fix hint
+  (`../references/tollgate.md`). The orchestrator probes these at boot, so a missing compiler is
+  caught before the first task instead of failing mid-build as a pseudo-flake.
 - **Commit and push the whole system to the project repo** — spec, plans, the `manifest.json`
   (whenever you generated one; that is the default — see above), and — hackathon builds —
-  `docs/gates/submission-draft.md`. The project repo is
+  `docs/gates/submission-draft.md` plus the tollgate report's appended Stack requirements section
+  (when one exists — the bullet above). The project repo is
   the single source of truth (`../references/conventions.md`, `../references/repo-bootstrap.md`);
   the mastermind and executors pull from
   it, so until you've pushed, the system doesn't exist for them. Regenerating later is just another

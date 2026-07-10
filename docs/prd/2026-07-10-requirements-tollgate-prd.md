@@ -91,24 +91,31 @@ Classes: **hard** = the named step will fail without it — stop and fix before 
 **degraded** = a documented fallback exists — proceed, note it in the report; **conditional** =
 required only when the named option is in play (probe only if it is).
 
+*(Table corrected post-review to match the shipped `references/tollgate.md`: the original draft
+merged the Class and Needed-by cells on rows 2 and 5–16, and three probes were not executable as
+written — row 1 used `&&` (absent in PowerShell 5.1), row 3's probe included a `pull` (a write),
+and row 15's `setx` read-back was impossible (setx doesn't touch the current session's env; read
+via `reg query HKCU\Environment`, remove via `reg delete`). The authoritative matrix is
+`references/tollgate.md`; the row numbering and semantics below are unchanged.)*
+
 | # | Requirement | Class | Needed by | Probe (non-destructive) | Fix hint |
 |---|---|---|---|---|---|
-| 1 | git installed, identity set | hard | all | `git --version && git config user.email` | install git / `git config --global user.email …` |
-| 2 | `gh` installed + logged in | hard for repo-creating seats (guide, 0a, 0, 1); degraded after | `gh auth status` | `gh auth login` (user runs it — never handle a token) |
-| 3 | kit checkout present + synced | hard | all | `git -C <kit> rev-parse HEAD` then pull | clone `build-system`, re-sync |
+| 1 | git installed, identity set | hard | all | `git --version`, then `git config user.email` (two commands, both exit 0) | install git / `git config --global user.email …` |
+| 2 | `gh` installed + logged in | hard for repo-creating seats; degraded after | guide, 0a, 0, 1 (hard); later steps (degraded) | `gh auth status` | `gh auth login` (user runs it — never handle a token) |
+| 3 | kit checkout present + synced | hard | all | `git -C <kit> rev-parse HEAD`, then `fetch` + compare vs `origin/main` (pull is the fix, not the probe) | clone `build-system`, pull to re-sync |
 | 4 | project repo resolved or creatable | hard | all | `REPO:` field set, or #2 passes so it can be created | `repo-bootstrap.md` |
-| 5 | claude-in-chrome MCP responding **in this session** | hard: 0a, 3; hard for 2.5 browser scenes | call one trivial browser tool (e.g. tabs context); error/absent = FAIL | connect the Chrome extension in THIS session |
-| 6 | computer-use granted | conditional: 2.5 (recording, native scenes), 3 (extension install) | one trivial call (e.g. list granted apps) | grant access when prompted |
-| 7 | email inbox reachable | conditional: 3 with signup automation on | open the inbox in the granted browser session | user logs in once in Chrome |
-| 8 | wallet extension present or installable; burner-wallet permission | conditional: 2.5 wallet scenes, 3 wallet gates | extension visible in the browser profile, or #6 passes for install | install = a consented concierge gate |
-| 9 | Node ≥20 + npm | hard: 2.5; hard for 2 when the stack is JS/TS (else see stack rows) | `node --version` | install Node LTS |
-| 10 | ffmpeg ≥8.1, `gfxcapture` compiled in, hw-encoder identified | hard: 2.5 | the three probes in `demo-stack.md` §Canonical commands | `winget install Gyan.FFmpeg`; ddagrab-crop / hwdownload fallbacks |
-| 11 | Python 3.10–3.12 reachable | degraded: 2.5 (Kokoro → edge-tts fallback) | `py -0p` or `uv python list` shows a 3.10–3.12 | `uv python install 3.12` |
-| 12 | elevenlabs-mcp available | conditional: 2.5 with VOICE=ElevenLabs | tool present in session | `uvx elevenlabs-mcp` + key via concierge gate |
-| 13 | Chrome logged into the upload account (YouTube) | conditional: 2.5 with UPLOAD authorized | check the logged-in session via browser tools | user logs in once |
-| 14 | event portal reachable | degraded: 0a (retry/manual paste fallback) | fetch the event URL | retry; user pastes gated content |
-| 15 | cross-session env store writable | degraded: 3 preflight secrets | `setx TOLLGATE_PROBE 1` then read it back (then remove the var) | fix permissions; fall back to git-ignored `.env` |
-| 16 | ~2 GB free disk for renders/captures | degraded: 2.5 | free-space check on the workspace drive | free space |
+| 5 | claude-in-chrome MCP responding **in this session** | hard | 0a, 3; 2.5 (browser scenes) | call one trivial browser tool (e.g. tabs context); error/absent = FAIL | connect the Chrome extension in THIS session |
+| 6 | computer-use granted | conditional | 2.5 (recording, native scenes); 3 (extension install) | one trivial call (e.g. list granted apps) | grant access when prompted |
+| 7 | email inbox reachable | conditional | 3 (signup automation on) | open the inbox in the granted browser session | user logs in once in Chrome |
+| 8 | wallet extension present or installable; burner-wallet permission | conditional | 2.5 (wallet scenes); 3 (wallet gates) | extension visible in the browser profile, or #6 passes for install | install = a consented concierge gate |
+| 9 | Node ≥20 + npm | hard | 2.5; 2 when the stack is JS/TS (else see stack rows) | `node --version` | install Node LTS |
+| 10 | ffmpeg ≥8.1, `gfxcapture` compiled in, hw-encoder identified | hard | 2.5 | `ffmpeg -version` (≥8.1) + the two preflight probes in `demo-stack.md` §Canonical commands | `winget install Gyan.FFmpeg`; ddagrab-crop / hwdownload fallbacks |
+| 11 | Python 3.10–3.12 reachable | degraded (Kokoro → edge-tts fallback) | 2.5 | `py -0p` or `uv python list` shows a 3.10–3.12 | `uv python install 3.12` |
+| 12 | elevenlabs-mcp available | conditional | 2.5 (VOICE=ElevenLabs) | tool present in session | `uvx elevenlabs-mcp` + key via concierge gate |
+| 13 | Chrome logged into the upload account (YouTube) | conditional | 2.5 (UPLOAD authorized) | check the logged-in session via browser tools | user logs in once |
+| 14 | event portal reachable | degraded | 0a | fetch the event URL | retry; user pastes gated content (record as a pack gap if persistent) |
+| 15 | cross-session env store writable | degraded | 3 (preflight secrets) | `setx TOLLGATE_PROBE 1`, `reg query HKCU\Environment /v TOLLGATE_PROBE`, then `reg delete … /f` | fix permissions; fall back to git-ignored `.env` |
+| 16 | ~2 GB free disk for renders/captures | degraded | 2.5 | free-space check on the workspace drive | free space |
 
 Row semantics the reference must state: probes are **read-only** (the single `setx` probe writes
 one throwaway variable and removes it); a `conditional` row is probed only when its option is in
@@ -147,8 +154,11 @@ result + checked-stamp and commits — the report is live campaign state, like t
   a FAIL is an environment blocker to surface now — do not power into the first task and let it
   die as a pseudo-flake.
 - **demo-studio / gate-concierge** — boot: run their session preflight card (§2.2) before their
-  Stage 1; the demo-studio card IS the `demo-stack.md` probes plus rows 5/6/13/16; the concierge
-  card = verify each GRANTED ACCESS item actually responds before inventorying gates.
+  Stage 1; the demo-studio card is rows 5–6, 8–13, 16 (the `demo-stack.md` probes plus
+  browser/device access, the wallet extension when wallet scenes are on, and disk — corrected
+  post-review: the draft's "5/6/13/16" omitted row 8 despite wallet-on-camera being the 2.5
+  default); the concierge card = rows 5–8, 15 — verify each GRANTED ACCESS item actually responds
+  before inventorying gates.
 - **idea-forge** — no edit: its only requirements are rows 1–4, already enforced by its existing
   boot (sync the project repo) and covered by the campaign tollgate. The PRD records this
   deliberately so a future sweep doesn't "helpfully" add redundant text.

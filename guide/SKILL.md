@@ -55,9 +55,15 @@ pipeline runs for this event, prep each step's kickoff, and stay here to unblock
      draft's `demo video URL` TBD is resolved — that's whether the video shipped.
    - `docs/gates/*-gate-ledger.md` → Step 3 started. Read each gate's status
      (pending / approved / done / declined) — that's what's left between "built" and "submitted".
-3. **Open the runsheet** at `docs/guide/<YYYY-MM-DD>-<event-slug>-runsheet.md` — create it if missing
+3. **Check the tollgate** (`../references/tollgate.md`): read `docs/tollgate/*-tollgate.md` for
+   per-step verdicts — **no kickoff is handed over for a step whose hard rows FAIL**. If no report
+   exists: Step 0a's Stage 0 will create it; on a campaign that SKIPS 0a, run the campaign tollgate
+   yourself — once your strategy fixes the step list and the project repo exists, and always before
+   handing over the first kickoff (probing is preflight, which you own — not performing a step) —
+   and commit the report.
+4. **Open the runsheet** at `docs/guide/<YYYY-MM-DD>-<event-slug>-runsheet.md` — create it if missing
    (format below). It is your working memory across sessions; keep it committed.
-4. If the event or the user's goal is unknown, ask — one question at a time: which hackathon (URL),
+5. If the event or the user's goal is unknown, ask — one question at a time: which hackathon (URL),
    what outcome they want (win a specific track / ship a portfolio piece / learn a stack), their
    skills, and how much calendar remains.
 
@@ -115,7 +121,10 @@ Before any kickoff, decide and record in the runsheet:
   live on separate pages (portals often split them); the target-sponsor shortlist from strategy.
 - **Preflight the session:** the Chrome browser tools (claude-in-chrome) must be connected — JS-heavy
   portals won't render without them; the kit checkout present; the project repo resolved, or `gh auth
-  status` logged in so the extractor can create it (`../references/repo-bootstrap.md`).
+  status` logged in so the extractor can create it (`../references/repo-bootstrap.md`). These are
+  tollgate rows 2–5; the extractor's Stage 0 then probes the **full campaign matrix**
+  (`../references/tollgate.md`) and commits the report — remind the user its verdicts are what you
+  green-light every later step against.
 - **Prepare the kickoff:** fill `INVOKE_RESOURCE_EXTRACTOR.md` with those URLs + sponsors; hand it to
   the user to paste in a fresh session.
 - **When it finishes, review the pack before green-lighting Step 0:** read `INDEX.md`'s gaps (anything
@@ -155,6 +164,10 @@ Before any kickoff, decide and record in the runsheet:
 
 ### Before Step 2 (orchestrator)
 
+- **Re-probe the tollgate's stack rows** (the architect appended them at Stage 4 —
+  `../references/tollgate.md`): the project's compilers/CLIs must PASS before any Step-2 kickoff is
+  handed over; a missing toolchain caught here is a five-minute fix, caught mid-build it's a
+  pseudo-flake that burns retries.
 - **Recommend the review mode:** `checkpoint` (user sees each gate-passed diff before commit) for a
   first build or anything security-sensitive; `autonomous` once the pipeline has earned trust.
 - **Preflight — recommend the concierge's preflight pass, in parallel.** The day-1 dependencies
@@ -186,7 +199,8 @@ Before any kickoff, decide and record in the runsheet:
   LENGTH (event-mandated or ~3:00), MUSIC (off by default), WALLET-ON-CAMERA (real MetaMask default),
   UPLOAD (unlisted YouTube, or strike to keep upload manual). Preflight the stack: read
   `references/demo-stack.md` and re-verify its `[pin]`/`[policy]` rows if it's been a while (the
-  toolchain moves weekly).
+  toolchain moves weekly); the session re-probes its tollgate card (rows 5–6, 8–13, 16) at boot —
+  check the report's 2.5 verdict is CLEAR before handing over the kickoff.
 - **Set expectations:** it writes a demo script for the user to **approve before recording**, records
   scene-by-scene under a **do-not-disturb foreground session**, assembles a captioned narrated cut,
   runs a QC loop, and shows the user the final cut — **nothing publishes until the user watches it**,
@@ -213,7 +227,9 @@ Before any kickoff, decide and record in the runsheet:
   Confirm the **SIGNUP AUTOMATION** line: if the user authorizes it (the default for this builder —
   they accept the consequences), the concierge handles CAPTCHA and email-OTP inline and provider
   signups become Tier A; strike the line to keep signups human-assisted. Help the user strike any
-  access they don't want to grant — the concierge tiers around whatever remains.
+  access they don't want to grant — the concierge tiers around whatever remains, and its boot
+  re-probes exactly those granted items as its tollgate session card (rows 5–8, 15) before
+  inventorying.
 - **Set expectations:** it inventories every gate (declared `human_gate` tasks + implicit ones:
   faucets, provider accounts/API keys, wallet setup, repo-public flip, the submission form), commits
   the ledger naming the exact tools per gate, then STOPS. The user runs it like a checklist: "run
@@ -235,6 +251,7 @@ Diagnose from the repo, then fix the *baton*, not the symptom:
 | Artifacts landed in the build-system repo | a step treated the kit checkout as the project repo | resolve/create the project repo (`repo-bootstrap.md`), move the artifacts there, record it in the runsheet |
 | A step asks "which repo?" | no `REPO:` in its kickoff | fill it from the runsheet; if no repo exists yet, tell the step to create it per `repo-bootstrap.md` |
 | 0a captures empty/spinner pages | Chrome tools not connected in that session | connect the extension, re-run those sources |
+| A step dies mid-run on a missing tool/access | its session preflight card was skipped, or a tollgate row went stale | re-probe that step's rows (`references/tollgate.md`), fix per the row's hint, update the report, resume |
 | Pack has gaps on key sources | auth-gated content | user fetches manually, paste into the pack with provenance noted |
 | Manifest validation fails | schema/DAG/equality defect | fix in the architect session against Stage 4's checklist — never hand-edit the manifest alone (it's a projection of the plans) |
 | Orchestrator loops on a gate | mis-classified failure | apply the mastermind taxonomy; a plan bug goes BACK to the architect, not another retry |
@@ -252,6 +269,8 @@ fix — don't improvise a workaround that fights the system.
 - **Event** — name, URL, deadline (absolute + tz), published judging criteria one-liner.
 - **Project repo** — `owner/name` + visibility, and who created it (user-provided vs.
   pipeline-created per `repo-bootstrap.md`); update it on the idea-forge rename.
+- **Tollgate** — the report path + the current per-step verdicts (CLEAR / BLOCKED with the failing
+  rows); update whenever a row's result changes.
 - **Goal** — what the user wants out of it.
 - **Strategy decisions** — steps to run/skip, track shortlist, risk appetite, sponsor depth — each
   with its one-line reason.

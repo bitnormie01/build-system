@@ -29,7 +29,11 @@ Do this:
 1. Sync the project repo below (the canonical repo — references/repo-bootstrap.md; never the
    build-system checkout) and read the spec, plans, conventions.md, and manifest.json if present.
 2. Build the task DAG — prefer the manifest (it carries the human-gate flags); else parse the plans per
-   task-contract.md §1 and derive human-gating from task content yourself.
+   task-contract.md §1 and derive human-gating from task content yourself. Then probe the tollgate's
+   Stack requirements rows (docs/tollgate/*-tollgate.md, per references/tollgate.md), plus matrix
+   row 9 (Node ≥20 + npm) when the stack is JS/TS — every
+   compiler/CLI the plans assume must PASS before you dispatch anything; surface a FAIL to me with
+   its fix hint now rather than letting the first task die on it as a pseudo-flake.
 3. For each dependency-ready task, in order:
    - If it deploys, moves funds, signs a tx, or uses a key/secret (its manifest `human_gate` flag, or
      evident from its steps): PAUSE and hand it to me — never run it yourself.

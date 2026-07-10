@@ -10,7 +10,10 @@ description: >
   <event>", "pull the rules/tracks/sponsor docs", "research this hackathon", or hands a hackathon URL
   and wants the source material collected before ideating. **Many hackathon and sponsor sites are
   JS-heavy single-page apps (Dorahacks, Devfolio, ETHGlobal, Notion/GitBook handbooks, Docusaurus SDK
-  docs) — this skill drives the Chrome browser tools to render, reveal, and capture that content.** Do
+  docs) — this skill drives the Chrome browser tools to render, reveal, and capture that content.**
+  As the campaign's first pipeline session it also runs the requirements TOLLGATE first (Stage 0):
+  probe every access/plugin/MCP/toolchain the planned steps need — "check the requirements", "run
+  the tollgate" — and commit the report so nothing is missing mid-execution. Do
   NOT use it to pick an idea (that's idea-forge) or to plan a build (architect).
 ---
 
@@ -61,6 +64,19 @@ the pack into the build-system kit checkout. Files:
   `../references/web3-seed-pack.md` for divergence (the seed pack is a dated floor, not the ceiling).
 
 ## The pipeline
+
+### Stage 0 — Campaign tollgate (you are the campaign's first pipeline session)
+
+Before scoping a single source, run the **campaign requirements tollgate**
+(`../references/tollgate.md`): probe the full matrix for every step the campaign plans to run
+(the kickoff or the guide's strategy names them; unknown → probe all), then write, commit, and
+push `docs/tollgate/<YYYY-MM-DD>-tollgate.md` to the project repo — results, per-step verdicts,
+and a fix hint for every FAIL. This is what keeps a missing MCP, toolchain, or access grant from
+surfacing as a mid-execution roadblock three steps from now. **Hard-stop only on your OWN failing
+hard rows** (the browser tools and the repo — you can't extract without them); every other step's
+failure is a report line for the guide/user to fix before that step is green-lit, not your
+blocker. Probes are read-only — you fix nothing, install nothing, log into nothing (sole exception:
+row 15's throwaway `setx` variable, removed immediately after the read-back).
 
 ### Stage 1 — Scope the sources
 

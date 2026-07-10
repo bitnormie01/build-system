@@ -47,8 +47,11 @@ this is not ToS-clean and is my own content, low-volume, logged). Drive fallback
 [Set the channel/account, or strike to keep upload manual and just hand me the rendered file.]
 
 Do this, in order:
-1. Sync the project repo; read the brief (money shot), spec, the pack's event.md (judging weights),
-   and docs/gates/submission-draft.md.
+1. Run your tollgate session card first (references/tollgate.md rows 5-6, 8-13, 16 — the demo-stack
+   probes plus browser/device access, the wallet extension when wallet scenes are on, and disk); a
+   failing hard row stops you with its fix hint
+   before any script/recording work. Then sync the project repo; read the brief (money shot), spec,
+   the pack's event.md (judging weights), and docs/gates/submission-draft.md.
 2. Write docs/demo/<date>-demo-script.md — a scene table (id, seconds, visual, narration, capture
    driver, wallet verbs, gate assertion, retake budget), scene-seconds weighted by the judging
    criteria. Commit it and get my approval BEFORE recording.

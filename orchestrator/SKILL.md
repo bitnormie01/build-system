@@ -47,6 +47,15 @@ dispatch a subagent per task, prove each gate, and commit."
    when the plan has no deploy/key/fund tasks.
 3. **Confirm the plan looks buildable** (quick pass: no placeholders, every `requires` has a provider).
    A broken plan is a replan, not something to power through — route it back to the architect.
+4. **Probe the tollgate's stack rows** — `docs/tollgate/*-tollgate.md` §Stack requirements (the
+   architect appended one row per CLI/runtime the plans assume; `../references/tollgate.md`) —
+   **plus matrix row 9 (Node ≥20 + npm) whenever the stack is JS/TS**, even if the stack section
+   omitted it. Run
+   each row's probe, record the results in the report, and **surface any FAIL now** (to the user,
+   with the row's fix hint — you probe and report, you don't install) before dispatching anything —
+   a missing toolchain caught at boot is a
+   five-minute install; caught inside a task it's a gate failure misdiagnosed as a flake. No report
+   or no stack section (non-campaign build) → skip.
 
 ## The build loop
 

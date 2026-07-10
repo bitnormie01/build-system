@@ -49,9 +49,12 @@ signup; do not bounce those back to me. (Strike this line to keep signups human-
 HACKATHON SUBMISSION: [platform + URL of the submission page, or "in the resource pack's event.md"]
 
 Do this, in order:
-1. Sync the project repo; read the manifest's human_gate tasks (+ gate_profile where set), the
-   brief, the resource pack's event.md, docs/gates/submission-draft.md (the architect's pre-filled
-   form), and the runsheet's open blockers.
+1. Run your tollgate session card first (references/tollgate.md rows 5-8, 15): verify each GRANTED
+   ACCESS item above actually responds in THIS session before anything else — a dead grant found
+   mid-gate is the roadblock the tollgate exists to kill. Then sync the project repo; read the
+   manifest's human_gate tasks (+ gate_profile where set), the brief, the resource pack's event.md,
+   docs/gates/submission-draft.md (the architect's pre-filled form), and the runsheet's open
+   blockers.
 2. Inventory EVERY gate — declared (manifest) and implicit (faucets, provider accounts/API keys,
    burner wallet + extension, repo-public flip, the submission form). Mark each gate's pass:
    preflight (runnable before the build) or closing (needs the built artifact).
