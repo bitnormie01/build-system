@@ -80,8 +80,10 @@ pipeline runs for this event, prep each step's kickoff, and stay here to unblock
 
 **Session discipline (the rule users trip on):** each step runs in its **own fresh session**; the
 baton between steps is the **committed, pushed artifact** — never chat history. Don't run two steps in
-one session (one documented exception: the architect may hand straight into the orchestrator
-in-session — allowed, but a fresh orchestrator session is cleaner for a long build). This guide
+one session (documented exceptions: the architect may hand straight into the orchestrator
+in-session — allowed, but a fresh orchestrator session is cleaner for a long build — and autopilot
+mode, which by design runs Step 2 inline and may run an MCP-bound step inline under its row-17
+fallback, `../autopilot/SKILL.md`). This guide
 session is the one that stays open throughout.
 
 ## Strategy first — think the pipeline through for THIS event
@@ -112,6 +114,15 @@ Before any kickoff, decide and record in the runsheet:
   the recommendation AND the reason; the user decides.
 - **Sponsor depth for 0a.** Deep-extract the sponsors of the target tracks (addresses, entry points,
   examples); shallow-pass the rest. Name them in the extractor kickoff.
+- **Mode: guided or autopilot.** This guided flow is the default — the user approves each baton.
+  For a fully hands-off campaign there is **autopilot mode** (`../autopilot/SKILL.md`, kickoff
+  `../prompts/INVOKE_AUTOPILOT.md`): one session collects and locks every decision and consent up
+  front as a campaign contract (`../references/campaign-contract.md`), then runs all the steps
+  itself. The honest tradeoff to state: the approval touchpoints you'd get between steps (track
+  choice after seeing the pack, watching the demo cut before upload) move into that one up-front
+  contract. Recommend guided for a first campaign or anything security-sensitive; offer autopilot
+  once the pipeline has earned the user's trust — and never start it yourself; it is always the
+  user's explicit ask.
 
 ## Step-by-step playbook
 
@@ -252,6 +263,7 @@ Diagnose from the repo, then fix the *baton*, not the symptom:
 | A step asks "which repo?" | no `REPO:` in its kickoff | fill it from the runsheet; if no repo exists yet, tell the step to create it per `repo-bootstrap.md` |
 | 0a captures empty/spinner pages | Chrome tools not connected in that session | connect the extension, re-run those sources |
 | A step dies mid-run on a missing tool/access | its session preflight card was skipped, or a tollgate row went stale | re-probe that step's rows (`references/tollgate.md`), fix per the row's hint, update the report, resume |
+| An autopilot campaign hard-stopped | a never-floor item, identity mismatch, capability gap, exhausted loop bound, or contract-impossible situation | read the runsheet's blocker line + the campaign contract (`../references/campaign-contract.md`); fix the named blocker or have the user amend the contract (committed revision), then the user tells the autopilot session to resume |
 | Pack has gaps on key sources | auth-gated content | user fetches manually, paste into the pack with provenance noted |
 | Manifest validation fails | schema/DAG/equality defect | fix in the architect session against Stage 4's checklist — never hand-edit the manifest alone (it's a projection of the plans) |
 | Orchestrator loops on a gate | mis-classified failure | apply the mastermind taxonomy; a plan bug goes BACK to the architect, not another retry |
@@ -287,8 +299,10 @@ fix — don't improvise a workaround that fights the system.
 - **Never bypass the pipeline's gates** — no hand-editing briefs/manifests to "save a session", no
   skipping the architect's design approval, no faking a verification you didn't run.
 - **Human-gate actions are the user's.** You walk them through deploys/keys/funds; you never execute
-  them yourself. The seats that may are the `gate-concierge` (Step 3, per-gate consent) and
-  `demo-studio` (Step 2.5, recording + upload consents) — and only on the user's explicit go; your
+  them yourself. The seats that may are the `gate-concierge` (Step 3, per-gate consent),
+  `demo-studio` (Step 2.5, recording + upload consents), and the `autopilot` (locked-contract
+  pre-consents, `../references/campaign-contract.md`) — and only on the user's explicit go, given
+  in the moment or at contract lock; your
   job is to prep their kickoffs, never to play them from this session.
 - **State comes from the synced repo**, never from memory or hope — re-check before declaring a step
   done. **Recommendations come with reasons** — the user decides.

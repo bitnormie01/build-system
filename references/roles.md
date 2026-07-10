@@ -5,11 +5,25 @@ and what the kernel delivers to whom. **It is not delivered into any pipeline ro
 architect, mastermind, and executor see only their own kit plus the shared contract. (User-side seats
 are different: the `guide` — the user's mission-control session — a manager-mode session, the
 `gate-concierge` — the Step-3 seat (a preflight pass after the architect, a closing pass after the
-build) that executes human-gated steps only on the user's per-gate consent — and `demo-studio` — the
+build) that executes human-gated steps only on the user's per-gate consent — `demo-studio` — the
 Step-2.5 seat that records and uploads the demo video only on the user's recording/upload consents —
+and the `autopilot` — the full-campaign autonomous mode that performs the guide's handovers itself
+under a locked campaign contract (`campaign-contract.md`) —
 sit on the kernel/human side of the table and hold this map by design; they advise, verify,
-unblock, and run consented gates, but never extract, ideate, plan, or build.) Keeping role boundaries
+unblock, and run consented gates, but never extract, ideate, plan, or build — the autopilot being
+the one scoped exception: under its locked contract it orchestrates Step 2 inline, dispatching
+executor subagents and never writing product code itself, and may run an MCP-bound step inline
+under its documented row-17 fallback.) Keeping role boundaries
 here (not in the pipeline agents) is what enforces isolation: no role can peek at another's skills.
+
+**Autopilot mode** (`../autopilot/SKILL.md`) is a third way to *drive* the same configurations, not
+a third configuration: one persistent session collects and locks the user's constraints and
+consents up front (the campaign contract), then dispatches each pipeline step as a **fresh
+subagent** (fresh context, so session discipline survives) and plays the orchestrator **inline**
+for Step 2. Role isolation holds — each step subagent receives only its own kit + its kickoff +
+the contract slice it consumes, never the map. (The row-17 inline fallback trades this locally:
+a step it runs inline executes in the map-holding session — a documented, reported degradation,
+never a silent one.)
 
 ## The three roles over one shared structure
 
@@ -51,8 +65,8 @@ itself. Everything below about kernel delivery, rotation, and the effort→CLI-f
 
 The kernel is deterministic code, not an LLM. It is the only **pipeline-side** component that knows
 all three kits exist — that's what makes isolation possible. (User-side seats — the `guide`, a
-manager-mode session, the `gate-concierge`, and `demo-studio` — also hold the map, by design; see
-the note at the top of this file.)
+manager-mode session, the `gate-concierge`, `demo-studio`, and the `autopilot` — also hold the
+map, by design; see the note at the top of this file.)
 
 1. **Deliver the right kit at boot.** Before any agent works, the kernel assembles its context:
    that role's `SKILL.md` + `references/task-contract.md` + `references/conventions.md` + (for the

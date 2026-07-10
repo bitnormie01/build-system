@@ -42,6 +42,15 @@ persistent mission-control session that plans the pipeline for your specific eve
 step's kickoff, verifies each committed artifact, and unblocks you between steps. Each pipeline step
 still runs in its own fresh session; the guide is the seat you come back to.
 
+**Want the whole campaign hands-off? That's `autopilot` mode** (`autopilot/SKILL.md`, kickoff
+`prompts/INVOKE_AUTOPILOT.md`): one session collects your constraints and consents up front —
+which steps, demo video, submission (identity-bound to the account your connected browser is
+logged into), budget (`$0` default or funds-allowed) — locks them as a committed **campaign
+contract** (`references/campaign-contract.md`), then dispatches each step as a fresh subagent
+(Step 2 inline) and runs the pipeline to a submitted project. It stops only for hard blockers, and
+no contract can authorize the never-consentable floor (mainnet, real funds, the user's main
+wallet, payment/KYC). Guided mode remains the default and the right choice for a first campaign.
+
 The **planning** front end is identical either way — `resource-extractor` (optional) → `idea-forge`
 (optional) → `architect` produce a resource pack, a scoped brief, then a spec, plans, and a task DAG,
 committed to the repo. What differs is who **builds** the plan:
@@ -65,6 +74,7 @@ external-pool config; for the Claude-Code-native build read `orchestrator/SKILL.
 build-system/
 ├── README.md
 ├── guide/SKILL.md              # START HERE — mission control: plans the pipeline per event, preps kickoffs, verifies batons, helpdesk between steps
+├── autopilot/SKILL.md          # hands-off mode: lock a campaign contract up front, then run every step autonomously (stops only on hard blockers)
 ├── resource-extractor/SKILL.md # Step 0a (optional): extract the hackathon's docs -> committed resource pack (drives Chrome for JS-heavy sites)
 ├── idea-forge/SKILL.md         # Step 0 (optional): blank start -> one scoped hackathon brief
 ├── architect/SKILL.md          # Step 1: idea+docs -> spec, plans, manifest.json (runs once, top model)
@@ -75,6 +85,7 @@ build-system/
 ├── executor/SKILL.md           # build one task, test-first, prove the gate (dispatched to each subagent)
 ├── prompts/                    # copy-paste kickoffs
 │   ├── INVOKE_GUIDE.md
+│   ├── INVOKE_AUTOPILOT.md
 │   ├── INVOKE_RESOURCE_EXTRACTOR.md
 │   ├── INVOKE_IDEA_FORGE.md
 │   ├── INVOKE_ARCHITECT.md
@@ -85,6 +96,7 @@ build-system/
     ├── task-contract.md        # plan grammar + manifest DAG + executor prompt (the bridge)
     ├── conventions.md          # coding + decomposition rules + repo-as-source-of-truth
     ├── repo-bootstrap.md       # WHICH repo is canonical + who creates it (gh) when the user provides none
+    ├── campaign-contract.md    # autopilot's locked instrument: contract schema, intake, consent forms + never-floor, identity checks, $0|funds-allowed
     ├── faucets/                # cross-campaign faucet playbooks — read before claiming, write back after (grows one commit per event)
     ├── tollgate.md             # requirements tollgate — the capability matrix probed at Step 0a (campaign) + per-step session cards
     ├── demo-stack.md           # demo-studio's pinned toolchain + exact capture/render/upload commands (re-verify before a run)
@@ -99,8 +111,9 @@ build-system/
 ## How the kernel uses it
 
 The kernel is the only pipeline-side component that knows all three kits exist — that is what enforces
-isolation (user-side seats — the `guide`, a manager-mode session, the `gate-concierge`, and
-`demo-studio` — hold the map by design; see `references/roles.md`). It has two jobs:
+isolation (user-side seats — the `guide`, a manager-mode session, the `gate-concierge`,
+`demo-studio`, and the `autopilot` — hold the map by design; see `references/roles.md`). It has
+two jobs:
 
 1. **Deliver the right kit at boot** — assemble each agent's context: its own `SKILL.md` +
    `task-contract.md` + `conventions.md` (+ the executor's one task and required signatures). It

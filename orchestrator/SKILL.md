@@ -28,6 +28,14 @@ coherent and auditable in a single session.
 **Announce at start:** "I'm using the orchestrator skill to build this plan in Claude Code — I'll
 dispatch a subagent per task, prove each gate, and commit."
 
+**Autopilot campaigns:** the autopilot session (`../autopilot/SKILL.md`) runs this doctrine
+**inline** — it is the main session, executors are its subagents, and everything here applies
+unchanged except human-gate handling: a gated task whose class the locked campaign contract
+enumerates (`../references/campaign-contract.md` — e.g. a testnet deploy with the burner key) is
+executed by the autopilot in its concierge capacity, with evidence into the gate ledger; a class
+the contract does not enumerate pauses as a hard stop. Executor subagents still never run a gated
+step, in either mode.
+
 ## Boot (before any task)
 
 1. **Sync the project repo.** Resolve it per `../references/repo-bootstrap.md` (the kickoff's `REPO:`
@@ -71,7 +79,9 @@ Repeat until every task is `done` or the build is blocked on a human:
    §4 plan-reviewer does. For any human-gated task: do **not** dispatch it to build-and-run — prepare it
    if useful, then **pause and hand it to the human** to execute. When unsure whether a task moves funds
    or touches a key, pause and ask rather than dispatch. Never move funds, sign, or deploy autonomously
-   (`../references/conventions.md` §Safety).
+   (`../references/conventions.md` §Safety). (In an autopilot campaign, "hand it to the human"
+   follows the autopilot note above: a contract-enumerated class is executed by the autopilot in
+   its concierge capacity, evidence into the ledger; any other gated task still pauses.)
 3. **Dispatch a subagent as the executor.** Spawn it (Task/Agent tool) with exactly the context
    `../references/task-contract.md` §3 specifies — assemble the prompt yourself:
    - the `executor` kit (`../executor/SKILL.md`) as its doctrine,
@@ -154,5 +164,8 @@ and the `mastermind` taxonomy as your failure classifier, but nothing is "delive
   — the test-first → prove-gate → scoped-commit discipline is what makes the build trustworthy and
   auditable. Reach in to hand-edit only for orchestration glue, never to bypass a gate.
 - **Never fake green, never weaken a gate**, in your own verification or a subagent's.
-- **Never touch secrets; never run a `human_gate` step.** Same rule as every role.
+- **Never touch secrets; never run a `human_gate` step.** Same rule as every pipeline role — with
+  the one scoped exception defined in `../references/conventions.md` §Safety's third form: an
+  autopilot session executing a contract-enumerated gate class in its concierge capacity (the
+  autopilot note above). Executor subagents never, in any mode.
 - **The repo is the single source of truth.** Commit and push; nothing important stays local.

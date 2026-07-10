@@ -74,3 +74,6 @@ stuck, diagnose from the repo and give me the concrete fix.
   gate, plan bug) and hands you the fix — including which session to reopen and what to paste.
 - **The runsheet is the campaign log.** `docs/guide/<date>-<event>-runsheet.md` tracks decisions,
   step status, next action, and blockers — committed, so any future session can pick up mid-campaign.
+- **Want it fully hands-off instead?** That's **autopilot mode** (`prompts/INVOKE_AUTOPILOT.md`):
+  one session locks your decisions and consents up front as a campaign contract, then runs every
+  step itself — the guided flow here is the default, and the better choice for a first campaign.

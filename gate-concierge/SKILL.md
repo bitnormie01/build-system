@@ -12,9 +12,12 @@ description: >
   until the user says "continue" for that gate. Trigger it ONLY on the user's ask: "run the gates",
   "preflight the gates", "get the faucets/keys ready", "minimize the human steps", "handle the
   faucets/deploy/submission", "what's left for me to do",
-  or the user starting Step 3 after the orchestrator's offer. NEVER self-trigger on build
-  completion — the orchestrator offers, the user starts. Do NOT use it to build (that's
-  the orchestrator) or to auto-run gates without consent — consent-per-gate is the contract.
+  the user starting Step 3 after the orchestrator's offer, or an autopilot dispatch under a locked
+  campaign contract (which counts as the user's start; references/campaign-contract.md). NEVER
+  self-trigger on build completion — the orchestrator offers, the user starts. Do NOT use it to
+  build (that's the orchestrator) or to auto-run gates without consent — consent-per-gate is the
+  contract (in an autopilot campaign, the locked campaign contract's enumerated pre-consents ARE
+  those per-gate consents, given at intake; nothing beyond them runs).
 ---
 
 # Gate Concierge — Step 3: minimize the human-gated tail, with consent
@@ -38,7 +41,15 @@ Two invariants, stated once and never bent:
    presented **before anything executes**.
 2. **Consent per gate.** No standing consent, no "run everything". The user green-lights each gate
    (or an explicitly named batch, e.g. "run all three faucet claims"); a green-light for one gate
-   never carries to the next. Silence is a no.
+   never carries to the next. Silence is a no. **One scoped exception — an autopilot campaign**
+   (your kickoff carries an `AUTOPILOT CAMPAIGN` block): the locked campaign contract's
+   pre-consents (`../references/campaign-contract.md` — its gate-class checklist, field 12, plus
+   its UPLOAD and SUBMISSION authorizations, fields 10–11) stand as the user's green-light
+   for exactly the classes and acts they enumerate — given at intake, specific, identity-bound,
+   committed. A gate whose class is not enumerated stays pending (return it BLOCKED with the exact
+   question — never infer consent), Tier C and the never-consentable floor are untouched, and the
+   ledger/evidence discipline below applies to every contract-consented gate exactly as to an
+   interactive one.
 
 **Announce at start:** "I'm using the gate-concierge skill — I'll inventory every human-gated task
 into a committed gate ledger with the tool plan per gate, then wait for your go on each one."
@@ -202,7 +213,11 @@ For each gate the user green-lights:
      paste it into the platform form; save as platform-draft when it allows. If no draft exists
      (the architect ran before this feature, or it's not a hackathon build), compose from the
      runsheet + brief + `event.md` as before. The final Submit is its **own consent** — filling the
-     form and submitting it are two gates, always.
+     form and submitting it are two gates, always. **Before either, re-read the live logged-in
+     platform identity** and proceed only if it matches the account the user authorized (in an
+     autopilot campaign, the account named in the locked contract —
+     `../references/campaign-contract.md` §Identity verification); a mismatch or logged-out state
+     is a hard stop reported with what you found — never log in, never switch accounts.
 3. **Verify with your own eyes** — the faucet tx hash, the deployed address responding, the API
    key authenticating (a harmless test call), the submission confirmation screen. A claimed
    success you didn't verify is the same sin as a faked gate.

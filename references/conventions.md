@@ -61,11 +61,16 @@ prompt. They are the standing rules a stateless executor needs but can't infer.
 - Deployment / key-operation / fund-movement steps are flagged `human_gate: true` in the manifest
   (canonical spelling — snake_case, defined in `task-contract.md` §2; never `human-gate`). The
   autonomous pool prepares them but a human runs them. Executors never broadcast signed transactions
-  or move funds autonomously. "A human runs them" has two valid forms: the user executes the step
-  directly, or the user gives an explicit per-gate "continue" to the **gate-concierge** — a
+  or move funds autonomously. "A human runs them" has three valid forms: the user executes the step
+  directly; the user gives an explicit per-gate "continue" to the **gate-concierge** — a
   user-side seat (`gate-concierge/SKILL.md`) that executes it under their eyes with their granted
-  tooling. Either way the pipeline itself never auto-runs a gated step, and consent never carries
-  from one gate to the next.
+  tooling; or the user **pre-consents in a locked campaign contract** (autopilot mode —
+  `campaign-contract.md`), which enumerates the gate classes specifically, and the autopilot
+  executes those under the same evidence/ledger rules the concierge follows. In every form the
+  pipeline itself never auto-runs a gated step. In the interactive forms, consent never carries
+  from one gate to the next; under a locked contract, consent carries exactly as far as the
+  contract's enumeration and no further — and the never-consentable floor
+  (`campaign-contract.md` §Never-consentable floor) is beyond any consent form.
 
 ## Spec / plan hygiene
 

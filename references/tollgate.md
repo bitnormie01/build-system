@@ -25,6 +25,13 @@ probe, when, who probes it, and the report everything reads. Design record:
    apply — 0a (Stage 0 covers it), 2.5, and 3. Steps 0 and 1 need only rows 1–4, which their
    existing boot (sync the project repo) already enforces; Step 2's card is the stack rows + row 9,
    probed at the orchestrator's boot. That is by design, not an omission.
+   **Autopilot campaigns collapse this layer:** the whole campaign runs inside ONE persistent
+   session (`../autopilot/SKILL.md`), so session-scoped rows probed at the autopilot's boot
+   (including row 17) remain valid campaign-long. The autopilot still re-probes them cheaply
+   before each browser-heavy dispatch and after any reconnect — grants can drop mid-day. The
+   never-PASS-for-a-*future*-session rule below still bites the moment the campaign leaves that
+   session: a restarted autopilot re-probes its session-scoped rows at boot
+   (`../autopilot/SKILL.md` §Resumability).
 3. **Stack rows — appended by the architect, probed before the build.** The project's toolchain is
    unknown until the architect picks it. At Stage 4 the architect appends a **Stack requirements**
    section to the report — one row per CLI/runtime the plans assume (from each plan's Tech Stack
@@ -67,12 +74,13 @@ Steps: 0a extractor · 0 idea-forge · 1 architect · 2 orchestrator · 2.5 demo
 | 14 | event portal reachable | degraded | 0a | fetch the event URL | retry; user pastes gated content (record as a pack gap if persistent) |
 | 15 | cross-session env store writable | degraded | 3 (preflight secrets) | `setx TOLLGATE_PROBE 1`, confirm with `reg query HKCU\Environment /v TOLLGATE_PROBE` (setx does NOT touch the current session's env), then remove: `reg delete HKCU\Environment /v TOLLGATE_PROBE /f` | fix permissions; fall back to the project repo's git-ignored `.env` |
 | 16 | ~2 GB free disk on the workspace drive | degraded | 2.5 | free-space check | free space before recording/rendering |
+| 17 | subagents can reach this session's MCP tools | conditional | autopilot campaigns only (`../autopilot/SKILL.md`) | dispatch one trivial subagent instructed to call one browser tool (e.g. read the tab context) and report the result verbatim | none to install — a FAIL selects the autopilot's documented fallback: MCP-dependent steps run inline (or one step degrades to a guide-mode kickoff) |
 
 **Probe rules:** probes are **read-only** — they install nothing, log into nothing, grant nothing,
 accept nothing (the single sanctioned write is row 15's throwaway variable, removed immediately).
 A campaign may ADD rows in its own report (a sponsor-specific CLI, an extra MCP) but never weakens
 a class. New rows for external tools carry live-verified facts, same as any pin. Session-scoped
-rows (5–8, 12) are never marked PASS for a *future* session — the report records "passed in
+rows (5–8, 12, 17) are never marked PASS for a *future* session — the report records "passed in
 session X"; every later session re-probes its card.
 
 ## The report — `docs/tollgate/<YYYY-MM-DD>-tollgate.md` (project repo)

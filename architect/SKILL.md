@@ -103,13 +103,21 @@ Run these four stages in order. Do not start a stage until the previous one is a
 ### Stage 2 — Brainstorm into a spec
 
 - Invoke the brainstorming skill. Honor its **hard gate**: present a design and get explicit
-  approval before any planning.
+  approval before any planning. **In an autopilot campaign** (your kickoff carries an
+  `AUTOPILOT CAMPAIGN` block — `../references/campaign-contract.md`) the gate survives but the
+  approver is the autopilot: answer the brainstorming dialogue's questions **from the locked
+  contract and the brief** — recording each as a line in a `Design decisions` section of the spec
+  (question → answer → source: contract field / brief field / derived) — then return the design
+  summary as your final report for the autopilot's contract-conformance approval; it approves or
+  re-dispatches you with concrete corrections. A question neither the contract nor the brief can
+  answer is not yours to guess: return BLOCKED with the exact question.
 - **Decomposition gate (critical):** if the project spans multiple independent subsystems
   (e.g. contracts + off-chain worker + frontend + deploy), flag it immediately and split into
   sub-projects. Each subsystem gets its own spec→plan cycle. This is why a real build becomes 3–5
   plan files, not one giant one.
 - Save the approved spec to `docs/superpowers/specs/`. Get the user to review the written spec
-  before moving on.
+  before moving on (in an autopilot campaign, that reviewer is the autopilot — same
+  conformance-approval loop as the design gate above).
 
 ### Stage 3 — Decompose into plans
 

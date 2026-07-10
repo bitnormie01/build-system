@@ -71,7 +71,12 @@ Before scoping a single source, run the **campaign requirements tollgate**
 (`../references/tollgate.md`): probe the full matrix for every step the campaign plans to run
 (the kickoff or the guide's strategy names them; unknown → probe all), then write, commit, and
 push `docs/tollgate/<YYYY-MM-DD>-tollgate.md` to the project repo — results, per-step verdicts,
-and a fix hint for every FAIL. This is what keeps a missing MCP, toolchain, or access grant from
+and a fix hint for every FAIL. **If a campaign tollgate report already exists** (the guide ran it
+on a skip-0a plan that changed, or an autopilot boot ran it — `../autopilot/SKILL.md`, under a
+locked campaign contract, `../references/campaign-contract.md`), you are
+not the campaign's first pipeline session after all: verify and **extend that report** (re-probe
+your own rows, update stamps) rather than creating a second — one report per campaign, same rule
+as the gate ledger. This is what keeps a missing MCP, toolchain, or access grant from
 surfacing as a mid-execution roadblock three steps from now. **Hard-stop only on your OWN failing
 hard rows** (the browser tools and the repo — you can't extract without them); every other step's
 failure is a report line for the guide/user to fix before that step is green-lit, not your

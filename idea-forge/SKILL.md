@@ -70,7 +70,12 @@ cover. With no pack, run the inputs below as normal.
    stall, or invent competitors.
 
 If the user pre-supplied these (e.g. via `prompts/INVOKE_IDEA_FORGE.md`), confirm them back in one
-line and proceed.
+line and proceed. **In an autopilot campaign** (your kickoff carries an `AUTOPILOT CAMPAIGN` block
+— `../references/campaign-contract.md`) the locked contract supplies inputs 1, 2, 4, and 5 the
+same way — confirm-and-proceed, no interrogation — while input 3 keeps its kit default (the
+autonomous pool + the builder), and the contract's BUDGET field binds Step 3's gate below; an
+input the contract leaves open ("idea-forge decides within contract") is yours to decide and
+record.
 
 ## Step 2 — Diverge (quantity and variety first, no filtering)
 
@@ -102,7 +107,10 @@ Score **every** candidate with `../references/ideation-rubric.md`. Do not pick b
   / KYC, a service / oracle / indexer you can't run, a human-in-the-loop, a deploy you can't perform, or
   a money shot riding on live external markets. Knockout, before scoring — an un-demoable idea is out,
   however brilliant. Build *speed* is not the test (the agent pool builds fast); external *blockers*
-  are, so an ambitious-but-buildable idea passes.
+  are, so an ambitious-but-buildable idea passes. **Budget knockout:** when the campaign's locked
+  BUDGET is `$0` (`../references/campaign-contract.md` §Budget), a candidate whose real demo
+  requires any paid resource — a paid API tier, paid RPC, paid dataset, paid hosting — is out at
+  this gate too; free tiers, faucets, and testnet must suffice end-to-end.
 - **White-space check — only if prior art was provided or found** (after the gate, feeding the score
   below). Map each surviving candidate against the prior art and classify it: *duplicate* (substantially
   an existing project), *incremental* (a marginally-better clone — treat as weak), or *white-space* (an

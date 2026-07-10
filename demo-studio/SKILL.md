@@ -8,11 +8,13 @@ description: >
   scenes), narrates with TTS and word-timed captions, assembles with Remotion, runs a frame-level
   QC loop, has the user WATCH the final cut, then — on a separate consent — uploads it and resolves
   the submission draft's demo-video URL. Trigger it ONLY on the user's ask: "make the demo video",
-  "record the demo", "create the hackathon video", "do the demo studio", or the user starting Step
-  2.5 after the orchestrator's offer. NEVER self-trigger on build completion — the orchestrator
+  "record the demo", "create the hackathon video", "do the demo studio", the user starting Step
+  2.5 after the orchestrator's offer, or an autopilot dispatch under a locked campaign contract
+  (which counts as the user's start). NEVER self-trigger on build completion — the orchestrator
   offers, the user starts. It records under a foreground do-not-disturb session and never publishes
-  without the user watching first. Do NOT use it to build (that's the orchestrator) or to run the
-  faucet/deploy/signup gates (that's the gate-concierge).
+  without the user watching first — unless the locked contract's explicit WATCH policy delegates
+  that watch (autopilot mode; references/campaign-contract.md). Do NOT use it to build (that's the
+  orchestrator) or to run the faucet/deploy/signup gates (that's the gate-concierge).
 ---
 
 # Demo Studio — Step 2.5: the demo video, recorded and assembled autonomously
@@ -24,13 +26,14 @@ narrate, caption, edit, upload — costs hours at the worst possible time. The k
 everything up to here: the build is green, and the architect's `docs/gates/submission-draft.md`
 carries a `TBD-post-build: demo video URL` waiting to be filled. This seat fills it. It drives the
 built app through a scene-by-scene script, captures each scene, assembles a captioned narrated cut
-with Remotion, and — only after the user watches it and consents — uploads it.
+with Remotion, and — only after the watch gate (Stage 7) and the upload consent — uploads it.
 
 It is a **user-side seat** (like the guide and the gate-concierge): it runs on the user's machine
 with their granted tooling, it **never self-triggers**, and its two outward actions — running a
 foreground recording session and publishing the video — are **consented gates**. Quality comes from
 gates, not hope: every scene has a pass/fail assertion and a bounded retake budget, every render
-passes a frame-level QC loop, and **the user watches the final cut before anything is published**.
+passes a frame-level QC loop, and **the user watches the final cut before anything is published**
+(delegable only by an autopilot contract's explicit WATCH policy — Stage 7).
 
 **Announce at start:** "I'm using the demo-studio skill — I'll write the demo script for your
 approval, record the app scene-by-scene, assemble a captioned narrated cut, show it to you, and only
@@ -61,6 +64,13 @@ faucet/deploy/signup gates — those are other seats.
 Two consents are yours and only yours to ask for: **the recording session** (it takes over the
 foreground of the user's desktop — a do-not-disturb window) and **the upload** (publishing is
 irreversible-ish; watching the cut and consenting to upload are two separate human moments).
+**In an autopilot campaign** (your kickoff carries an `AUTOPILOT CAMPAIGN` block —
+`../references/campaign-contract.md`) both consents come pre-collected in the locked contract
+**when the user granted them** — the recording-session pre-consent (field 12) and the UPLOAD
+authorization (field 10, identity-bound). A pre-consent the contract struck, or an UPLOAD marked
+`manual`, stays with the user — return that act BLOCKED / hand it back, never assume it. The
+script and the WATCH gate follow the mode-aware notes in their stages below, and anything else the
+contract does not enumerate is returned BLOCKED with the exact question.
 
 ## Kickoff inputs (defaults are set; the user overrides per campaign)
 
@@ -89,8 +99,10 @@ scene table: `id · target seconds · visual (route/action/window) · narration 
 (screencast | gfxcapture | ddagrab) · wallet verbs (abstract: connect / approveTx / switchNetwork) ·
 gate assertion (what the final frame or on-chain state must show) · retake budget (default 3)`.
 **Allocate scene seconds by the judging weights** — if working-demo is 50%, most seconds go to the
-money shot, not the intro. Commit and push it, then **get the user's approval before recording**. A
-rubber-stamped script produces a drifting video, same as a rubber-stamped spec.
+money shot, not the intro. Commit and push it, then **get the user's approval before recording**
+(in an autopilot campaign the approver is the autopilot, which reviews the script for contract
+conformance — judging-weight allocation, money shot, length — and approves or re-dispatches with
+corrections). A rubber-stamped script produces a drifting video, same as a rubber-stamped spec.
 
 ### 2. Storyboard preview
 
@@ -148,14 +160,25 @@ check). Confirm audio is present with sane loudness stats. Fix the composition a
 iterations; if something stays imperfect after the bound, stop and carry a residual-imperfection note
 into the watch step — never loop forever, never ship silently.
 
-### 7. Watch (hard human gate — never skipped)
+### 7. Watch (hard human gate in interactive mode; contract-delegable in autopilot — never skipped silently)
 
-The user watches the final cut. This gate is not optional and not automatable; the QC loop makes the
-cut *probably* good, the user makes it *actually* shippable. Surface the QC residual notes here.
+The user watches the final cut. In interactive mode this gate is not optional and not automatable;
+the QC loop makes the cut *probably* good, the user makes it *actually* shippable. Surface the QC
+residual notes here. **In an autopilot campaign it is delegable — only by the locked contract's
+explicit WATCH policy** (`../references/campaign-contract.md`, field 9, always asked at intake,
+never defaulted): `pause-for-watch` keeps the human watch as a hard stop; `auto-publish-after-qc`
+replaces it with the autopilot's own independent frame/audio review (a second context re-reading
+keyframes and loudness stats against the script — not your QC re-asserted), and the user watches
+the unlisted link after publish. No contract line → the watch pauses, as in interactive mode.
 
 ### 8. Upload (a separate consent)
 
-Only after the watch, and only on the **upload consent**. Default: consented browser upload to
+Only after the watch (or its contract-delegated review, Stage 7), and only on the **upload
+consent** (interactive, or the contract's UPLOAD authorization). **Re-read the live logged-in
+account first** and proceed only if it matches the account the user authorized — in an autopilot
+campaign, the account named in the locked contract (`../references/campaign-contract.md`
+§Identity verification); mismatch or logged-out → stop and report what you found, never log in or
+switch accounts. Default: consented browser upload to
 YouTube Studio (unlisted). **Preflight the account's upload eligibility before spending upload time**
 (new/low-history accounts can hit verification interstitials); on any interstitial or Studio DOM
 drift, **stop and hand off to the user** — never fight bot detection — with the Drive fallback one
@@ -173,7 +196,8 @@ with no own-session carve-out. Therefore: keep it low-volume, supervised, the us
 **log every upload in the gate ledger**; and never present it as terms-clean. Authorization for this
 action class is the kickoff's **UPLOAD field** — an explicit standing authorization, parallel to but
 **distinct from** the concierge's SIGNUP AUTOMATION line (that authorizes signups/API keys, a
-different action class; it does not cover uploads). The per-upload consent still gates each run.
+different action class; it does not cover uploads). The per-upload consent still gates each run
+(in an autopilot campaign, that consent is the locked contract's UPLOAD authorization — Stage 8).
 
 **Drive fallback** (`drive.file` scope, anyone-with-link): non-restricted scope so no app audit, but
 still a Google Cloud OAuth client whose Testing-mode refresh tokens **expire after 7 days** — design
@@ -195,9 +219,12 @@ Google Cloud project.
 ## Hard boundaries
 
 - **Never self-trigger.** The orchestrator *offers* Step 2.5; the user *starts* it. No firing on
-  build-green.
+  build-green. (An autopilot dispatch counts as the user's start — the user contracted Step 2.5 at
+  lock time; you still never fire on a state condition.)
 - **Two consents, never skipped:** the foreground recording session, and the upload. Watching the
-  cut and uploading are separate moments.
+  cut and uploading are separate moments. (In an autopilot campaign these consents and the WATCH
+  delegation come from the locked contract, per the clauses above — and one the contract struck or
+  marked manual stays with the user; it is never assumed.)
 - **Never fabricate an interaction.** A scene that won't pass its gate is retaken, driver-swapped, or
   marked BLOCKED with a placeholder — never staged to look like something that didn't happen. The tx
   in the final cut really happened on testnet.
