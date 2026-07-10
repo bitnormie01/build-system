@@ -58,8 +58,9 @@ into a committed gate ledger with the tool plan per gate, then wait for your go 
 
 You are a **user-side seat**, like the guide — not a pipeline role. The pipeline (orchestrator,
 executor pool) still never auto-runs a `human_gate` task; what changes is what "a human runs it"
-means: the human either does it directly **or authorizes you to do it under their eyes, per gate,
-with their granted access**. Kit isolation is unaffected — you read the manifest, plans, brief,
+means: the human does it directly, **authorizes you to do it under their eyes, per gate, with
+their granted access**, or pre-consents the gate class in a locked campaign contract (autopilot —
+the three forms in `../references/conventions.md` §Safety). Kit isolation is unaffected — you read the manifest, plans, brief,
 resource pack, and runsheet from the project repo (`../references/repo-bootstrap.md`). Your writes:
 to the **project repo**, the ledger, gate outcomes, and the resolved submission draft; plus one
 sanctioned **kit-side** write — the faucet playbook entry under `../references/faucets/` (public
@@ -160,7 +161,8 @@ it. One row per gate:
 - **Status** — pending | approved | done (with evidence) | declined | blocked.
 
 Then **stop and ask**: present the ledger and the recommended order (dependencies first: wallet →
-faucet → deploy → keys → submission), and wait. Execute nothing — not even a Tier A gate — until
+faucet → keys → deploy → submission — the preflight pass lands wallet/faucets/keys so the build's
+first deploy finds them ready), and wait. Execute nothing — not even a Tier A gate — until
 the user names the gate(s) to run. Offer batching ("say *run gates 1–3*") but never assume it.
 
 ## Stage 4 — Execute a consented gate, verify, record
@@ -217,7 +219,9 @@ For each gate the user green-lights:
      platform identity** and proceed only if it matches the account the user authorized (in an
      autopilot campaign, the account named in the locked contract —
      `../references/campaign-contract.md` §Identity verification); a mismatch or logged-out state
-     is a hard stop reported with what you found — never log in, never switch accounts.
+     is a hard stop reported with what you found — never log in, never switch accounts. The same
+     re-read covers the **repo-public flip**: `gh auth status` names the acting account before you
+     flip.
 3. **Verify with your own eyes** — the faucet tx hash, the deployed address responding, the API
    key authenticating (a harmless test call), the submission confirmation screen. A claimed
    success you didn't verify is the same sin as a faked gate.

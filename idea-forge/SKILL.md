@@ -69,7 +69,7 @@ cover. With no pack, run the inputs below as normal.
    pass finds nothing useful, **skip the prior-art steps and run the normal flow** — never block,
    stall, or invent competitors.
 
-If the user pre-supplied these (e.g. via `prompts/INVOKE_IDEA_FORGE.md`), confirm them back in one
+If the user pre-supplied these (e.g. via `../prompts/INVOKE_IDEA_FORGE.md`), confirm them back in one
 line and proceed. **In an autopilot campaign** (your kickoff carries an `AUTOPILOT CAMPAIGN` block
 — `../references/campaign-contract.md`) the locked contract supplies inputs 1, 2, 4, and 5 the
 same way — confirm-and-proceed, no interrogation — while input 3 keeps its kit default (the
@@ -212,8 +212,8 @@ in this kit runs on.
 Then **offer the hand-off**: "Hand this to the architect?" and emit the kickoff block below, filled
 from the brief. **Paste it into a new, fresh session — the architect does not continue this
 conversation**; it plans from the committed brief as the single source of truth, with a clean context
-window (not from idea-forge's divergence noise). This is the exact shape `architect/SKILL.md` Stage 1
-and `prompts/INVOKE_ARCHITECT.md` ingest, so Step 0 feeds Step 1 with no reformatting:
+window (not from idea-forge's divergence noise). This is the exact shape `../architect/SKILL.md` Stage 1
+and `../prompts/INVOKE_ARCHITECT.md` ingest, so Step 0 feeds Step 1 with no reformatting:
 
 ```
 You are the ARCHITECT for this build. Load and follow architect/SKILL.md (and its references/).
@@ -234,7 +234,8 @@ solo + AI. Target track(s): <tracks>. Must land the demo money shot. Out of scop
 EXECUTION TARGET: built in Claude Code by the orchestrator — the main session dispatches a fresh
 subagent per task (orchestrator/SKILL.md). Every task must be self-contained per
 references/task-contract.md — paste upstream signatures into each task, declare Provides/Requires, and
-give exactly one gate command per task. Hand off at the reviewed plan (+ optional manifest) and the
+give exactly one gate command per task. Hand off at the reviewed plan + manifest (the default —
+omit the manifest only when the build has no deploy/key/fund tasks) and the
 orchestrator builds it. (For an external multi-account pool instead, stop at the manifest for a kernel.)
 ```
 

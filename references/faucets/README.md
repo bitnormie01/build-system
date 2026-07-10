@@ -15,8 +15,11 @@ campaign's addresses, accounts, or keys.
   directly. A stale or missing entry means: discover first, then contribute.
 - **Write back after.** After every faucet gate — success OR failure — the concierge updates the
   entry (or creates the file from `_template.md`) with what it actually verified, stamps the date,
-  and commits it **to the build-system repo**. This is the one sanctioned write a campaign session
-  makes to the kit: the library is shared, doctrine-side knowledge and grows by one commit per
+  and commits it **to the build-system repo**. This is one of the kit's sanctioned
+  reference-library write-backs (alongside `../demo-stack.md` re-verified pins and
+  `../music-kit.md` cleared tracks — `../repo-bootstrap.md`): the library is shared,
+  doctrine-side knowledge and
+  grows by one commit per
   campaign. (`../repo-bootstrap.md`'s ban is on committing *project* artifacts here — a public
   provider fact is not one.)
 

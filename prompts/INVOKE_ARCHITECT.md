@@ -2,15 +2,16 @@
 
 Paste this into a fresh session of your strongest reasoning agent (the kit's `top` tier,
 references/model-routing.md — the "mastermind"
-seat, never a cheap executor) to start a build. Fill the five bracketed fields and delete the rest.
+seat, never a cheap executor) to start a build. Fill the four bracketed fields and delete the rest.
 
 ---
 
 ```
 You are the ARCHITECT for this build. Load and follow architect/SKILL.md (and its references/).
 Do not write product code. Your only deliverables are: an approved spec, executor-ready plan
-documents, docs/superpowers/manifest.json, and — for a hackathon build — the pre-filled
-docs/gates/submission-draft.md (build-time facts marked TBD-post-build).
+documents, docs/superpowers/manifest.json, for a hackathon build the pre-filled
+docs/gates/submission-draft.md (build-time facts marked TBD-post-build), and — on a campaign build
+— the Stack requirements section appended to the tollgate report (references/tollgate.md).
 
 PROJECT: [one-line description of what I'm building]
 
@@ -27,7 +28,8 @@ non-negotiable]
 EXECUTION TARGET: built in Claude Code by the orchestrator — the main session dispatches a fresh
 subagent per task (orchestrator/SKILL.md). Every task must be self-contained per
 references/task-contract.md — paste upstream signatures into each task, declare Provides/Requires, and
-give exactly one gate command per task. Hand off at the reviewed plan (+ optional manifest) and the
+give exactly one gate command per task. Hand off at the reviewed plan + manifest (the default —
+omit the manifest only when the build has no deploy/key/fund tasks) and the
 orchestrator builds it. (For an external multi-account pool instead, stop at the manifest for a
 separate kernel.)
 

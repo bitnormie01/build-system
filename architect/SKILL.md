@@ -52,9 +52,9 @@ This skill orchestrates a proven chain. Resolution order, per stage:
 
 | Stage | Skill to invoke | Vendored fallback | Produces |
 |-------|-----------------|-------------------|----------|
-| Spec  | `superpowers:brainstorming` (or `brainstorming`) | `vendor/superpowers/brainstorming/SKILL.md` | `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` |
-| Plans | `superpowers:writing-plans` (or `writing-plans`) | `vendor/superpowers/writing-plans/SKILL.md` | `docs/superpowers/plans/YYYY-MM-DD-<subsystem>.md` |
-| Review| plan-document-reviewer prompt (task-contract §4; upstream original in `vendor/superpowers/writing-plans/plan-document-reviewer-prompt.md`) | — | Approved / Issues per plan |
+| Spec  | `superpowers:brainstorming` (or `brainstorming`) | `../references/vendor/superpowers/brainstorming/SKILL.md` | `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` |
+| Plans | `superpowers:writing-plans` (or `writing-plans`) | `../references/vendor/superpowers/writing-plans/SKILL.md` | `docs/superpowers/plans/YYYY-MM-DD-<subsystem>.md` |
+| Review| plan-document-reviewer prompt (task-contract §4; upstream original in `../references/vendor/superpowers/writing-plans/plan-document-reviewer-prompt.md`) | — | Approved / Issues per plan |
 
 The architect's job is to run them **in order, with the right inputs, and to enforce the
 executor-ready output contract** at the end — which vanilla superpowers does not do, because it
@@ -181,7 +181,7 @@ Run these four stages in order. Do not start a stage until the previous one is a
   dispatch time, mid-build. Never gate "done" on tooling you may not have; gate it on the checks
   passing. Run whichever is available:
   - **If the kernel checkout is present:** `npm run kernel -- validate --manifest docs/superpowers/manifest.json`.
-  - **If it is not** (the kernel is a separate build — see `README.md`): run the equivalent by hand.
+  - **If it is not** (the kernel is a separate build — see `../README.md`): run the equivalent by hand.
 
   Either way the manifest must pass **all** of:
   1. **Clean parse + valid DAG** — no cycles; every `depends_on` id exists.

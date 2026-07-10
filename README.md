@@ -12,7 +12,8 @@ one, the first pipeline step that needs it creates it via the user's logged-in `
 event or the chosen project (`references/repo-bootstrap.md`).
 
 Every campaign opens with a **requirements tollgate** (`references/tollgate.md`): Step 0a's Stage 0
-(or the guide, when 0a is skipped) probes every access/plugin/MCP/toolchain the planned steps will
+(or the guide when 0a is skipped, or the autopilot at its own boot on a hands-off campaign) probes
+every access/plugin/MCP/toolchain the planned steps will
 need and commits per-step CLEAR/BLOCKED verdicts — so a missing capability is a fix-hint line on day
 one, not a mid-execution roadblock. Fresh step sessions re-probe their own session cards (MCP
 connections don't survive session boundaries), and the architect appends the project's stack
@@ -135,8 +136,9 @@ the kernel still owns gates, scoped commits, and rotation.
 ## The one rule everything depends on
 
 The repo is the single source of truth — and "the repo" means the **project repo**
-(`references/repo-bootstrap.md`), never this build-system checkout, which is doctrine only (its one
-sanctioned write-back: faucet playbook entries under `references/faucets/`). Every
+(`references/repo-bootstrap.md`), never this build-system checkout, which is doctrine only (its sanctioned write-backs are the
+public-facts-only reference libraries — `references/faucets/` playbooks, `references/demo-stack.md`
+re-verified pins, `references/music-kit.md` cleared tracks; `references/repo-bootstrap.md`). Every
 role, every dispatch: **resolve and sync the canonical project repo before
 starting; commit and push before reporting done.** Local files are never trusted. This is what lets
 the architect regenerate the system mid-build and have the next agent that boots pick it up
@@ -148,7 +150,7 @@ automatically — it pulled, so it sees it.
 architect ──commit──> repo (spec/plans/manifest) <──pull── mastermind
                           │                                     │ judgment
                           ▼ (kernel reads, schedules, rotates)   ▼
-                       KERNEL ──delivers kit + task──> executor ──commit/push──> repo
+                       KERNEL ──delivers kit + task──> executor ──files + passing gate──> KERNEL ──scoped commit──> repo
                           └────────── rotates executor on limit ──────────┘
 ```
 

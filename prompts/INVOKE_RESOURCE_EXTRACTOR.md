@@ -31,12 +31,14 @@ TARGET SPONSORS/TRACKS (optional): [the sponsors whose SDK docs matter most, or 
 STEPS PLANNED: [which pipeline steps this campaign will run, from the guide's strategy — e.g.
 "0a, 0, 1, 2, 2.5, 3" — so Stage 0 probes exactly what the campaign needs; "all" if undecided]
 
-FIRST — Stage 0, the campaign tollgate (references/tollgate.md): you are this campaign's first
-pipeline session, so probe the full requirements matrix for the steps planned (tools, MCPs, access,
-toolchain), write + commit + push docs/tollgate/<date>-tollgate.md with per-step CLEAR/BLOCKED
-verdicts and a fix hint per FAIL. Probes are read-only — fix nothing, install nothing, log into
-nothing (sole exception: row 15's throwaway setx variable, removed after). Hard-stop only on YOUR
-OWN failing hard rows (browser tools, repo); report the rest.
+FIRST — Stage 0, the campaign tollgate (references/tollgate.md): you are normally this campaign's
+first pipeline session — probe the full requirements matrix for the steps planned (tools, MCPs,
+access, toolchain), write + commit + push docs/tollgate/<date>-tollgate.md with per-step
+CLEAR/BLOCKED verdicts and a fix hint per FAIL. If a campaign tollgate report already exists (the
+guide or an autopilot boot ran it), verify and EXTEND that report instead — re-probe your own rows,
+update stamps — never create a second. Probes are read-only — fix nothing, install nothing, log
+into nothing (sole exception: row 15's throwaway setx variable, removed after). Hard-stop only on
+YOUR OWN failing hard rows (browser tools, repo); report the rest.
 
 Then extract, following inter-related links (rules → tracks → each sponsor → its SDK docs/examples →
 prior winners), bounded to the event's ecosystem:

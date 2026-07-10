@@ -54,8 +54,9 @@ stuck, diagnose from the repo and give me the concrete fix.
 
 ## Notes on using it
 
-- **One open seat, six fresh sessions.** The guide stays open; each pipeline step (0a extractor,
-  0 idea-forge, 1 architect, 2 orchestrator, 2.5 demo-studio, 3 gate-concierge) runs in its own fresh
+- **One open seat; every step in its own fresh session.** The guide stays open; each pipeline step
+  (0a extractor, 0 idea-forge, 1 architect, 2 orchestrator, 2.5 demo-studio, 3 gate-concierge — the
+  concierge twice, a preflight and a closing pass) runs in its own fresh
   session from the kickoff the guide hands you. The baton between steps is always a committed, pushed
   artifact.
 - **Step 2.5 makes the demo video for you.** After the green build, demo-studio scripts, records,

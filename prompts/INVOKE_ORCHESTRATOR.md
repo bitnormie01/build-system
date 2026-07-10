@@ -8,6 +8,7 @@ per task, proves each gate, and commits. This is **Step 2**, after `prompts/INVO
 ## Running the pipeline (Claude-Code-native)
 
 ```
+Step 0a — resource-extractor (optional): own session → commits the resource pack (its Stage 0 runs the campaign tollgate).
 Step 0 — idea-forge (optional): own session → commits a brief, emits an architect kickoff block.
 Step 1 — architect: fresh session, paste that block → commits spec + plans (+ manifest).
 Step 2 — orchestrator: THIS prompt, fresh session → builds the plan via subagents, commits each task.
@@ -76,8 +77,9 @@ tollgate's Routing section) | pin all to <model alias> (never overrides a top pi
 - **Effort and model are per task.** Cheap/scaffolding tasks at `low`/`medium`, hard or
   security-sensitive ones at `high`/`xhigh` (`max` is the rare last rung) — bound at dispatch via
   the executor effort-variant agent type plus the task's model tier
-  (`references/model-routing.md`; the native equivalent of the external kernel's CLI flags). No
-  Routing section or a failed probe = `routing: inherit`, and everything dispatches as before.
+  (`references/model-routing.md`; the native equivalent of the external kernel's CLI flags). A
+  failed probe or a non-Claude-Code harness = `routing: inherit` — never a blocker; a missing
+  Routing section isn't inherit — you create it at boot (step 2).
 - **Human-gate is a hard stop.** Deploys, signed txs, and fund movements pause for you to run. The
   orchestrator prepares them but never executes them.
 - **Sequential by default.** Parallelize only genuinely independent tasks, with worktree-isolated

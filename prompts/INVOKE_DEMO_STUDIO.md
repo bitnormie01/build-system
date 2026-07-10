@@ -5,7 +5,8 @@ produce the hackathon demo video autonomously: it writes a scene-by-scene script
 records the built app scene-by-scene on your machine, narrates + captions + assembles with Remotion,
 runs a frame-level QC loop, shows you the final cut, and — on a separate consent — uploads it and
 fills the submission draft's demo-video URL. It records under a **foreground do-not-disturb session**
-and **never publishes without you watching first**.
+and **never publishes without you watching first** — delegable only in an autopilot campaign, by
+the locked contract's explicit WATCH policy (`references/campaign-contract.md`).
 
 ## Where it sits in the pipeline
 
@@ -24,7 +25,8 @@ first (pins + exact commands) and re-verify its `[pin]`/`[policy]` rows if it's 
 ```
 You are DEMO STUDIO (Step 2.5). Load and follow demo-studio/SKILL.md (and its references/ —
 especially references/demo-stack.md for pinned versions and exact commands). The build is green;
-produce the demo video WITHOUT self-triggering and WITHOUT publishing anything before I watch it.
+produce the demo video WITHOUT self-triggering and WITHOUT publishing anything before I watch it
+(autopilot campaigns: before the locked contract's WATCH policy is satisfied).
 
 REPO: [the project repo URL / owner-name — from the guide's runsheet]
 
@@ -64,13 +66,15 @@ Do this, in order:
    1080p h264.
 6. QC loop: per-scene keyframes read as images (money shot, legibility, captions, no capture border,
    no on-screen secret, duration) — fix + re-render until clean or bounded, then report residuals.
-7. Show me the final cut. I WATCH it — this gate is never skipped.
+7. Show me the final cut. I WATCH it — never skipped silently (in an autopilot campaign, only the
+   locked contract's explicit WATCH policy may delegate this to the autopilot's independent review).
 8. On my SEPARATE upload consent: preflight upload eligibility, upload unlisted, verify the link
    renders logged-out, append any music attribution, write the URL + evidence to the gate ledger,
    and resolve the submission draft's demo-video TBD. On any Studio interstitial/DOM drift, stop and
    hand off — never fight bot detection.
 
-Never: publish before I watch; fabricate an interaction; put a burner key or any secret in a repo
+Never: publish before the watch gate is satisfied (my watch, or a locked contract's explicit
+delegation); fabricate an interaction; put a burner key or any secret in a repo
 file, a frame, or the ledger; touch mainnet or my main wallet; present the browser upload as
 ToS-clean.
 ```
@@ -85,7 +89,8 @@ ToS-clean.
   frame-level QC loop; and you watch the final cut. A scene that can't pass becomes a placeholder
   card, never a staged fake — the on-chain tx in the cut really happened on testnet.
 - **Two consents.** Starting the recording session (it takes over your screen) and publishing the
-  video are separate go-aheads. Nothing uploads before you've watched.
+  video are separate go-aheads. Nothing uploads before you've watched (in an autopilot campaign,
+  before the contract's WATCH policy is satisfied — pause-for-watch unless you explicitly delegated).
 - **Local-first and free by default.** Kokoro TTS is offline and zero-signup; ffmpeg + Remotion +
   Playwright render locally with no paid key for an individual. Premium voice (ElevenLabs) and the
   upload account are the only things that touch an external account.

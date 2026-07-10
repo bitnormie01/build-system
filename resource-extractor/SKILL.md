@@ -65,7 +65,7 @@ the pack into the build-system kit checkout. Files:
 
 ## The pipeline
 
-### Stage 0 — Campaign tollgate (you are the campaign's first pipeline session)
+### Stage 0 — Campaign tollgate (normally the campaign's first pipeline session)
 
 Before scoping a single source, run the **campaign requirements tollgate**
 (`../references/tollgate.md`): probe the full matrix for every step the campaign plans to run

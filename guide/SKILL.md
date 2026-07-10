@@ -54,7 +54,8 @@ pipeline runs for this event, prep each step's kickoff, and stay here to unblock
    - `docs/demo/*-demo-script.md` → Step 2.5 (demo-studio) started. Check whether the submission
      draft's `demo video URL` TBD is resolved — that's whether the video shipped.
    - `docs/gates/*-gate-ledger.md` → Step 3 started. Read each gate's status
-     (pending / approved / done / declined) — that's what's left between "built" and "submitted".
+     (pending / approved / done / declined / blocked) — that's what's left between "built" and
+     "submitted".
 3. **Check the tollgate** (`../references/tollgate.md`): read `docs/tollgate/*-tollgate.md` for
    per-step verdicts — **no kickoff is handed over for a step whose hard rows FAIL**. If no report
    exists: Step 0a's Stage 0 will create it; on a campaign that SKIPS 0a, run the campaign tollgate
@@ -71,12 +72,12 @@ pipeline runs for this event, prep each step's kickoff, and stay here to unblock
 
 | Step | Skill (own fresh session) | Input | Committed artifact | Kickoff |
 |------|---------------------------|-------|--------------------|---------|
-| 0a *(optional)* | `resource-extractor` | event URLs | `docs/resources/<event>/` pack | `prompts/INVOKE_RESOURCE_EXTRACTOR.md` |
-| 0 *(optional)* | `idea-forge` | pack + 5 inputs | one brief in `docs/idea-forge/` | `prompts/INVOKE_IDEA_FORGE.md` |
-| 1 | `architect` | brief + pack | spec + plans + `manifest.json` | `prompts/INVOKE_ARCHITECT.md` |
-| 2 | `orchestrator` | plans/manifest | built, gated, committed tasks | `prompts/INVOKE_ORCHESTRATOR.md` |
-| 2.5 *(optional; after green, needs a demo video)* | `demo-studio` | brief + spec + `event.md` + submission draft | `docs/demo/<date>-demo-script.md`, the `demo/` Remotion project, and — if UPLOAD is authorized — an uploaded video URL resolving the submission draft's TBD (else the rendered file, TBD left for manual resolution) | `prompts/INVOKE_DEMO_STUDIO.md` |
-| 3 *(two passes: preflight after Step 1, closing after Step 2)* | `gate-concierge` | manifest human-gates + brief + pack + runsheet + `docs/gates/submission-draft.md` | `docs/gates/<date>-gate-ledger.md`, then consented gates executed | `prompts/INVOKE_GATE_CONCIERGE.md` |
+| 0a *(optional)* | `resource-extractor` | event URLs | `docs/resources/<event>/` pack | `../prompts/INVOKE_RESOURCE_EXTRACTOR.md` |
+| 0 *(optional)* | `idea-forge` | pack + 5 inputs | one brief in `docs/idea-forge/` | `../prompts/INVOKE_IDEA_FORGE.md` |
+| 1 | `architect` | brief + pack | spec + plans + `manifest.json` | `../prompts/INVOKE_ARCHITECT.md` |
+| 2 | `orchestrator` | plans/manifest | built, gated, committed tasks | `../prompts/INVOKE_ORCHESTRATOR.md` |
+| 2.5 *(optional; after green, needs a demo video)* | `demo-studio` | brief + spec + `event.md` + submission draft | `docs/demo/<date>-demo-script.md`, the `demo/` Remotion project, and — if UPLOAD is authorized — an uploaded video URL resolving the submission draft's TBD (else the rendered file, TBD left for manual resolution) | `../prompts/INVOKE_DEMO_STUDIO.md` |
+| 3 *(two passes: preflight after Step 1, closing after Step 2)* | `gate-concierge` | manifest human-gates + brief + pack + runsheet + `docs/gates/submission-draft.md` | `docs/gates/<date>-gate-ledger.md`, then consented gates executed | `../prompts/INVOKE_GATE_CONCIERGE.md` |
 
 **Session discipline (the rule users trip on):** each step runs in its **own fresh session**; the
 baton between steps is the **committed, pushed artifact** — never chat history. Don't run two steps in
@@ -117,8 +118,8 @@ Before any kickoff, decide and record in the runsheet:
 - **Mode: guided or autopilot.** This guided flow is the default — the user approves each baton.
   For a fully hands-off campaign there is **autopilot mode** (`../autopilot/SKILL.md`, kickoff
   `../prompts/INVOKE_AUTOPILOT.md`): one session collects and locks every decision and consent up
-  front as a campaign contract (`../references/campaign-contract.md`), then runs all the steps
-  itself. The honest tradeoff to state: the approval touchpoints you'd get between steps (track
+  front as a campaign contract (`../references/campaign-contract.md`), then dispatches and verifies
+  every step itself — each step a fresh subagent, Step 2 inline. The honest tradeoff to state: the approval touchpoints you'd get between steps (track
   choice after seeing the pack, watching the demo cut before upload) move into that one up-front
   contract. Recommend guided for a first campaign or anything security-sensitive; offer autopilot
   once the pipeline has earned the user's trust — and never start it yourself; it is always the
@@ -196,7 +197,7 @@ Before any kickoff, decide and record in the runsheet:
 - **During the build:** human-gate steps pause for the user — walk them through running each one.
   Gate failures are the orchestrator's job to classify (flake / executor miss / plan bug / human); if
   it routes a **plan bug** back, that fix happens in an architect session, then the orchestrator
-  resumes per the regeneration protocol (`references/roles.md`).
+  resumes per the regeneration protocol (`../references/roles.md`).
 - **When it finishes:** check the demo money shot actually lands end-to-end, then green-light
   **Step 2.5 (demo-studio)** to record the demo video, and **Step 3's closing pass** — deploy,
   repo-flip, submission, plus anything the preflight pass left pending (the gate ledger in
@@ -213,7 +214,7 @@ Before any kickoff, decide and record in the runsheet:
   and native/wallet-popup scenes. Confirm the defaults or override: VOICE (Kokoro local default),
   LENGTH (event-mandated or ~3:00), MUSIC (off by default), WALLET-ON-CAMERA (real MetaMask default),
   UPLOAD (unlisted YouTube, or strike to keep upload manual). Preflight the stack: read
-  `references/demo-stack.md` and re-verify its `[pin]`/`[policy]` rows if it's been a while (the
+  `../references/demo-stack.md` and re-verify its `[pin]`/`[policy]` rows if it's been a while (the
   toolchain moves weekly); the session re-probes its tollgate card (rows 5–6, 8–13, 16) at boot —
   check the report's 2.5 verdict is CLEAR before handing over the kickoff.
 - **Set expectations:** it writes a demo script for the user to **approve before recording**, records
@@ -266,12 +267,12 @@ Diagnose from the repo, then fix the *baton*, not the symptom:
 | Artifacts landed in the build-system repo | a step treated the kit checkout as the project repo | resolve/create the project repo (`repo-bootstrap.md`), move the artifacts there, record it in the runsheet |
 | A step asks "which repo?" | no `REPO:` in its kickoff | fill it from the runsheet; if no repo exists yet, tell the step to create it per `repo-bootstrap.md` |
 | 0a captures empty/spinner pages | Chrome tools not connected in that session | connect the extension, re-run those sources |
-| A step dies mid-run on a missing tool/access | its session preflight card was skipped, or a tollgate row went stale | re-probe that step's rows (`references/tollgate.md`), fix per the row's hint, update the report, resume |
+| A step dies mid-run on a missing tool/access | its session preflight card was skipped, or a tollgate row went stale | re-probe that step's rows (`../references/tollgate.md`), fix per the row's hint, update the report, resume |
 | An autopilot campaign hard-stopped | a never-floor item, identity mismatch, capability gap, exhausted loop bound, or contract-impossible situation | read the runsheet's blocker line + the campaign contract (`../references/campaign-contract.md`); fix the named blocker or have the user amend the contract (committed revision), then the user tells the autopilot session to resume |
 | Pack has gaps on key sources | auth-gated content | user fetches manually, paste into the pack with provenance noted |
 | Manifest validation fails | schema/DAG/equality defect | fix in the architect session against Stage 4's checklist — never hand-edit the manifest alone (it's a projection of the plans) |
 | Orchestrator loops on a gate | mis-classified failure | apply the mastermind taxonomy; a plan bug goes BACK to the architect, not another retry |
-| Plans changed mid-build | regeneration | follow `references/roles.md` §Mid-build regeneration (quiesce in-flight, invalidate stale consumers) |
+| Plans changed mid-build | regeneration | follow `../references/roles.md` §Mid-build regeneration (quiesce in-flight, invalidate stale consumers) |
 | "Why does step X do Y?" | doctrine question | read that kit's SKILL.md and answer with a quote — you hold the map |
 
 Anything outside the table: read the relevant kit/reference, reason from the doctrine, and give the

@@ -6,7 +6,8 @@ description: >
   back for re-planning, or hold for a human. Use it to diagnose the failure from evidence and emit
   a structured VERDICT. Do NOT use this kit to write or fix product code (that's the executor), to
   schedule or rotate accounts (that's the kernel), or as the protocol for an interactive session
-  coordinating a whole build (that's the kernel repo's MANAGER.md).
+  coordinating a whole build (Claude-Code-native: that's the orchestrator, which reuses this
+  taxonomy inline; external-pool manager mode: the kernel repo's MANAGER.md).
 ---
 
 # Mastermind
@@ -18,8 +19,10 @@ This kit has one delivery context: the **kernel's escalation one-shot**. A task 
 actual output, and the attempt count — and, when available, a worktree containing the failing
 attempt. No human will answer questions mid-run; your output is your entire contribution.
 
-If you are an **interactive session coordinating a build** (manager mode), stop — your protocol is
-`MANAGER.md` in the kernel repo, not this file. This kit is the one-shot judgment call only.
+If you are an **interactive session coordinating a build**, stop — your protocol is
+`../orchestrator/SKILL.md` (Claude-Code-native, the default; it reuses this taxonomy inline as its
+failure classifier) or the kernel repo's `MANAGER.md` (external-pool manager mode), not this file.
+This kit is the one-shot judgment call only.
 
 ## Your job
 

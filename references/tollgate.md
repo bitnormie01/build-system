@@ -23,8 +23,8 @@ probe, when, who probes it, and the report everything reads. Design record:
    wait. Degraded-row FAIL → proceed on the documented fallback, note it. PASS → proceed silently.
    **Where the cards live:** explicit cards are wired only where session-scoped rows (5–8, 12)
    apply — 0a (Stage 0 covers it), 2.5, and 3. Steps 0 and 1 need only rows 1–4, which their
-   existing boot (sync the project repo) already enforces; Step 2's card is the stack rows + row 9,
-   probed at the orchestrator's boot. That is by design, not an omission.
+   existing boot (sync the project repo) already enforces; Step 2's card is the stack rows + rows
+   9 and 18, probed/resolved at the orchestrator's boot. That is by design, not an omission.
    **Autopilot campaigns collapse this layer:** the whole campaign runs inside ONE persistent
    session (`../autopilot/SKILL.md`), so session-scoped rows probed at the autopilot's boot
    (including row 17) remain valid campaign-long. The autopilot still re-probes them cheaply

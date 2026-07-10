@@ -157,7 +157,9 @@ record the demo video — it must land before the submission, since it fills the
 `../prompts/INVOKE_GATE_CONCIERGE.md`, `MODE: closing`), which
 inventories those gates into the committed ledger with the exact tools per gate and executes each only
 on the user's per-gate "continue". **Offer them — never launch either or run its gates/recording
-yourself**; starting a post-build seat is the user's call, same as every consent in this kit.
+yourself**; starting a post-build seat is the user's call, same as every consent in this kit. (In
+an autopilot campaign the autopilot dispatches both itself under the locked contract — that start
+WAS the user's call, given at lock; the offer step is guide-mode's.)
 
 ## Parallelism (optional)
 

@@ -1,7 +1,8 @@
 # Invoke Idea Forge — copy-paste kickoff prompt
 
 Paste this into a fresh session to go from a blank start to **one** scoped, shippable hackathon brief
-that the architect can build. Fill the five bracketed fields; the skill will ask for any you leave
+that the architect can build. Fill the bracketed fields — the skill's five required inputs plus
+REPO, with PRIOR ART optional; the skill will ask for any required one you leave
 blank. This is **Step 0** — it runs before `prompts/INVOKE_ARCHITECT.md`, and its output *is* the
 architect's input.
 
@@ -13,7 +14,8 @@ Step 0  — idea-forge: its own session. Reads the resource pack if present; com
           docs/idea-forge/ and emits an architect kickoff block.
 Step 1  — architect: open a NEW session, paste that block. Plans from the brief (+ resource pack);
           emits spec/plans/manifest.
-Then   — orchestrator: builds it in Claude Code via subagents (or hand the manifest to an external kernel).
+Then   — orchestrator: builds it in Claude Code via subagents (or hand the manifest to an external kernel);
+         demo-studio (2.5) records the demo video; gate-concierge (3) runs the gated tail + submission.
 The brief file is the baton between Step 0 and Step 1 — never run them in one session.
 ```
 

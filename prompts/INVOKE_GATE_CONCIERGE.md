@@ -11,7 +11,7 @@ the exact tools per gate, then executes **only** the gates you green-light, one 
 
 ```
 Step 1 — architect: plans + manifest committed.
-Step 3 (preflight) — THIS prompt, MODE: preflight, parallel session → wallet/faucets/keys while Step 2 builds.
+Step 3 (preflight) — THIS prompt, MODE: preflight, parallel session (guide mode; an autopilot dispatches it between Steps 1 and 2) → wallet/faucets/keys while Step 2 builds.
 Step 2 — orchestrator: build green, human-gated tasks paused/pending.
 Step 2.5 — demo-studio: records the demo video, resolves the submission draft's demo-video URL.
 Step 3 (closing)   — THIS prompt, MODE: closing → deploy, repo-flip, submission — each on your "continue".
@@ -30,7 +30,8 @@ You are the GATE CONCIERGE (Step 3). Load and follow gate-concierge/SKILL.md (an
 Your job is to minimize the human-gated work between "built" and "live + submitted" — WITHOUT
 executing anything I haven't green-lit, gate by gate.
 
-MODE: [preflight — the architect just committed plans; the build runs in a parallel session.
+MODE: [preflight — the architect just committed plans; the build runs in a parallel session (or
+inline in the autopilot session, on a hands-off campaign).
 Inventory everything, mark the day-1 gates (burner wallet, faucets, provider/API keys) as this
 pass's runnable set and the rest as closing — then stop for my per-gate go, as always.
 | closing — the build is green; deploy, repo-flip, submission, plus anything preflight left pending

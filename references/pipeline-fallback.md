@@ -36,7 +36,10 @@ For each subsystem, produce a plan file under `docs/superpowers/plans/` followin
 - Decompose into bite-sized tasks; each step is one 2–5 minute action.
 - TDD ordering: failing test → confirm fail → minimal code → confirm pass → commit.
 - Apply `conventions.md` to every task.
-- Add `Provides:` / `Requires:` and exactly one gate per task (the contract's extension over vanilla
+- Add `Provides:` / `Requires:`, an `Effort:` line (required; `low|medium|high|xhigh|max`), a
+  `Model tier:` line where it differs from `standard` (pin rule: gated/security/`xhigh|max` tasks
+  are `top` — `model-routing.md`), and exactly one gate per task (the contract's extension over
+  vanilla
   writing-plans).
 
 ### Plan self-review (run yourself, no subagent needed)
@@ -55,8 +58,10 @@ For each subsystem, produce a plan file under `docs/superpowers/plans/` followin
   present iff the plan carries a `Model tier:` line — byte-match its plan
   block; every deploy/key/fund task carries `human_gate: true`; every task has an `Effort:` line;
   no gated/security/`xhigh|max` task carries a `Model tier:` below `top` (`model-routing.md`).
-- Validate: clean parse + valid DAG + zero unmatched `requires` + manifest⇄plan equality (kernel
-  validator if available, else by hand — see `architect/SKILL.md` Stage 4). Not done until it passes.
+- Validate — all six Stage-4 checks: clean parse + valid DAG, zero unmatched `requires`,
+  manifest⇄plan equality, Effort present, human-gate coverage, model-tier pin coverage (kernel
+  validator if available, else by hand — see `../architect/SKILL.md` Stage 4). Not done until it
+  passes.
 - Stop planning and hand off to the build per architect Stage 4: **Claude-Code-native** (the
   `orchestrator` builds it in-session via subagents) or **external-pool** (stop at the manifest for a
   separate kernel). Do not use the vendored `writing-plans` raw execution handoff, and do not emit its

@@ -19,7 +19,10 @@ follow this protocol.
 - **The project repo** — the canonical repo for THIS build. Every artifact the pipeline produces
   lives here: `docs/resources/<event>/` (the pack), `docs/idea-forge/*-brief.md`,
   `docs/superpowers/{specs,plans}` + `manifest.json`, `docs/guide/*-runsheet.md`,
-  `docs/gates/*-gate-ledger.md`, and all product code. When any skill says "sync the canonical
+  `docs/gates/*-gate-ledger.md` + `submission-draft.md`, `docs/tollgate/*-tollgate.md` (the
+  requirements report), `docs/autopilot/*-campaign-contract.md`, `docs/demo/*-demo-script.md` +
+  the `demo/` Remotion project, the installed `.claude/agents/` executor variants, and all
+  product code. When any skill says "sync the canonical
   repo", "commit and push", or "the repo is the single source of truth", **it means this repo.**
 
 ## Resolution order (every step, at boot, before any work)
@@ -33,7 +36,9 @@ follow this protocol.
 3. **Nothing found → create it** (protocol below). The first **seat** that needs to commit an
    artifact and finds no project repo creates one — autonomously, without waiting for the user to
    hand over a URL. Usually that is the `guide` at campaign start (event-named, to house the
-   runsheet) or Step 0a; otherwise whichever pipeline step commits first. Report what was created
+   runsheet), the `autopilot` at its boot on a hands-off campaign (it commits the campaign
+   contract first — `campaign-contract.md`), or Step 0a; otherwise whichever pipeline step commits
+   first. Report what was created
    (owner/name/visibility) in the same breath.
 
 ## Creation protocol
@@ -100,6 +105,9 @@ created.
   prepares carries it in `REPO:`. Two steps silently working in two different repos breaks the
   single-source-of-truth rule at the root.
 - **Create is autonomous; destroy/expose is not.** `gh repo create` (private) needs no permission.
-  `gh repo delete`, transfers, and `--visibility public` are consent-gated, always.
+  The `--visibility public` flip is consent-gated, always — an interactive per-gate go, or a locked
+  campaign contract's repo-public pre-consent, identity-verified (`campaign-contract.md`).
+  `gh repo delete` and transfers sit on the **never-consentable floor** — no consent form
+  authorizes them (`campaign-contract.md` §Never-consentable floor).
 - **No secrets in the repo, whoever created it** — same rule as everywhere (`conventions.md`
   §Safety).

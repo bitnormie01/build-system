@@ -114,10 +114,10 @@ correction point: fix wording, ordering, and layout here, before spending captur
 
 Recording takes over the desktop foreground — get the **recording-session consent** first, and tell
 the user it's a do-not-disturb window. Then, **scene-by-scene, sequentially** (one browser context
-at a time — see `demo-stack.md`):
+at a time — see `../references/demo-stack.md`):
 
 - **Browser scenes** — Playwright `page.screencast` (JPEG frames → ffmpeg two-pass H.264), 1920×1080
-  viewport, re-encoded to constant fps. Never `recordVideo` (banned — see `demo-stack.md`).
+  viewport, re-encoded to constant fps. Never `recordVideo` (banned — see `../references/demo-stack.md`).
 - **Wallet scenes** — headed dappwright with the pinned/cached MetaMask; the **popup is a separate
   window** page-capture misses, so capture it with `gfxcapture` (window regex) or a second screencast
   on the popup, and add MV3 service-worker wake logic (workers suspend ~30s idle).
@@ -148,7 +148,7 @@ voiceovers).
 A Remotion project under `demo/` in the project repo (committed code): title card, per-scene clips
 via `@remotion/media` `<Video>`, word-timed captions, optional ducked music bed (MUSIC field), outro
 (repo QR + the brief's track/bounty line). Final audio: two-pass loudnorm to **−14 LUFS** for
-YouTube (`demo-stack.md` has the exact recipe). QC passes render at reduced resolution; the final is
+YouTube (`../references/demo-stack.md` has the exact recipe). QC passes render at reduced resolution; the final is
 1080p h264.
 
 ### 6. QC loop
@@ -190,7 +190,7 @@ then finds the URL already in the draft.)
 ## Upload — the ToS-honest doctrine
 
 The YouTube **Data API path is dead** for a personal tool: uploads from unverified API projects are
-locked private with no appeal (`demo-stack.md`, PRD §13). So the default is browser automation of the
+locked private with no appeal (`../references/demo-stack.md`, PRD §13). So the default is browser automation of the
 user's logged-in Studio session — which is **not ToS-clean**: YouTube's terms forbid automated access
 with no own-session carve-out. Therefore: keep it low-volume, supervised, the user's own content;
 **log every upload in the gate ledger**; and never present it as terms-clean. Authorization for this

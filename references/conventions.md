@@ -57,13 +57,13 @@ prompt. They are the standing rules a stateless executor needs but can't infer.
 - A key that has been exposed anywhere is **compromised** — the plan must treat it as burned and
   rotate, never reuse. (A campaign **burner wallet** — fresh, testnet-only, faucet-funded — is
   created as disposable, so exposure burns nothing of value; the minimize-exposure and never-commit
-  rules still apply to it — see `gate-concierge/SKILL.md`.)
+  rules still apply to it — see `../gate-concierge/SKILL.md`.)
 - Deployment / key-operation / fund-movement steps are flagged `human_gate: true` in the manifest
   (canonical spelling — snake_case, defined in `task-contract.md` §2; never `human-gate`). The
   autonomous pool prepares them but a human runs them. Executors never broadcast signed transactions
   or move funds autonomously. "A human runs them" has three valid forms: the user executes the step
   directly; the user gives an explicit per-gate "continue" to the **gate-concierge** — a
-  user-side seat (`gate-concierge/SKILL.md`) that executes it under their eyes with their granted
+  user-side seat (`../gate-concierge/SKILL.md`) that executes it under their eyes with their granted
   tooling; or the user **pre-consents in a locked campaign contract** (autopilot mode —
   `campaign-contract.md`), which enumerates the gate classes specifically, and the autopilot
   executes those under the same evidence/ledger rules the concierge follows. In every form the
