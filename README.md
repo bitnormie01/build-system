@@ -1,7 +1,8 @@
 # Build System
 
 A reusable, three-role system for autonomous builds. The **architect** turns an idea + docs into a
-spec, plans, and a task manifest. The **mastermind** owns correctness and integration. The
+spec, plans, and a task manifest (plans include a README task locked to one of eight schemas —
+`references/readme-schemas.md`). The **mastermind** owns correctness and integration. The
 **executor** builds one task at a time. The build is driven either by **Claude Code itself** or by a
 separate deterministic **kernel** (your code — speced, not in here) — see **Two ways to run it** below.
 
@@ -101,6 +102,7 @@ build-system/
     ├── task-contract.md        # plan grammar + manifest DAG + executor prompt (the bridge)
     ├── conventions.md          # coding + decomposition rules + repo-as-source-of-truth
     ├── repo-bootstrap.md       # WHICH repo is canonical + who creates it (gh) when the user provides none
+    ├── readme-schemas.md       # eight locked project-README schemas (judge-path spine; architect picks one, the README task builds it)
     ├── campaign-contract.md    # autopilot's locked instrument: contract schema, intake, consent forms + never-floor, identity checks, $0|funds-allowed
     ├── faucets/                # cross-campaign faucet playbooks — read before claiming, write back after (grows one commit per event)
     ├── tollgate.md             # requirements tollgate — the capability matrix probed at Step 0a (campaign) + per-step session cards

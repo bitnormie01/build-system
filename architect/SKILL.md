@@ -162,6 +162,15 @@ Run these four stages in order. Do not start a stage until the previous one is a
     is a rotating Codex executor pool plus one strong Claude seat, so leave tasks unpinned by default
     and pin `claude` only for work that truly needs the strong model; `allow_empty: true` only on
     tasks that legitimately change no files (rare — placeholders, verification-only tasks).
+- **Emit the README task** (`../references/readme-schemas.md`): pick the schema from its decision
+  table (one of R1–R8, by the product's shape) and add one **ordinary** task — late in the DAG,
+  after the tasks that create what it documents — whose body names the schema id + version, pastes
+  the resolved heading list concrete (plus any event-mandated overlay headings quoted verbatim from
+  the pack's `event.md`), and carries `TBD-post-build:<what>` lines for facts that land later
+  (deployed addresses, live link, demo video URL — the Step-3 closing pass resolves them). Its
+  `Files:` list is `README.md`; its gate is the schema library's conformance check with the resolved
+  list, semicolon-joined onto the task's single `Run:` line. No new grammar fields — it is a normal
+  task. (Monorepos: one README task per package README as well, schema R8.)
 - Apply `../references/conventions.md` (no placeholders, exact paths, complete code, strict-TS rules,
   key-safety rules).
 

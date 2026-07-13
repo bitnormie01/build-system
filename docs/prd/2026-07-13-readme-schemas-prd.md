@@ -158,3 +158,28 @@ architect's existing deliverables language already covers plans; the README task
   resolution moment; no new machinery.
 - **Exception verdict**: exactly one exception (event overlay) is worth keeping — disqualification
   risk outranks structural purity; the freeform escape is rejected outright.
+
+## 12. Post-review corrections (adversarial review, 2026-07-13 — applied in the implementation commit)
+
+The multi-lens review confirmed 15 findings (3 refuted). The contract amendments:
+
+1. **The conformance check ships as a short copyable block, not a strict one-liner** — and the
+   library states how it reaches the plan: **semicolon-joined onto the task's single `Run:` line**,
+   expected output `PASS` (task-contract §1's one-command gate is untouched).
+2. **The check is literal, case-sensitive, fence-aware, and covers the H1 title row** (as §6.7
+   contracted: `^#`/`^## `): `-ceq`/`-cne`/`-cmatch` replace `-like`, the README task pastes fully
+   concrete strings (no wildcards anywhere — the template's example is concrete), and the stamp is
+   compared by literal equality, binding it to the chosen schema id and the ` + event-overlay`
+   suffix. Root causes, empirically reproduced in review: `-like` parses bracketed event names
+   (`[Online]`) as wildcard classes → false FAIL, and an unterminated `[` throws mid-loop → false
+   PASS; case-insensitive compares can't enforce "headings verbatim"; a `^## `-only `$got` both
+   missed the title and false-FAILed anyone pasting the task's title-inclusive resolved list; `#`
+   comment lines inside Quickstart fences counted as headings.
+3. **Rule 2 clarified:** the lock covers the `#`/`##` heading levels; `###`-and-deeper sub-headings
+   are free within a section.
+4. **Monorepo authoring path:** one README task *per package README* (schema R8), same spec, with
+   per-path `Files:` and gate — closing the §8 single-task underspecification.
+5. **Accepted additions** (serve the determinism goal; kept): the tie-breakers paragraph in the
+   decision table, and the R8 sub-package note pointing its Demo line at the root README's assets.
+6. **Section content notes** gain the two dropped §4 parentheticals: R2 `Deploy` (testnet) and R6
+   `Play it` (link + controls).

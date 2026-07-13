@@ -211,6 +211,8 @@ For each gate the user green-lights:
      address, repo link once flipped public) — **except the `demo video URL`, which `demo-studio`
      (Step 2.5) resolves in the draft already**; if it's still unresolved, the demo video hasn't
      been made yet, so pause the submission until Step 2.5 runs rather than submitting without it.
+     Resolve the README's `TBD-post-build:` lines in the same breath — the same facts, plus the
+     demo-video URL copied from the draft (`../references/readme-schemas.md` §TBD markers).
      Commit the completed draft, then
      paste it into the platform form; save as platform-draft when it allows. If no draft exists
      (the architect ran before this feature, or it's not a hackathon build), compose from the

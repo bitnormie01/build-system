@@ -58,7 +58,8 @@ Run these checks and commands with the user's logged-in GitHub CLI:
    public repo only at judging.
 3. **Initialize:** if the clone is empty, commit a minimal `README.md` (project/event one-liner +
    "built with the build-system pipeline") so the canonical branch exists for every later step to
-   sync against.
+   sync against. The stub is temporary — the plan's README task later replaces it with one of the
+   locked schemas (`readme-schemas.md`).
 4. **Announce, don't ask.** Creating a private repo under the user's own account is reversible and
    harmless — do it, then state plainly: "Created `<owner>/<name>` (private) as the project repo;
    all pipeline artifacts commit there." What you never do autonomously is delete a repo, transfer
