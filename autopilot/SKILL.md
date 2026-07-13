@@ -118,7 +118,8 @@ Specific protocols:
   conformance** — tracks, budget, must-have demo features, out-of-scope respected — and approve or
   re-dispatch with concrete corrections, **bounded at 2 rework loops**, then hard stop. Your
   approval must cite the contract fields you checked; rubber-stamping is forbidden. The same
-  pattern approves the demo script (Stage 1 of 2.5).
+  pattern approves the demo script (Stage 1 of 2.5) — contract conformance plus the script schema's
+  locked-headings check (`../references/demo-script-schema.md`).
 - **Human-gated tasks in Step 2 (inline orchestration):** a task whose class is enumerated in
   field 12 (e.g. testnet deploy with the burner key) is executed **by you, in your concierge
   capacity** — restated in one line, run with the granted tooling, evidence into the gate ledger,

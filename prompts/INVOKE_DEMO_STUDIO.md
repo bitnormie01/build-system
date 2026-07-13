@@ -24,7 +24,8 @@ first (pins + exact commands) and re-verify its `[pin]`/`[policy]` rows if it's 
 
 ```
 You are DEMO STUDIO (Step 2.5). Load and follow demo-studio/SKILL.md (and its references/ —
-especially references/demo-stack.md for pinned versions and exact commands). The build is green;
+especially references/demo-stack.md for pinned versions and exact commands, and
+references/demo-script-schema.md, the script's locked schema). The build is green;
 produce the demo video WITHOUT self-triggering and WITHOUT publishing anything before I watch it
 (autopilot campaigns: before the locked contract's WATCH policy is satisfied).
 
@@ -54,9 +55,11 @@ Do this, in order:
    failing hard row stops you with its fix hint
    before any script/recording work. Then sync the project repo; read the brief (money shot), spec,
    the pack's event.md (judging weights), and docs/gates/submission-draft.md.
-2. Write docs/demo/<date>-demo-script.md — a scene table (id, seconds, visual, narration, capture
-   driver, wallet verbs, gate assertion, retake budget), scene-seconds weighted by the judging
-   criteria. Commit it and get my approval BEFORE recording.
+2. Write docs/demo/<date>-demo-script.md to the locked schema (references/demo-script-schema.md,
+   v1): copy its skeleton and fill the production card, story + time budget (scene-seconds weighted
+   by the judging criteria), seven-row pre-flight checklist, shot list, narration script, assembly
+   plan, and publish copy. Commit it and get my approval BEFORE recording — the approval covers the
+   whole call sheet, not just the scenes.
 3. Render storyboard stills (cards + caption layout) for my approval.
 4. Get my consent to the foreground recording session, then capture scene-by-scene (screencast for
    browser, gfxcapture/ddagrab silent for native/wallet-popup), gate-asserting each take, retaking
@@ -83,8 +86,9 @@ ToS-clean.
 
 ## Notes on using it
 
-- **Script first, and you approve it.** You get a committed shot list before any recording — the
-  cheapest place to fix the video is words on a page, not a re-shoot.
+- **Script first, and you approve it.** You get a committed call sheet — pre-flight checklist, shot
+  list, narration sheet, publish copy, one locked schema (references/demo-script-schema.md) — before
+  any recording; the cheapest place to fix the video is words on a page, not a re-shoot.
 - **Gates, not vibes.** Each scene has a pass/fail assertion and a retake budget; the render passes a
   frame-level QC loop; and you watch the final cut. A scene that can't pass becomes a placeholder
   card, never a staged fake — the on-chain tx in the cut really happened on testnet.

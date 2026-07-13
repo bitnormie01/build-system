@@ -42,7 +42,10 @@ upload it once you've watched it and said go."
 The operational ground truth — exact tool versions, the copy-paste ffmpeg/Playwright/Remotion
 commands, and the Windows bootstrap steps — lives in `../references/demo-stack.md`. **Read it before
 running anything**, and honor its freshness rule (re-verify the `[pin]`/`[policy]` rows before a
-real campaign; the toolchain moves weekly). Music lives in `../references/music-kit.md`. At boot,
+real campaign; the toolchain moves weekly). Music lives in `../references/music-kit.md`. The demo
+script follows the **locked schema** `../references/demo-script-schema.md` (v1) — read it before
+Stage 1, start from its skeleton, and keep its §8 status ledger current (stages append their
+locked vocabulary rows as they land). At boot,
 **run your tollgate session card** (`../references/tollgate.md` — rows 5–6, 8–13, 16: the
 demo-stack probes plus browser/device access, the wallet extension when wallet scenes are on, and
 disk) before Stage 1; a failing hard row stops
@@ -94,15 +97,20 @@ seat runs without interrogation, and the user overrides any:
 ### 1. Script (committed, user-approved before any recording)
 
 Read the brief (the **demo money shot**), the spec, the pack's `event.md` (the **published judging
-criteria + weights**), and the submission draft. Write `docs/demo/<YYYY-MM-DD>-demo-script.md` — a
-scene table: `id · target seconds · visual (route/action/window) · narration line · capture driver
-(screencast | gfxcapture | ddagrab) · wallet verbs (abstract: connect / approveTx / switchNetwork) ·
-gate assertion (what the final frame or on-chain state must show) · retake budget (default 3)`.
+criteria + weights**), and the submission draft. Write `docs/demo/<YYYY-MM-DD>-demo-script.md` **to the
+locked schema** (`../references/demo-script-schema.md`, v1): copy its skeleton, fill §§0–5 and §7's
+title/description/tags, and append §8's `scripted` row — the production card, the story +
+judging-weight time budget (§1's seconds sum to the target), the seven-row pre-flight checklist, the
+shot list (`id · seconds · visual (route/action/window) · narration cue · driver · wallet verbs ·
+gate assertion · retakes · take`), the narration script (§4 is the single source of the words — the shot list carries
+cues, not text), the assembly plan, and the publish copy.
 **Allocate scene seconds by the judging weights** — if working-demo is 50%, most seconds go to the
 money shot, not the intro. Commit and push it, then **get the user's approval before recording**
 (in an autopilot campaign the approver is the autopilot, which reviews the script for contract
-conformance — judging-weight allocation, money shot, length — and approves or re-dispatches with
-corrections). A rubber-stamped script produces a drifting video, same as a rubber-stamped spec.
+conformance — judging-weight allocation, money shot, length — plus the schema's conformance check,
+and approves or re-dispatches with corrections). The approval covers the whole call sheet —
+pre-flight, narration, publish copy — not just the scenes. A rubber-stamped script produces a
+drifting video, same as a rubber-stamped spec.
 
 ### 2. Storyboard preview
 
@@ -113,7 +121,9 @@ correction point: fix wording, ordering, and layout here, before spending captur
 ### 3. Capture (the foreground consented session)
 
 Recording takes over the desktop foreground — get the **recording-session consent** first, and tell
-the user it's a do-not-disturb window. Then, **scene-by-scene, sequentially** (one browser context
+the user it's a do-not-disturb window. **Verify the script's §2 pre-flight rows and tick its `✓`
+column first** (append §8's `pre-flight verified` row) — the checklist exists so no take discovers a
+missing fixture. Then, **scene-by-scene, sequentially** (one browser context
 at a time — see `../references/demo-stack.md`):
 
 - **Browser scenes** — Playwright `page.screencast` (JPEG frames → ffmpeg two-pass H.264), 1920×1080
@@ -129,13 +139,15 @@ Run the **gate assertion** after each take; retake on fail up to budget. **A wal
 first refresh its on-chain preconditions** (nonce, burner balance, pending txs — a prior take may
 have already mined the tx or set the allowance), and tx-scene assertions tolerate testnet latency
 variance rather than hard timeouts. On budget exhaustion: swap the wallet driver (dappwright →
-injected + explorer shot), or mark the scene **BLOCKED** with a placeholder card and report it. Never
+injected + explorer shot), or mark the scene **BLOCKED** with a placeholder card and report it.
+Record each scene's outcome in the shot list's `take` column (final take number, or `BLOCKED`), and
+append §8's `recorded` row when the pass completes. Never
 fabricate an interaction to make a scene pass — a real BLOCKED beats a faked take (same ethos as the
 executor's "never fake green").
 
 ### 4. Narration + captions
 
-TTS each scene's narration line through the **VOICE** engine (`../references/demo-stack.md` for the
+TTS each scene's §4 narration text (the single source of the words) through the **VOICE** engine (`../references/demo-stack.md` for the
 adapter matrix and per-engine timing source). Scene durations derive from the narration length via
 the `mediabunny` package's `computeDuration()` (audio-first timing — the video fits the words; exact
 snippet in `../references/demo-stack.md`). Build captions
@@ -156,7 +168,8 @@ YouTube (`../references/demo-stack.md` has the exact recipe). QC passes render a
 Extract per-scene keyframes (per-scene `-ss` seeks so frames map to scenes) and **read them as
 images**: money shot visible, text legible, captions present, no Windows.Graphics.Capture yellow
 border, duration within budget, and **no secret/address on screen that shouldn't be** (a hard
-check). Confirm audio is present with sane loudness stats. Fix the composition and re-render, bounded
+check). Confirm audio is present with sane loudness stats. Record every check in the script's §6 QC record —
+re-render iterations append corrected rows, never overwrite. Fix the composition and re-render, bounded
 iterations; if something stays imperfect after the bound, stop and carry a residual-imperfection note
 into the watch step — never loop forever, never ship silently.
 
@@ -164,7 +177,7 @@ into the watch step — never loop forever, never ship silently.
 
 The user watches the final cut. In interactive mode this gate is not optional and not automatable;
 the QC loop makes the cut *probably* good, the user makes it *actually* shippable. Surface the QC
-residual notes here. **In an autopilot campaign it is delegable — only by the locked contract's
+residual notes (the script's §6) here. **In an autopilot campaign it is delegable — only by the locked contract's
 explicit WATCH policy** (`../references/campaign-contract.md`, field 9, always asked at intake,
 never defaulted): `pause-for-watch` keeps the human watch as a hard stop; `auto-publish-after-qc`
 replaces it with the autopilot's own independent frame/audio review (a second context re-reading
@@ -183,7 +196,8 @@ YouTube Studio (unlisted). **Preflight the account's upload eligibility before s
 (new/low-history accounts can hit verification interstitials); on any interstitial or Studio DOM
 drift, **stop and hand off to the user** — never fight bot detection — with the Drive fallback one
 flag away. On success: **verify the link renders for a logged-out fetch**, append any required music
-attribution to the description, write the URL + evidence into the gate ledger, and resolve the
+attribution to the description, fill the script's §7 publish rows (URL, verified date), append §8's
+`uploaded` row, write the URL + evidence into the gate ledger, and resolve the
 submission draft's `TBD-post-build: demo video URL`. (The concierge's closing-pass submission gate
 then finds the URL already in the draft.)
 
@@ -242,4 +256,4 @@ Google Cloud project.
   after the orchestrator reports green.
 - Non-demo-judged builds, or a submission that needs no video — nothing to produce.
 - The user wants to record the video themselves — then stop at the committed, approved script
-  (Stage 1); it's a usable shot list on its own.
+  (Stage 1); it's a usable pre-flight checklist, shot list, and narration sheet on its own.

@@ -28,7 +28,8 @@ scene-by-scene on the user's machine (Playwright screencast for browser scenes, 
 gfxcapture/ddagrab for native/wallet-popup scenes), narrates with TTS and word-timed captions,
 assembles with Remotion, runs a frame-level QC loop, has the user **watch** the final cut, then on a
 separate consent uploads it and resolves the submission draft's demo-video URL
-(`demo-studio/SKILL.md`; pinned toolchain in `references/demo-stack.md`).
+(`demo-studio/SKILL.md`; pinned toolchain in `references/demo-stack.md`; every script follows the
+locked call-sheet schema in `references/demo-script-schema.md`).
 
 An optional **Step 3** — the `gate-concierge` — minimizes the human-gated tail (faucets, testnet
 deploy, provider accounts / API keys, wallet setup, the hackathon submission): it reports every gate
@@ -105,6 +106,7 @@ build-system/
     ├── tollgate.md             # requirements tollgate — the capability matrix probed at Step 0a (campaign) + per-step session cards
     ├── model-routing.md        # per-spawn model+effort routing: tiers, harness gate (CLAUDECODE), row-18 probe, escalation ladder
     ├── agents/                 # executor effort-variant agent templates (copied into the project repo's .claude/agents/ at boot)
+    ├── demo-script-schema.md   # demo-studio's locked call-sheet script schema (deterministic across campaigns)
     ├── demo-stack.md           # demo-studio's pinned toolchain + exact capture/render/upload commands (re-verify before a run)
     ├── music-kit.md            # curated pre-cleared demo-video music manifest (metadata only; MP3s live off-repo)
     ├── roles.md                # role wiring + the two run configurations

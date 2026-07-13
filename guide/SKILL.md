@@ -76,7 +76,7 @@ pipeline runs for this event, prep each step's kickoff, and stay here to unblock
 | 0 *(optional)* | `idea-forge` | pack + 5 inputs | one brief in `docs/idea-forge/` | `../prompts/INVOKE_IDEA_FORGE.md` |
 | 1 | `architect` | brief + pack | spec + plans + `manifest.json` | `../prompts/INVOKE_ARCHITECT.md` |
 | 2 | `orchestrator` | plans/manifest | built, gated, committed tasks | `../prompts/INVOKE_ORCHESTRATOR.md` |
-| 2.5 *(optional; after green, needs a demo video)* | `demo-studio` | brief + spec + `event.md` + submission draft | `docs/demo/<date>-demo-script.md`, the `demo/` Remotion project, and — if UPLOAD is authorized — an uploaded video URL resolving the submission draft's TBD (else the rendered file, TBD left for manual resolution) | `../prompts/INVOKE_DEMO_STUDIO.md` |
+| 2.5 *(optional; after green, needs a demo video)* | `demo-studio` | brief + spec + `event.md` + submission draft | `docs/demo/<date>-demo-script.md` (locked schema `../references/demo-script-schema.md`), the `demo/` Remotion project, and — if UPLOAD is authorized — an uploaded video URL resolving the submission draft's TBD (else the rendered file, TBD left for manual resolution) | `../prompts/INVOKE_DEMO_STUDIO.md` |
 | 3 *(two passes: preflight after Step 1, closing after Step 2)* | `gate-concierge` | manifest human-gates + brief + pack + runsheet + `docs/gates/submission-draft.md` | `docs/gates/<date>-gate-ledger.md`, then consented gates executed | `../prompts/INVOKE_GATE_CONCIERGE.md` |
 
 **Session discipline (the rule users trip on):** each step runs in its **own fresh session**; the

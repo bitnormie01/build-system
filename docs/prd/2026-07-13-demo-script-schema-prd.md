@@ -233,3 +233,22 @@ it doesn't redefine them).
 - **Publish copy drafted at Stage 1** — the approval covers what the world will read.
 - **Append-only §8 ledger** with a locked event vocabulary — resume by reading one row.
 - **Embedded skeleton** — structure is copied, never reconstructed.
+
+## 8. Post-review corrections (adversarial review, 2026-07-13 — applied in the implementation commit)
+
+The multi-lens review confirmed 12 findings (2 refuted). Most realigned the implementation to this
+contract as written (rule numbering, skeleton row wording, the SKILL's column quote). Four amend the
+contract itself:
+
+1. **The conformance check ships as a short copyable block, not a strict one-liner** — readable, and
+   it additionally verifies the line-1 stamp. Both `Get-Content` calls carry **`-Encoding UTF8`**:
+   empirically, Windows PowerShell 5.1 reads BOM-less UTF-8 as ANSI, the em-dash headings mojibake,
+   and a fully conforming script false-FAILs (reproduced and counter-verified in review). The
+   encoding flag is normative.
+2. **Change map item 3** also updates the kickoff's "Load and follow" preamble to name the schema
+   (mirrors the demo-studio boot-paragraph edit).
+3. **§3/§5 assembly pointer**: the ducking rule lives in `references/demo-stack.md`
+   (`music-kit.md` holds track choice + attribution) — the schema points each at its real home.
+4. **"Every stage appends" clarified**: stages append their *locked §8 vocabulary* rows as they
+   land — Stages 2 and 4 deliberately carry no event of their own (they produce only re-derivable,
+   git-ignored intermediates).
