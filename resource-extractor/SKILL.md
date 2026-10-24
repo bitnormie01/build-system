@@ -177,7 +177,8 @@ browser, in this tool-preference order (per this environment's MCP guidance):
 - **Bounded crawl.** The event's ecosystem, not the open web. Dedupe, cap hops, stop at diminishing
   returns.
 - **Strong model.** Reading dense rules and SDK docs accurately is model-bound — run this on your top
-  reasoning seat, same as idea-forge and the architect.
+  reasoning seat (tier `top`, at its §Seat settings effort — `../references/model-routing.md`),
+  same as idea-forge and the architect.
 - **The project repo is the single source of truth.** Commit and push the pack there before handing
   off — creating the repo first when none exists (`../references/repo-bootstrap.md`); never into the
   build-system kit checkout.

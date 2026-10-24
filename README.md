@@ -21,7 +21,8 @@ connections don't survive session boundaries), and the architect appends the pro
 requirements for the orchestrator to probe before the first task. Spawns are also **routed**
 (`references/model-routing.md`): every subagent dispatch binds a per-task model tier and effort
 level — harness-gated (Claude Code only; anywhere else falls back to inherit), probe-verified, and
-never a blocker.
+never a blocker — and every seat runs at a kit-static tier + effort (`references/model-routing.md`
+§Seat settings): main sessions set by the user before the first message, spawns by the dispatcher.
 
 After the build goes green, an optional **Step 2.5** — the `demo-studio` — produces the hackathon
 demo video autonomously: it scripts the demo from the brief/spec/`event.md`, records the app
@@ -106,7 +107,7 @@ build-system/
     ├── campaign-contract.md    # autopilot's locked instrument: contract schema, intake, consent forms + never-floor, identity checks, $0|funds-allowed
     ├── faucets/                # cross-campaign faucet playbooks — read before claiming, write back after (grows one commit per event)
     ├── tollgate.md             # requirements tollgate — the capability matrix probed at Step 0a (campaign) + per-step session cards
-    ├── model-routing.md        # per-spawn model+effort routing: tiers, harness gate (CLAUDECODE), row-18 probe, escalation ladder
+    ├── model-routing.md        # per-spawn model+effort routing: tiers, seat settings, harness gate (CLAUDECODE), row-18 probe, escalation ladder
     ├── agents/                 # executor effort-variant agent templates (copied into the project repo's .claude/agents/ at boot)
     ├── demo-script-schema.md   # demo-studio's locked call-sheet script schema (deterministic across campaigns)
     ├── demo-stack.md           # demo-studio's pinned toolchain + exact capture/render/upload commands (re-verify before a run)

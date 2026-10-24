@@ -75,7 +75,7 @@ Steps: 0a extractor · 0 idea-forge · 1 architect · 2 orchestrator · 2.5 demo
 | 15 | cross-session env store writable | degraded | 3 (preflight secrets) | `setx TOLLGATE_PROBE 1`, confirm with `reg query HKCU\Environment /v TOLLGATE_PROBE` (setx does NOT touch the current session's env), then remove: `reg delete HKCU\Environment /v TOLLGATE_PROBE /f` | fix permissions; fall back to the project repo's git-ignored `.env` |
 | 16 | ~2 GB free disk on the workspace drive | degraded | 2.5 | free-space check | free space before recording/rendering |
 | 17 | subagents can reach this session's MCP tools | conditional | autopilot campaigns only (`../autopilot/SKILL.md`) | dispatch one trivial subagent instructed to call one browser tool (e.g. read the tab context) and report the result verbatim | none to install — a FAIL selects the autopilot's documented fallback: MCP-dependent steps run inline (or one step degrades to a guide-mode kickoff) |
-| 18 | subagent model/effort knobs resolved + verified | degraded | 2; any step that dispatches subagents (autopilot campaigns: always) | harness identity (`$env:CLAUDECODE -eq "1"` in a spawned shell), then one trivial subagent per model tier reporting the exact model id it resolved to (requested vs resolved — catches a silent `availableModels` fallback), then the executor effort-variant files present in the project repo's `.claude/agents/` (`../references/model-routing.md`) | FAIL → `routing: inherit` — everything dispatches at inherited settings; routing is never a blocker |
+| 18 | subagent model/effort knobs resolved + verified | degraded | 2; any step that dispatches subagents (autopilot campaigns: always) | (1) harness identity (`$env:CLAUDECODE -eq "1"` / `[ "$CLAUDECODE" = "1" ]` in a spawned shell); (2) effort mechanism — does this session's Agent tool list a per-spawn `effort` parameter → `per-spawn`, else `variants-only`; (3) one trivial subagent per model tier, spawned with that tier's binding (and per-spawn `effort: low` when available), reporting the exact model id it resolved to (requested vs resolved — catches a silent `availableModels` fallback); (4) the executor effort-variant files present in the project repo's `.claude/agents/`; (5) `CLAUDE_CODE_EFFORT_LEVEL`, `CLAUDE_CODE_SUBAGENT_MODEL_FORCE`, `CLAUDE_CODE_SUBAGENT_MODEL` read (`$env:NAME` / `printenv NAME`) (`../references/model-routing.md`) | FAIL → `routing: inherit` — everything dispatches at inherited settings; routing is never a blocker. `variants-only` → step seats and reviewers inherit their dispatcher's effort (logged). A set `CLAUDE_CODE_EFFORT_LEVEL` or `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` does not fail the row — it is a Routing-section warning; fix: remove the variable from the shell environment and any settings `env` block |
 
 **Probe rules:** probes are **read-only** — they install nothing, log into nothing, grant nothing,
 accept nothing (the single sanctioned write is row 15's throwaway variable, removed immediately).
@@ -93,10 +93,12 @@ One per campaign — **extend it, never fork a second** (same rule as the gate l
    session)` columns. `N-A` = conditional option off, or step skipped.
 3. **Stack requirements** *(architect-appended at Stage 4)* — per CLI/runtime: name, version the
    plans assume, probe, result (filled at orchestrator boot), fix hint.
-4. **Routing** *(written by whichever session probes row 18)* — harness; knobs available;
-   tier→alias map with the probe-verified resolved model id per tier; effort-variant install
-   state; campaign pin overrides; a warning when the main session resolves below `top` while
-   planning steps are planned (`../references/model-routing.md`).
+4. **Routing** *(written by whichever session probes row 18)* — harness; knobs available; effort
+   mechanism (`per-spawn` | `variants-only`); tier→alias map with the probe-verified resolved
+   model id and the effort floor per tier; ladder (`tier-first` | `effort-first`); effort-variant
+   install state; campaign pin overrides; warnings — a warning when the main session resolves
+   below `top` while planning steps are planned, plus one line per setting that defeats routing
+   (`../references/model-routing.md`).
 5. **Verdict per step** — e.g. `0a: CLEAR · 2: BLOCKED — row 9 (node missing) · 2.5: CLEAR`. The
    guide reads this block; **no kickoff is handed over for a BLOCKED step.**
 

@@ -46,17 +46,18 @@ blockers."
    first dispatch.
 3. **Run the campaign tollgate** (`../references/tollgate.md`) — normally you are this campaign's
    first pipeline session: probe the full matrix for the contracted steps **plus row 17** (subagent
-   MCP reach — autopilot campaigns only) **and row 18** (model/effort routing —
-   `../references/model-routing.md`; write its Routing section), write/commit/push the report. If a campaign report
-   already exists (the campaign began in guide mode and switched here), verify and **extend that
-   report** — re-probe the session-scoped rows plus rows 17 and 18, update stamps — never fork a
-   second; one report per campaign. Because this session persists
-   campaign-long, its session-scoped rows stay valid for every step you dispatch — re-probe them
-   cheaply before each browser-heavy dispatch and after any reconnect. Hard-stop on your own
-   failing hard rows; report the rest per the protocol.
+   MCP reach — autopilot campaigns only) **and row 18** (model/effort routing, incl. the effort
+   mechanism and the settings that defeat routing — `../references/model-routing.md`; write its
+   Routing section), write/commit/push the report. If a campaign report already exists (the campaign
+   began in guide mode and switched here), verify and **extend that report** — re-probe the
+   session-scoped rows plus rows 17 and 18, update stamps — never fork a second; one report per
+   campaign. Because this session persists campaign-long, its session-scoped rows stay valid for
+   every step you dispatch — re-probe them cheaply before each browser-heavy dispatch and after any
+   reconnect. Hard-stop on your own failing hard rows; report the rest per the protocol.
 4. **Open the runsheet** — guide format and path (`docs/guide/<YYYY-MM-DD>-<event-slug>-runsheet.md`),
    so a guide session opened later reads the same campaign state. Record the contract path, the
-   tollgate verdicts, and the step plan. Commit.
+   tollgate verdicts, the step plan, and this session's own settings (the model id you stated + the
+   effort the user set; `../references/model-routing.md` §Seat settings' autopilot row). Commit.
 
 ## Step execution modes
 
@@ -86,12 +87,14 @@ stop and hand the user that one step as a classic guide-mode kickoff. Degrading 
 is a reported limitation, never a silent skip.
 
 **Routing** (`../references/model-routing.md`): bind every dispatch per the tollgate report's
-Routing section (row 18). Step-seat tiers are kit-static — Steps 0a, 0, and 1 dispatch at `top`;
-Steps 2.5, 3, and reviewer fan-outs at `standard`; Step 2's tasks per their manifest
-`effort`/`model_tier` fields, with the same binding, logging, and escalation ladder the
-orchestrator doctrine specifies. The contract's **field 16** may pin campaign-wide; a pin never
-overrides a `top` pin, and `routing: inherit` (row-18 FAIL, or any non-Claude-Code harness) means
-every dispatch simply inherits — routing is never a blocker and never a hard stop.
+Routing section (row 18). Step seats bind per §Seat settings — per-spawn `model` always, per-spawn
+`effort` when the Routing section shows `per-spawn` (else the spawn inherits your own effort,
+logged as degraded); a Step-3 dispatch that would execute any `human_gate: true` task binds `top`
+(the pin rule). Step 2's tasks run per their manifest `effort`/`model_tier` fields, with the same
+binding, effort floors, logging, and escalation ladder the orchestrator doctrine specifies. The
+contract's **field 16** may pin campaign-wide; a pin never overrides a `top` pin, and
+`routing: inherit` (row-18 FAIL, or any non-Claude-Code harness) means every dispatch simply
+inherits — routing is never a blocker and never a hard stop.
 
 ## The run loop
 

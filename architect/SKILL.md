@@ -102,10 +102,12 @@ Run these four stages in order. Do not start a stage until the previous one is a
 
 ### Stage 2 — Brainstorm into a spec
 
-- Invoke the brainstorming skill. Honor its **hard gate**: present a design and get explicit
-  approval before any planning. **In an autopilot campaign** (your kickoff carries an
-  `AUTOPILOT CAMPAIGN` block — `../references/campaign-contract.md`) the gate survives but the
-  approver is the autopilot: answer the brainstorming dialogue's questions **from the locked
+- Invoke the brainstorming skill. Any reviewer subagent the method dispatches (the spec-document
+  reviewer here, the §4 plan reviewer at Stage 4) runs at §Seat settings' reviewer row
+  (`../references/model-routing.md`) — per-spawn model and effort. Honor its **hard gate**: present
+  a design and get explicit approval before any planning. **In an autopilot campaign** (your kickoff
+  carries an `AUTOPILOT CAMPAIGN` block — `../references/campaign-contract.md`) the gate survives
+  but the approver is the autopilot: answer the brainstorming dialogue's questions **from the locked
   contract and the brief** — recording each as a line in a `Design decisions` section of the spec
   (question → answer → source: contract field / brief field / derived) — then return the design
   summary as your final report for the autopilot's contract-conformance approval; it approves or
@@ -140,7 +142,9 @@ Run these four stages in order. Do not start a stage until the previous one is a
     `low`, normal feature work `medium`, tricky algorithms or security-sensitive code `high`/`xhigh`
     (`max` is the rare last rung, not a default).
     It's the dispatcher's budget throttle (see `../references/task-contract.md` §6) — don't default
-    everything to high.
+    everything to high. Author it for the task's difficulty only — never raise it to compensate for
+    a model; the dispatcher applies each tier's effort floor at dispatch
+    (`../references/model-routing.md`), so the plan stays portable.
   - `Model tier:` — the abstract model class (`top|standard|fast`, optional, absent = `standard`;
     `../references/model-routing.md`). Same don't-default-everything-up discipline as effort.
     **Pin rule:** every `human_gate: true`, security-sensitive, or `effort: xhigh|max` task is
@@ -273,9 +277,8 @@ docs/gates/
 ## Hard rules
 
 - **Strongest model only.** Decomposition quality is model-bound. Run the architect on your top
-  reasoning seat (tier `top` — `../references/model-routing.md`). Never let a cheap executor write
-  the plan — it produces vague tasks
-  that drift the whole pool.
+  reasoning seat (tier `top`, at its §Seat settings effort — `../references/model-routing.md`).
+  Never let a cheap executor write the plan — it produces vague tasks that drift the whole pool.
 - **No placeholders, ever.** "TODO", "add error handling", "similar to Task N", or a step that
   says *what* without showing *how*, are plan failures. The executor has no context to fill them in.
 - **Self-contained tasks.** Because executors are stateless and may run on different accounts, each

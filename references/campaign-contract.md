@@ -37,7 +37,7 @@ covers it.
 | 13 | Access manifest | must-ask | which grants THIS session actually has (browser, device, inbox-in-browser, wallet extension) — cross-checked against the tollgate report |
 | 14 | Fallback policy | must-ask | `stop-and-wait` (default) \| `safe-substitute-and-log` (the autopilot may make the closest contract-conformant substitution and log it in the runsheet) |
 | 15 | Hard-stop notification | defaultable | in-session + the environment's push/notification tool when available |
-| 16 | Routing | defaultable | `auto` — model/effort per `model-routing.md` and the tollgate's Routing section — \| a campaign-wide pin (e.g. "pin all to `<alias>`"). A pin never overrides a `top` pin; on `routing: inherit` this field is moot |
+| 16 | Routing | defaultable | `auto` — seat settings, per-task fields, tier bindings and effort floors per `model-routing.md` and the tollgate's Routing section — \| a campaign-wide pin (e.g. "pin all to `<alias>`") \| a per-tier alias override. A pin never overrides a `top` pin; on `routing: inherit` this field is moot |
 | — | **LOCK stamp** | — | datetime + "locked — the autopilot will not re-ask; amendments only by the user, committed as revisions" |
 
 ## Intake protocol

@@ -88,6 +88,10 @@ under the same consent rules, extending the **same ledger file**:
   and on-chain ops, the repo-public flip, filling and submitting the hackathon form, plus any
   preflight gate that was declined, blocked, or has a cooldown to re-claim.
 
+Seat settings differ by pass (`../references/model-routing.md` §Seat settings): the closing pass
+runs at `top`, because it executes `human_gate: true` tasks and the pin rule never lets one run
+below `top`; the preflight pass runs at `standard`.
+
 Each ledger row records its **pass**. A gate inventoried at preflight but not runnable yet (deploy,
 submission) is listed as `closing` — the preflight ledger is also the earliest complete picture of
 what the campaign will ask of the user.

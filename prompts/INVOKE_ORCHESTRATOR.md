@@ -5,6 +5,17 @@ spec + plans (+ optional `manifest.json`)** to run the build autonomously **insi
 external kernel, no multi-account pool. The session becomes the orchestrator: it dispatches a subagent
 per task, proves each gate, and commits. This is **Step 2**, after `prompts/INVOKE_ARCHITECT.md`.
 
+**Session settings — set these before you paste** (values: `references/model-routing.md`
+§Seat settings): tier `top` → Claude Code default alias `opus` · effort `high`.
+- **Claude Code Desktop:** model picker in the row under the prompt box → `opus`; **Effort** in
+  the same picker → `high` — or type `/model opus`, then `/effort high`, as your
+  first two messages.
+- **Claude Code CLI:** `claude --model opus --effort high` (or `/model opus` + `/effort high`).
+- Set both explicitly in every new session — a fresh session otherwise starts at its model's
+  default.
+- A campaign that overrides the binding records it in the tollgate report's Routing section — use
+  that alias instead.
+
 ## Running the pipeline (Claude-Code-native)
 
 ```
@@ -22,6 +33,10 @@ The committed repo is the baton between every step — always sync before starti
 ---
 
 ```
+SESSION SETTINGS: tier top · effort high (references/model-routing.md §Seat settings). Start by
+stating the exact model id you are running as. If it is below this campaign's top-tier binding,
+warn me and wait for my go before anything else.
+
 You are the ORCHESTRATOR for this build, running in Claude Code. Load and follow orchestrator/SKILL.md
 (and its references/). There is NO external kernel — you are the kernel + mastermind + reviewer, and you
 build by dispatching a fresh Claude Code subagent per task (playing the executor role, executor/SKILL.md).
@@ -43,9 +58,10 @@ Do this:
      evident from its steps): PAUSE and hand it to me — never run it yourself.
    - Otherwise dispatch a subagent with the executor kit + conventions + the full task block verbatim +
      the pasted `requires` signatures (task-contract.md §3) — bound per the routing you resolved in
-     step 2: agent type = the effort variant executor-<task.effort>, model = task.model_tier's
-     verified binding, resolved model logged (references/model-routing.md; under routing: inherit,
-     a plain subagent as before).
+     step 2: agent type = the effort variant executor-<dispatched effort> (task.effort raised to
+     the tier floor), model = task.model_tier's verified binding, plus per-spawn effort where
+     available, resolved model and effort logged (references/model-routing.md; under routing:
+     inherit, a plain subagent as before).
    - Re-run the gate yourself, scope-check the declared Files, review the diff, then commit exactly those
      files with the task's commit message. Mark it done.
    - On failure: classify (flake / executor-miss / plan-bug / human) and retry-with-hint, route back to
@@ -63,8 +79,9 @@ PLAN LOCATION: [repo path / branch, or "the synced canonical branch"]
 REVIEW MODE: [autonomous — commit each gate-passed task and report at the end
              | checkpoint — show me each gate-passed diff before you commit it]
 
-ROUTING (optional): [auto (default — per-task model/effort per references/model-routing.md and the
-tollgate's Routing section) | pin all to <model alias> (never overrides a top pin) | inherit]
+ROUTING (optional): [auto (default — per-task and per-seat model/effort per
+references/model-routing.md and the tollgate's Routing section: tier bindings, effort floors,
+escalation ladder) | pin all to <model alias> (never overrides a top pin) | inherit]
 ```
 
 ---

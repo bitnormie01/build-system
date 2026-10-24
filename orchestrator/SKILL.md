@@ -66,11 +66,16 @@ step, in either mode.
    five-minute install; caught inside a task it's a gate failure misdiagnosed as a flake. No report
    or no stack section (non-campaign build) → skip.
 5. **Resolve routing** (`../references/model-routing.md`). Read the tollgate report's **Routing**
-   section; if none exists, run the row 18 probe yourself (harness identity via `CLAUDECODE`, one
-   trivial subagent per tier reporting its resolved model id) and write the section. Install the
+   section; if none exists, run the row 18 probe yourself (harness identity via `CLAUDECODE`, the
+   effort mechanism — `per-spawn` or `variants-only` — one trivial subagent per tier reporting its
+   resolved model id, and the settings that defeat routing) and write the section. Take the tier
+   bindings, effort floors and ladder from it, and surface its warnings (`variants-only`, a set
+   `CLAUDE_CODE_EFFORT_LEVEL` or `CLAUDE_CODE_SUBAGENT_MODEL_FORCE`) to the user once. Install the
    executor effort-variant files into the project repo's `.claude/agents/` if absent (copy from
    the kit checkout's `../references/agents/`, commit). A probe FAIL or a non-Claude-Code harness → `routing: inherit`,
-   logged — dispatch exactly as before routing existed; never block on it.
+   logged — dispatch exactly as before routing existed; never block on it. Your own seat:
+   §Seat settings' orchestrator row (`../references/model-routing.md`) — state your model id at
+   boot.
 
 ## The build loop
 
@@ -97,12 +102,15 @@ Repeat until every task is `done` or the build is blocked on a human:
    - every signature in this task's `requires`, pasted from the providers' `provides`.
 
    Bind the spawn's knobs from the routing resolution (boot 5; `../references/model-routing.md`):
-   the agent type is the effort variant `executor-<task.effort>`, and the `model` argument is
+   the **dispatched effort** is `task.effort` raised to the bound tier's floor (never lowered); the
+   agent type is the effort variant `executor-<dispatched effort>`; the `model` argument is
    `task.model_tier`'s campaign-verified binding (absent field = `standard`; the pin rule makes
-   gated/security/`xhigh|max` tasks `top` regardless). **Log the resolved model in the dispatch
-   record** — requested ≠ resolved is drift you want to see. Under `routing: inherit`, spawn the
-   plain subagent as before — this is the native-mode equivalent of the kernel's CLI flags
-   (`../references/task-contract.md` §6 is the external-pool mapping and does not apply here).
+   gated/security/`xhigh|max` tasks `top` regardless); and when the Routing section shows
+   `per-spawn`, pass the dispatched effort as the per-spawn `effort` too. **Log the requested tier,
+   the resolved model and the dispatched effort in the dispatch record** — requested ≠ resolved is
+   drift you want to see. Under `routing: inherit`, spawn the plain subagent as before — this is
+   the native-mode equivalent of the kernel's CLI flags (`../references/task-contract.md` §6 is the
+   external-pool mapping and does not apply here).
    Give it **worktree isolation only when you
    are running tasks in parallel**; a single sequential task builds in the working tree.
 4. **Read the subagent's `RESULT`.** `DONE` (with `FILES` + `GATE` output) or `BLOCKED` (with `REASON`).
@@ -126,10 +134,11 @@ Don't power through. Classify from evidence (re-read files, re-run the gate) per
 - **Executor miss** (task is fine, implementation wrong: off-by-one, wrong import, misread signature) →
   re-dispatch with a **concrete hint** in the prompt. One good hint beats three blind retries.
   When routing is active, retries climb the **escalation ladder**
-  (`../references/model-routing.md`): retry 1 = as-is + the hint; retry 2 = +1 effort step;
-  final retry = +1 model tier (caps `max`/`top`; the pin rule tracks the *dispatched* effort, so a
-  retry escalated to `xhigh|max` runs at `top` immediately). Only this class escalates — flakes
-  re-dispatch as-is, and plan bugs go to the architect, never up-tiered through.
+  (`../references/model-routing.md` §Dispatch binding — the authority; this is a summary): retry 1
+  = as-is + the hint; then a `standard` task moves up a model tier before it moves up an effort
+  step (`tier-first`), while `fast` and `top` tasks move up effort first — every rung at the
+  landing tier's floor, and any dispatch at `xhigh|max` runs at `top`. Only this class escalates —
+  flakes re-dispatch as-is, and plan bugs go to the architect, never up-tiered through.
 - **Plan bug** (the task block itself is wrong: undeclared file, `requires` that no task `provides`,
   steps that contradict the gate) → stop and **route back to the architect** to fix that task, then
   re-plan the affected subtree. Never patch the plan freehand mid-build.
@@ -173,8 +182,9 @@ hackathon build is rarely bottlenecked on task throughput, and sequential keeps 
 
 No external kernel binary, no `npm run kernel`, no account rotation (one Claude Code account), no
 `provider` pinning (you are the only provider), and no CLI effort flags (effort rides the executor
-effort-variant agent type and the model rides the per-spawn `model` argument — boot 5 and build-loop
-step 3; `../references/model-routing.md`). The `manifest.json`, `mastermind`, and `executor` **headless-delivery** machinery from the
+effort-variant agent type (plus per-spawn `effort` where available) and the model rides the
+per-spawn `model` argument — boot 5 and build-loop step 3; `../references/model-routing.md`). The
+`manifest.json`, `mastermind`, and `executor` **headless-delivery** machinery from the
 external-pool config is optional scaffolding — you reuse the `executor` kit as the subagent's doctrine
 and the `mastermind` taxonomy as your failure classifier, but nothing is "delivered by a kernel."
 

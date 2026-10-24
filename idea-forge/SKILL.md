@@ -210,12 +210,19 @@ in this kit runs on.
   the brief there. Never commit the brief into the build-system kit checkout.
 
 Then **offer the hand-off**: "Hand this to the architect?" and emit the kickoff block below, filled
-from the brief. **Paste it into a new, fresh session — the architect does not continue this
-conversation**; it plans from the committed brief as the single source of truth, with a clean context
-window (not from idea-forge's divergence noise). This is the exact shape `../architect/SKILL.md` Stage 1
+from the brief. **Paste it into a new, fresh session** — opened at the architect's session
+settings (`../references/model-routing.md` §Seat settings; `../prompts/INVOKE_ARCHITECT.md` shows
+how to set them) — **the architect does not continue this conversation**; it plans from the
+committed brief as the single source of truth, with a clean context window (not from idea-forge's
+divergence noise). This is the exact shape `../architect/SKILL.md` Stage 1
 and `../prompts/INVOKE_ARCHITECT.md` ingest, so Step 0 feeds Step 1 with no reformatting:
 
 ```
+SESSION SETTINGS: tier top · effort xhigh, or high for a one-task plan-bug fix
+(references/model-routing.md §Seat settings). Start by stating the exact model id you are running
+as. If it is below this campaign's top-tier binding, warn me and wait for my go before anything
+else. (In an autopilot dispatch, just state it — the autopilot logs drift.)
+
 You are the ARCHITECT for this build. Load and follow architect/SKILL.md (and its references/).
 Do not write product code. Your only deliverables are: an approved spec, executor-ready plan
 documents, docs/superpowers/manifest.json, and the pre-filled docs/gates/submission-draft.md
@@ -242,8 +249,8 @@ orchestrator builds it. (For an external multi-account pool instead, stop at the
 ## Hard guardrails
 
 - **Strongest model only.** Rubric mapping and buildability judgment are model-bound. Run idea-forge on
-  your top reasoning seat (tier `top` — `../references/model-routing.md`). Never let a cheap
-  executor run it — a weak model mis-maps
+  your top reasoning seat (tier `top`, at its §Seat settings effort —
+  `../references/model-routing.md`). Never let a cheap executor run it — a weak model mis-maps
   the rubric and mis-calls buildability *silently*, and a mis-weighted rubric still produces a
   confident-looking brief. This is the skill's top residual risk.
 - **One brief, never a list.** A ranked list is an intermediate only. The deliverable is one scoped

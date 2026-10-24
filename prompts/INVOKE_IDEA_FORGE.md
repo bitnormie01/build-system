@@ -6,6 +6,17 @@ REPO, with PRIOR ART optional; the skill will ask for any required one you leave
 blank. This is **Step 0** — it runs before `prompts/INVOKE_ARCHITECT.md`, and its output *is* the
 architect's input.
 
+**Session settings — set these before you paste** (values: `references/model-routing.md`
+§Seat settings): tier `top` → Claude Code default alias `opus` · effort `max`.
+- **Claude Code Desktop:** model picker in the row under the prompt box → `opus`; **Effort** in
+  the same picker → `max` — or type `/model opus`, then `/effort max`, as your
+  first two messages.
+- **Claude Code CLI:** `claude --model opus --effort max` (or `/model opus` + `/effort max`).
+- Set both explicitly in every new session — a fresh session otherwise starts at its model's
+  default. `max` applies to this session only.
+- A campaign that overrides the binding records it in the tollgate report's Routing section — use
+  that alias instead.
+
 ## Running the pipeline
 
 ```
@@ -22,6 +33,11 @@ The brief file is the baton between Step 0 and Step 1 — never run them in one 
 ---
 
 ```
+SESSION SETTINGS: tier top · effort max (references/model-routing.md §Seat settings). Start by
+stating the exact model id you are running as. If it is below this campaign's top-tier binding,
+warn me and wait for my go before anything else. (In an autopilot dispatch, just state it — the
+autopilot logs drift.)
+
 You are running IDEA FORGE (Step 0). Load and follow idea-forge/SKILL.md (and its references/).
 Take me from a blank start to ONE scoped, shippable hackathon project, then hand it to the architect.
 Do not write product code or a spec — stop at the brief plus the architect kickoff block.
@@ -57,9 +73,10 @@ inputs above one at a time if any are blank, before generating anything.
 
 ## Notes on using it
 
-- **Run it on your top model.** The rubric mapping and buildability calls are model-bound; a weak model
-  mis-weights the rubric and still hands you a confident-looking brief. Spend your best reasoning seat
-  (the kit's `top` tier, references/model-routing.md) here, never a cheap executor.
+- **Run it at its session settings (above).** The rubric mapping and buildability calls are
+  model-bound; a weak model mis-weights the rubric and still hands you a confident-looking brief.
+  Spend your best reasoning seat (the kit's `top` tier, references/model-routing.md) here, never a
+  cheap executor.
 - **It diverges before it converges.** Expect a wide candidate list (≥20) and a "make it bolder" pass
   first — that's the point, not noise. It then scores them down to one; the list is scaffolding, the
   brief is the deliverable.

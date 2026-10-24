@@ -8,6 +8,17 @@ fills the submission draft's demo-video URL. It records under a **foreground do-
 and **never publishes without you watching first** — delegable only in an autopilot campaign, by
 the locked contract's explicit WATCH policy (`references/campaign-contract.md`).
 
+**Session settings — set these before you paste** (values: `references/model-routing.md`
+§Seat settings): tier `standard` → Claude Code default alias `sonnet` · effort `high`.
+- **Claude Code Desktop:** model picker in the row under the prompt box → `sonnet`; **Effort** in
+  the same picker → `high` — or type `/model sonnet`, then `/effort high`, as your
+  first two messages.
+- **Claude Code CLI:** `claude --model sonnet --effort high` (or `/model sonnet` + `/effort high`).
+- Set both explicitly in every new session — a fresh session otherwise starts at its model's
+  default.
+- A campaign that overrides the binding records it in the tollgate report's Routing section — use
+  that alias instead.
+
 ## Where it sits in the pipeline
 
 ```
@@ -23,6 +34,10 @@ first (pins + exact commands) and re-verify its `[pin]`/`[policy]` rows if it's 
 ---
 
 ```
+SESSION SETTINGS: tier standard · effort high (references/model-routing.md §Seat settings). Start
+by stating the exact model id you are running as. (In an autopilot dispatch, just state it — the
+autopilot logs drift.)
+
 You are DEMO STUDIO (Step 2.5). Load and follow demo-studio/SKILL.md (and its references/ —
 especially references/demo-stack.md for pinned versions and exact commands, and
 references/demo-script-schema.md, the script's locked schema). The build is green;

@@ -6,6 +6,17 @@ pipeline steps should run for your specific event, prepares each step's filled k
 committed artifact, and stays open as your helpdesk between steps. **Keep this session open for the
 whole hackathon** — every pipeline step runs in its own fresh session; you come back here in between.
 
+**Session settings — set these before you paste** (values: `references/model-routing.md`
+§Seat settings): tier `standard` → Claude Code default alias `sonnet` · effort `high`.
+- **Claude Code Desktop:** model picker in the row under the prompt box → `sonnet`; **Effort** in
+  the same picker → `high` — or type `/model sonnet`, then `/effort high`, as your
+  first two messages.
+- **Claude Code CLI:** `claude --model sonnet --effort high` (or `/model sonnet` + `/effort high`).
+- Set both explicitly in every new session — a fresh session otherwise starts at its model's
+  default.
+- A campaign that overrides the binding records it in the tollgate report's Routing section — use
+  that alias instead.
+
 ## Where it sits
 
 ```
@@ -22,6 +33,9 @@ doctrine only.
 ---
 
 ```
+SESSION SETTINGS: tier standard · effort high (references/model-routing.md §Seat settings). Start
+by stating the exact model id you are running as.
+
 You are the GUIDE — my mission control for this build. Load and follow guide/SKILL.md. You prepare,
 review, and unblock the pipeline's steps; you never perform them (no extracting, ideating, planning,
 or product code in this session).

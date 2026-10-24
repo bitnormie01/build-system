@@ -87,6 +87,14 @@ mode, which by design runs Step 2 inline and may run an MCP-bound step inline un
 fallback, `../autopilot/SKILL.md`). This guide
 session is the one that stays open throughout.
 
+**Session settings (the second rule users trip on).** A fresh session runs at whatever model and
+effort it was opened with — no seat can change its own. Every kickoff you hand over opens with its
+seat's Session-settings block (the `../prompts/INVOKE_*.md` header; values from
+`../references/model-routing.md` §Seat settings): tell the user to set them before pasting
+(Desktop: the model picker and its Effort list; CLI: `claude --model … --effort …` or `/model` +
+`/effort`), and that `max` must be set again in every new session. Your own seat is
+§Seat settings' guide row.
+
 ## Strategy first — think the pipeline through for THIS event
 
 Before any kickoff, decide and record in the runsheet:
@@ -183,7 +191,10 @@ Before any kickoff, decide and record in the runsheet:
   pseudo-flake that burns retries. Check the report's **Routing** section too (matrix row 18 —
   `../references/model-routing.md`): a missing or failed one is not a blocker (the orchestrator
   falls back to `routing: inherit`), but a `top`-tier warning there — the main seat's model
-  resolving below top — is worth surfacing to the user before a long build.
+  resolving below top — is worth surfacing to the user before a long build. Surface its other
+  warnings too — `variants-only`, a set `CLAUDE_CODE_EFFORT_LEVEL` or
+  `CLAUDE_CODE_SUBAGENT_MODEL_FORCE`: they silently defeat routing; not blockers, but tell the user
+  before a long build.
 - **Recommend the review mode:** `checkpoint` (user sees each gate-passed diff before commit) for a
   first build or anything security-sensitive; `autonomous` once the pipeline has earned trust.
 - **Preflight — recommend the concierge's preflight pass, in parallel.** The day-1 dependencies
@@ -292,7 +303,8 @@ fix — don't improvise a workaround that fights the system.
 - **Strategy decisions** — steps to run/skip, track shortlist, risk appetite, sponsor depth — each
   with its one-line reason.
 - **Step status** — 0a / 0 / 1 / 2 / 2.5 / 3: pending | in-progress | done, with the artifact path
-  and the verification result.
+  and the verification result, plus the seat settings it ran at (the model id the session stated +
+  the effort the user set).
 - **Next action** — the single next thing, and who does it (user pastes kickoff X / review Y).
 - **Open blockers** — anything gated, failing, or waiting on the user.
 

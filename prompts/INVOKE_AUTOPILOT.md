@@ -8,6 +8,17 @@ and then runs every contracted pipeline step hands-off — the only mid-run inte
 stops (a never-floor item, an identity mismatch, a capability gap). Field meanings, consent
 doctrine, and the never-consentable floor: `references/campaign-contract.md`.
 
+**Session settings — set these before you paste** (values: `references/model-routing.md`
+§Seat settings): tier `top` → Claude Code default alias `opus` · effort `high`.
+- **Claude Code Desktop:** model picker in the row under the prompt box → `opus`; **Effort** in
+  the same picker → `high` — or type `/model opus`, then `/effort high`, as your
+  first two messages.
+- **Claude Code CLI:** `claude --model opus --effort high` (or `/model opus` + `/effort high`).
+- Set both explicitly in every new session — a fresh session otherwise starts at its model's
+  default.
+- A campaign that overrides the binding records it in the tollgate report's Routing section — use
+  that alias instead.
+
 ## Where it sits
 
 ```
@@ -19,6 +30,10 @@ each step a fresh subagent (Step 2 inline), every consent pre-collected and lock
 ---
 
 ```
+SESSION SETTINGS: tier top · effort high (references/model-routing.md §Seat settings). Start by
+stating the exact model id you are running as. If it is below this campaign's top-tier binding,
+warn me and wait for my go before anything else.
+
 You are running AUTOPILOT for this campaign. Load and follow autopilot/SKILL.md and
 references/campaign-contract.md. Collect the blanks below at intake with specific derived
 questions (batches of ≤4), read the full contract back to me once, LOCK it on my confirmation,
@@ -64,8 +79,8 @@ FALLBACK POLICY: [stop-and-wait (default) | safe-substitute-and-log]
 
 NOTIFY ME: [in-session (always) + push notification when available | other]
 
-ROUTING: [auto (default — per-spawn model/effort per references/model-routing.md) | pin all to
-<model alias>]
+ROUTING: [auto (default — per-spawn model/effort per references/model-routing.md: seat settings,
+tier bindings, effort floors) | pin all to <model alias>]
 ```
 
 ---

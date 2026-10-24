@@ -5,6 +5,17 @@ available) to gather a hackathon's full documentation ecosystem into a committed
 before ideating. This is **Step 0a** — it runs before `prompts/INVOKE_IDEA_FORGE.md`, and its output is
 idea-forge's primary source.
 
+**Session settings — set these before you paste** (values: `references/model-routing.md`
+§Seat settings): tier `top` → Claude Code default alias `opus` · effort `high`.
+- **Claude Code Desktop:** model picker in the row under the prompt box → `opus`; **Effort** in
+  the same picker → `high` — or type `/model opus`, then `/effort high`, as your
+  first two messages.
+- **Claude Code CLI:** `claude --model opus --effort high` (or `/model opus` + `/effort high`).
+- Set both explicitly in every new session — a fresh session otherwise starts at its model's
+  default.
+- A campaign that overrides the binding records it in the tollgate report's Routing section — use
+  that alias instead.
+
 ## Where it sits in the pipeline
 
 ```
@@ -15,6 +26,11 @@ Step 0  — idea-forge: reads that pack → one scoped brief. → architect → 
 ---
 
 ```
+SESSION SETTINGS: tier top · effort high (references/model-routing.md §Seat settings). Start by
+stating the exact model id you are running as. If it is below this campaign's top-tier binding,
+warn me and wait for my go before anything else. (In an autopilot dispatch, just state it — the
+autopilot logs drift.)
+
 You are running RESOURCE EXTRACTOR (Step 0a). Load and follow resource-extractor/SKILL.md.
 Gather this hackathon's inter-related docs into a committed resource pack under
 docs/resources/<YYYY-MM-DD>-<event-slug>/, then hand off to idea-forge. Do not pick an idea or plan a

@@ -72,7 +72,7 @@ it; deviations break the parser.
 | `### Task N:`    | Unique integer (or `N.M` for phased). Becomes the task id. |
 | `**Files:**`     | Each line is `Create:` / `Modify:` / `Test:` + a backticked path. |
 | `**Depends on:**`| Comma-separated `Task X` refs. Defines DAG edges. Omit if root. |
-| `**Effort:**`    | Reasoning level the architect assigns to this task. One of `low\|medium\|high\|xhigh\|max` (the kit-canonical ladder — `model-routing.md`; `ultracode` is a main-session-only mode, never a per-task value; legacy `none`/`minimal` are no longer emitted and alias to `low` when read). **Required on every task** — the §5 parser defaults a *missing* line to `medium`, so a dropped or mistyped Effort silently downgrades a hard or security-sensitive task; Stage-4 validation and the §4 reviewer flag its absence. The dispatcher maps it to the runtime's effort knob at dispatch (§3, §6). |
+| `**Effort:**`    | Reasoning level the architect assigns to this task. One of `low\|medium\|high\|xhigh\|max` (the kit-canonical ladder — `model-routing.md`; `ultracode` is a main-session-only mode, never a per-task value; legacy `none`/`minimal` are no longer emitted and alias to `low` when read). **Required on every task** — the §5 parser defaults a *missing* line to `medium`, so a dropped or mistyped Effort silently downgrades a hard or security-sensitive task; Stage-4 validation and the §4 reviewer flag its absence. The dispatcher maps it to the runtime's effort knob at dispatch (§3, §6), raising it to the bound tier's effort floor (`model-routing.md`) — never lowering it. |
 | `**Model tier:**`| **Optional.** One of `top\|standard\|fast` — the abstract model class this task needs (`model-routing.md`). Absent = `standard`. **Pin rule:** every `human_gate: true`, security-sensitive, or `effort: xhigh\|max` task is `top` (an absent line on such a task means `top`, and an explicit lower tier on it is a review-blocking issue — §4). Plans never name a vendor model; the dispatcher binds tier→model per campaign. |
 | `**Provides:**`  | Signatures/types/exports this task creates. Downstream tasks may name these. |
 | `**Requires:**`  | Signatures consumed from upstream. MUST also appear inline in the step code. |
@@ -196,9 +196,9 @@ The executor prompt carries no effort or model instruction — `task.effort` and
 are not part of the prompt. They are **dispatch parameters**, never something the agent reads or
 decides: the kernel applies them as launch flags on the CLI invocation (external-pool, §6), and
 the `orchestrator` binds them to the runtime's resolved knobs (Claude-Code-native: the executor
-effort-variant agent type + the per-spawn `model` argument, per the campaign's Routing section —
-`model-routing.md`; there is no call-time effort parameter on the Agent tool in
-current builds, which is exactly why the variants exist).
+effort-variant agent type for the dispatched effort — the authored value raised to the tier's
+floor — plus the per-spawn `model` argument, and the per-spawn `effort` parameter where the build
+exposes it; all per the campaign's Routing section — `model-routing.md`).
 
 ### 3.1 What the executor returns (worker output protocol)
 
@@ -319,5 +319,6 @@ Caveats the kernel must respect:
   `high`/`xhigh` — the architect assigns this during decomposition because it's the component that
   knows each task's difficulty.
 
-Suggested defaults by role: architect `high`/`xhigh`, mastermind `medium`/`high`, executor per-task
-from the manifest (most tasks `low`/`medium`, genuinely hard or security-sensitive ones `high`).
+Seat defaults (architect, mastermind one-shot, every other seat): `model-routing.md`
+§Seat settings; executors per task from the manifest, raised to the tier floor where routing
+applies.
