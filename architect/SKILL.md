@@ -104,7 +104,9 @@ Run these four stages in order. Do not start a stage until the previous one is a
 
 - Invoke the brainstorming skill. Any reviewer subagent the method dispatches (the spec-document
   reviewer here, the §4 plan reviewer at Stage 4) runs at §Seat settings' reviewer row
-  (`../references/model-routing.md`) — per-spawn model and effort. Honor its **hard gate**: present
+  (`../references/model-routing.md`) — per-spawn model, plus per-spawn effort where the Routing
+  section shows `per-spawn`; under `routing: inherit` it inherits, and a dispatched architect that
+  cannot spawn runs the review inline. Honor its **hard gate**: present
   a design and get explicit approval before any planning. **In an autopilot campaign** (your kickoff
   carries an `AUTOPILOT CAMPAIGN` block — `../references/campaign-contract.md`) the gate survives
   but the approver is the autopilot: answer the brainstorming dialogue's questions **from the locked

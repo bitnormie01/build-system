@@ -81,7 +81,8 @@ REVIEW MODE: [autonomous — commit each gate-passed task and report at the end
 
 ROUTING (optional): [auto (default — per-task and per-seat model/effort per
 references/model-routing.md and the tollgate's Routing section: tier bindings, effort floors,
-escalation ladder) | pin all to <model alias> (never overrides a top pin) | inherit]
+escalation ladder) | pin all to <model alias> (never overrides a top pin) | per-tier override,
+e.g. top=<alias>, standard=<alias> | inherit]
 ```
 
 ---

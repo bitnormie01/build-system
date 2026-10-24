@@ -90,7 +90,9 @@ under the same consent rules, extending the **same ledger file**:
 
 Seat settings differ by pass (`../references/model-routing.md` §Seat settings): the closing pass
 runs at `top`, because it executes `human_gate: true` tasks and the pin rule never lets one run
-below `top`; the preflight pass runs at `standard`.
+below `top`; the preflight pass runs at `standard` unless it will execute a `human_gate: true`
+manifest task (a wallet / faucet / account / secret gate the architect flagged) — that one runs at
+`top` too, so switch the model first (`/model`, or the Desktop picker mid-session).
 
 Each ledger row records its **pass**. A gate inventoried at preflight but not runnable yet (deploy,
 submission) is listed as `closing` — the preflight ledger is also the earliest complete picture of

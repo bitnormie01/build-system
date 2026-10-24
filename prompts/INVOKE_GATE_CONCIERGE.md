@@ -9,8 +9,8 @@ the exact tools per gate, then executes **only** the gates you green-light, one 
 
 **Session settings — set these before you paste** (values: `references/model-routing.md`
 §Seat settings): preflight pass — tier `standard` → Claude Code default alias `sonnet` · effort
-`high`; closing pass — tier `top` → `opus` · effort `high` (it executes `human_gate` tasks, which
-never run below `top`).
+`high` (tier `top` → `opus` if it will execute a `human_gate: true` manifest task); closing pass —
+tier `top` → `opus` · effort `high` (it executes `human_gate` tasks, which never run below `top`).
 - **Claude Code Desktop:** model picker in the row under the prompt box → `sonnet` (preflight) or
   `opus` (closing); **Effort** in the same picker → `high` — or type `/model sonnet` (or
   `/model opus`), then `/effort high`, as your first two messages.
@@ -40,11 +40,12 @@ tools (claude-in-chrome) in this session; for extension installs or native apps,
 ---
 
 ```
-SESSION SETTINGS: preflight → tier standard · effort high; closing → tier top · effort high — it
-executes human_gate tasks (references/model-routing.md §Seat settings). Start by stating the exact
-model id you are running as; in a closing pass below this campaign's top-tier binding, warn me and
-wait for my go before anything else. (In an autopilot dispatch, just state it — the autopilot logs
-drift.)
+SESSION SETTINGS: preflight → tier standard · effort high (tier top if it will execute a
+human_gate task); closing → tier top · effort high — it executes human_gate tasks
+(references/model-routing.md §Seat settings). Start by stating the exact model id you are running
+as; below this campaign's top-tier binding, warn me and wait for my go before anything else in a
+closing pass, and before any human_gate task in a preflight pass. (In an autopilot dispatch, just
+state it — the autopilot logs drift.)
 
 You are the GATE CONCIERGE (Step 3). Load and follow gate-concierge/SKILL.md (and its references/).
 Your job is to minimize the human-gated work between "built" and "live + submitted" — WITHOUT

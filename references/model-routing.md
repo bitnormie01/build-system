@@ -59,7 +59,10 @@ instead. The doctrine names no model ids; what a tier resolved to this campaign 
 Routing section of the tollgate report.
 
 **Effort floors are dispatch-time glue.** Dispatched effort = the authored (or seat) effort raised
-to the bound tier's floor — never lowered. Plans keep authoring effort by task difficulty
+to the bound tier's floor — never lowered. Order: resolve the tier first (the `Model tier:` line,
+absent = `standard`, the pin rule applied), read legacy `none`/`minimal` as `low`, then raise to
+that tier's floor. The one exception is the row-17/18 probe subagents, which run at `low` (they
+report a model id, not work). Plans keep authoring effort by task difficulty
 (architect Stage 3); never raise an authored `Effort:` to compensate for a model — the floor does
 that at dispatch, so plans stay portable. The pin rule tracks the dispatched effort. Floors are
 recorded in the Routing section and do nothing under `routing: inherit`.
@@ -68,10 +71,11 @@ recorded in the Routing section and do nothing under `routing: inherit`.
 
 Every seat runs at a deliberate tier **and** effort, not only executor tasks. Tiers bind to models
 per campaign (§The model tiers); the effort column is the ladder value the seat runs at. A **main
-session** is set by the user before its first message (§Main-session settings); a **spawn** is
-bound by its dispatcher (§Dispatch binding). This table is the single source for these values —
-other files cite it; only the `prompts/INVOKE_*.md` Session-settings lines repeat them, and they
-must match. Design record: `../docs/prd/2026-10-24-seat-settings-routing-v2-prd.md`.
+session** is set by the user before its first message (§Main-session settings); a **spawn** is bound
+by its dispatcher (§Dispatch binding). This table is the single source for these values — other
+files cite it; only the `prompts/INVOKE_*.md` Session-settings lines and the architect kickoff block
+`../idea-forge/SKILL.md` emits repeat them, and they must match. Design record:
+`../docs/prd/2026-10-24-seat-settings-routing-v2-prd.md`.
 
 | Seat | Runs as | Tier | Effort |
 |---|---|---|---|
@@ -81,7 +85,7 @@ must match. Design record: `../docs/prd/2026-10-24-seat-settings-routing-v2-prd.
 | architect — Step 1, or a subtree/full regeneration | main session; autopilot spawn | `top` | `xhigh` |
 | architect — one-task plan-bug fix | main session | `top` | `high` |
 | spec/plan-document reviewer fan-out | spawn (architect) | `standard` | `high` |
-| gate-concierge — preflight pass | main session; autopilot spawn | `standard` | `high` |
+| gate-concierge — preflight pass | main session; autopilot spawn | `standard`; `top` if it would execute any `human_gate: true` task | `high` |
 | orchestrator — Step 2, mastermind judgment inline | main session | `top` | `high` |
 | executor task | spawn (orchestrator, autopilot) | the task's `Model tier:` (pin rule applies) | the task's `Effort:`, raised to the tier floor |
 | demo-studio — Step 2.5 | main session; autopilot spawn | `standard` | `high` |
@@ -91,13 +95,14 @@ must match. Design record: `../docs/prd/2026-10-24-seat-settings-routing-v2-prd.
 | autopilot | main session | `top` | `high` |
 | mastermind one-shot — external pool | kernel CLI dispatch | `top` | `xhigh` |
 | manager-mode session — external pool | main session | `top` | `high` |
-| row-17 / row-18 probe subagent | spawn | the tier under test | `low` |
+| row-17 / row-18 probe subagent | spawn | the tier under test | `low` (floor-exempt) |
 | log/summary chore subagent — only when a dispatcher spawns one | spawn | `fast` | the `fast` floor |
 
 - `max` stays the rare, deliberate rung: idea-forge (one-shot, short output, highest leverage) is
   its only seat default.
-- A user may raise a main session above its row; no dispatcher ever binds a seat below it. Seat
-  rows never weaken the pin rule — every `top` row is pinned like any `top` task.
+- A user may raise a main session above its row; no dispatcher ever binds a seat below it on its
+  own (a campaign pin is the user's call; a degraded inherit is logged). Seat rows never weaken the
+  pin rule — every `top` row is pinned like any `top` task.
 - Under `routing: inherit` the spawn rows are moot (everything inherits); the main-session rows
   still apply, because the user sets them.
 
@@ -117,10 +122,11 @@ block (values from §Seat settings), and the guide hands every kickoff over with
   through settings `effortLevel` / `modelSettings`: they reject `max` and apply to every session
   in the folder.
 - **Self-check.** Each kickoff tells the session to state the exact model id it runs as before
-  anything else. An interactive `top` seat that resolves below the campaign's `top` binding warns
-  and waits for the user's go (this generalizes the Routing section's planning-step warning). A
-  dispatched step subagent only states it — its dispatcher logs drift. Effort cannot be
-  self-verified: the user attests it, and the guide records it in the runsheet.
+  anything else. An interactive `top` seat that resolves below the campaign's `top` binding (the
+  Routing section's; before one exists, the default `top` alias) warns and waits for the user's go
+  (this generalizes the Routing section's planning-step warning). A dispatched step subagent only
+  states it — its dispatcher logs drift. Effort cannot be self-verified: the user attests it, and
+  the guide records it in the runsheet.
 
 ## The harness gate (run before any knob is touched)
 
@@ -144,7 +150,9 @@ boot:
    and dispatch everything at inherited settings.
 3. **Hard rules.**
    - **Degraded, never blocking.** A campaign that can't route still builds — at inherit. No
-     routing condition is ever a hard stop.
+     routing condition is ever a hard stop. The one pause is the user's decision, not routing's:
+     an interactive `top` main session below the `top` binding warns and waits for the user's go
+     (§Main-session settings); dispatched seats only log.
    - **Never emulate effort.** Effort is a budget knob the runtime honors or doesn't; "think
      extra hard about this" in a prompt is not a substitute and is forbidden as one.
    - **Overrides live in dispatch-time glue only.** Committed plans and manifests carry the
@@ -155,7 +163,9 @@ boot:
 
 - `CLAUDE_CODE_EFFORT_LEVEL` set → it outranks per-spawn `effort`, variant frontmatter and the
   session level, so every routed effort is ignored. Warning + fix hint: remove it from the shell
-  environment and from any settings `env` block.
+  environment and from any settings `env` block. (The external-pool kernel's per-spawn use of it,
+  `task-contract.md` §6, is deliberate; an inherited value outranks `--effort` there too, so the
+  kernel sets or clears it in each spawn's env.)
 - `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` set → per-spawn and frontmatter `model` are ignored, so tiers
   stop binding. Same warning + fix.
 - `CLAUDE_CODE_SUBAGENT_MODEL` set → only a spawn that passes no `model` picks it up; dispatchers
@@ -217,7 +227,7 @@ are rare and deliberate — the ladder's last rung, not a default.
 - **Architect (Stage 3)** assigns per-task `effort` (as always) and `Model tier:` — the only seat
   that knows task difficulty. Pin rules above; don't default everything up. It authors effort for
   difficulty only — tier floors are applied at dispatch, never written into plans — and dispatches
-  its reviewer fan-outs at §Seat settings' reviewer row.
+  its reviewer fan-outs at §Seat settings' reviewer row (under `routing: inherit` they inherit).
 - **Orchestrator** — at boot, resolve routing (read or create the Routing section, install
   variants); per dispatch, bind agent type from the dispatched effort (authored, raised to the tier
   floor), `model` from `model_tier`, per-spawn `effort` when available, and **log the resolved
@@ -235,7 +245,8 @@ are rare and deliberate — the ladder's last rung, not a default.
   - **`standard`** (ladder `tier-first`, the Claude Code default) — retry 2 = +1 model tier at the
     same effort (→ `top`); final retry = +1 effort step (cap `max`). On the default binding the
     next `standard` effort step costs more than `top` at the current step and scores lower
-    (evidence: the PRD).
+    (evidence: the PRD). A Routing section that records ladder `effort-first` (a campaign's
+    choice) runs `standard` tasks like `fast`/`top` below.
   - **`fast` and `top`** — retry 2 = +1 effort step; final retry = +1 model tier (caps `max`/`top`).
     When the tier is already capped, the final retry repeats retry 2's settings with a fresh hint.
   - Every rung applies the floor of the tier it lands on (a `fast` task promoted to `standard`

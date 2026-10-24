@@ -321,4 +321,5 @@ Caveats the kernel must respect:
 
 Seat defaults (architect, mastermind one-shot, every other seat): `model-routing.md`
 §Seat settings; executors per task from the manifest, raised to the tier floor where routing
-applies.
+applies (in-session Claude Code dispatch — the kernel's per-CLI flag carries the manifest value,
+per "Flag is authoritative" above).

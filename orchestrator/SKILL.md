@@ -102,7 +102,8 @@ Repeat until every task is `done` or the build is blocked on a human:
    - every signature in this task's `requires`, pasted from the providers' `provides`.
 
    Bind the spawn's knobs from the routing resolution (boot 5; `../references/model-routing.md`):
-   the **dispatched effort** is `task.effort` raised to the bound tier's floor (never lowered); the
+   the **dispatched effort** is `task.effort` (legacy `none`/`minimal` read as `low`) raised to the
+   floor of the bound tier — resolved first, pin rule applied — and never lowered; the
    agent type is the effort variant `executor-<dispatched effort>`; the `model` argument is
    `task.model_tier`'s campaign-verified binding (absent field = `standard`; the pin rule makes
    gated/security/`xhigh|max` tasks `top` regardless); and when the Routing section shows
@@ -136,7 +137,8 @@ Don't power through. Classify from evidence (re-read files, re-run the gate) per
   When routing is active, retries climb the **escalation ladder**
   (`../references/model-routing.md` §Dispatch binding — the authority; this is a summary): retry 1
   = as-is + the hint; then a `standard` task moves up a model tier before it moves up an effort
-  step (`tier-first`), while `fast` and `top` tasks move up effort first — every rung at the
+  step (`tier-first`; `effort-first` when the Routing section records it), while `fast` and `top`
+  tasks move up effort first — every rung at the
   landing tier's floor, and any dispatch at `xhigh|max` runs at `top`. Only this class escalates —
   flakes re-dispatch as-is, and plan bugs go to the architect, never up-tiered through.
 - **Plan bug** (the task block itself is wrong: undeclared file, `requires` that no task `provides`,

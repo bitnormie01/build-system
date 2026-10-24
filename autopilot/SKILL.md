@@ -87,7 +87,8 @@ stop and hand the user that one step as a classic guide-mode kickoff. Degrading 
 is a reported limitation, never a silent skip.
 
 **Routing** (`../references/model-routing.md`): bind every dispatch per the tollgate report's
-Routing section (row 18). Step seats bind per §Seat settings — per-spawn `model` always, per-spawn
+Routing section (row 18). Step seats and your other spawns (the independent frame/audio review,
+probes) bind per §Seat settings — per-spawn `model` always, per-spawn
 `effort` when the Routing section shows `per-spawn` (else the spawn inherits your own effort,
 logged as degraded); a Step-3 dispatch that would execute any `human_gate: true` task binds `top`
 (the pin rule). Step 2's tasks run per their manifest `effort`/`model_tier` fields, with the same

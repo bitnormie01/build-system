@@ -80,7 +80,8 @@ FALLBACK POLICY: [stop-and-wait (default) | safe-substitute-and-log]
 NOTIFY ME: [in-session (always) + push notification when available | other]
 
 ROUTING: [auto (default — per-spawn model/effort per references/model-routing.md: seat settings,
-tier bindings, effort floors) | pin all to <model alias>]
+tier bindings, effort floors) | pin all to <model alias> | per-tier override, e.g. top=<alias>,
+standard=<alias>]
 ```
 
 ---

@@ -301,6 +301,49 @@ Modified:
   build.
 - **Codex / other-harness adapters** — the harness gate keeps them safe at `routing: inherit`.
 
-## 8. Post-review corrections
+## 8. Post-review corrections (three-lens review, 2026-10-25 — recorded, implementation is canonical)
 
-*(Filled after the review loop — §0.3.)*
+Three parallel reviewers at the reviewer seat (`standard` binding, effort `high`) — PRD coverage,
+consistency + mechanics, grammar + parse drift. Each finding was verified against the text before
+fixing. No parser break was found; the grammar, §2 equality set, §4 reviewer and §5 regexes were
+confirmed untouched and consistent. Confirmed and fixed:
+
+1. **`effort-first` was recorded but undefined** (all three lenses) — the ladder now says a Routing
+   section recording `effort-first` runs `standard` tasks like `fast`/`top`; the orchestrator
+   summary names it. Kept as a value (Block P specifies the field), not dropped.
+2. **Probe effort vs floors** (all three) — the row-17/18 probe subagents are floor-exempt at `low`
+   (floors paragraph + seat row).
+3. **Floor/pin resolution order + legacy values** (grammar) — resolve the tier first (`Model tier:`
+   line, absent = `standard`, pin rule applied), read legacy `none`/`minimal` as `low`, then raise
+   to the floor; same in orchestrator build-loop step 3, so the agent type is always one of the five
+   variants.
+4. **Reviewer fan-out binding was ungated** (coverage + grammar) **and assumed nested spawn**
+   (consistency) — architect Stage 2 and the model-routing architect bullet: per-spawn effort only
+   where the Routing section shows `per-spawn`; inherit under `routing: inherit`; a dispatched
+   architect that cannot spawn runs the review inline.
+5. **Per-tier alias override not expressible** (coverage + consistency) — both ROUTING lines gain
+   `per-tier override, e.g. top=<alias>, standard=<alias>`, matching D2 and field 16.
+6. **Autopilot's non-step spawns unbound** (coverage + consistency) — its Routing paragraph names the
+   independent frame/audio review and probes alongside step seats.
+7. **"No dispatcher ever binds a seat below it"** vs field-16 pins and degraded inherit (coverage +
+   grammar) — kept, with both exceptions named.
+8. **Never-blocking vs the main-session warn-and-wait** (consistency) — the Degraded bullet names the
+   one pause as the user's decision, not a routing stop; before a Routing section exists the
+   comparison point is the default `top` alias.
+9. **The preflight pass can execute a `human_gate: true` manifest task** (consistency — the
+   architect may flag wallet / faucet / account / secret gates, which preflight runs) — D7 extended by
+   the pin rule: preflight is `standard`, `top` if it will execute any `human_gate: true` task (seat
+   row, gate-concierge §Two passes, `INVOKE_GATE_CONCIERGE.md` block + in-block line), mirroring the
+   autopilot Step-3 row.
+10. **`CLAUDE_CODE_EFFORT_LEVEL` vs the external-pool kernel's `--effort`** (consistency) — a scoping
+    note in §Settings that defeat routing (the kernel sets or clears it per spawn).
+11. **Floors' external-pool scope** (grammar) — the `task-contract.md` §6 defaults line keeps its
+    wording and adds the scope: in-session Claude Code dispatch; the kernel's per-CLI flag carries
+    the manifest value ("Flag is authoritative").
+12. **"Only the INVOKE lines repeat seat values" was incomplete** (consistency) — the seat-table
+    intro also names the architect block idea-forge emits.
+
+Declined:
+- *"apply to every session in the folder" is unverified* (coverage) — user-specified §Main-session
+  text; accurate for project settings, and the instruction it supports (never set seat effort
+  through settings) holds either way.
