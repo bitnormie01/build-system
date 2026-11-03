@@ -171,3 +171,9 @@ grammar it targets.
 *(Demo studio — autonomous demo-video recording — has shipped; see `demo-studio/SKILL.md` and
 `references/demo-stack.md`. Its PRD `docs/prd/2026-07-09-demo-studio-prd.md` remains the design
 record.)*
+
+
+## License
+
+MIT, see [LICENSE](LICENSE). The vendored copies in `references/vendor/superpowers/` keep their own
+MIT license, © 2025 Jesse Vincent.
