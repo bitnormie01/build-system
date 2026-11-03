@@ -1,5 +1,62 @@
 # Build System
 
+**A Claude Code skill kit that takes a hackathon from a link to a submitted project.** It reads the
+event's docs, scores ideas against the judging criteria, plans the winner, builds it with
+subagents, records the demo video, and prepares the submission. It never touches wallets, accounts
+or the final submit without your consent, and never uses mainnet, real funds or your main wallet.
+
+Built by [@bitnormie01](https://x.com/bitnormie01), a 3× hackathon winner, and used to take
+**1st place ($3,000 USDT) at a BNB Chain hackathon**. Free and open source under the
+[MIT license](LICENSE).
+
+## What you need
+
+- **Claude Code** on a paid Claude plan. The pipeline runs many subagents, so expect heavy usage.
+- **git** and the **GitHub CLI** (`gh`), logged in. The kit creates a separate repo for your project.
+- **Optional:** Claude in Chrome, for JavaScript-heavy hackathon sites and browser-based submission.
+- **Optional, for the demo video (Step 2.5):** Node.js, Playwright, ffmpeg, Remotion and a TTS
+  engine (kokoro or edge-tts). Versions are pinned in
+  [`references/demo-stack.md`](references/demo-stack.md); the screen-capture commands for native
+  windows and wallet pop-ups are written for Windows.
+
+## Quickstart
+
+1. Clone the kit:
+
+   ```bash
+   git clone https://github.com/bitnormie01/build-system
+   cd build-system
+   ```
+
+2. Open Claude Code in that folder and set the model and effort the kickoff asks for
+   (`/model sonnet`, then `/effort high`).
+3. Paste the prompt from [`prompts/INVOKE_GUIDE.md`](prompts/INVOKE_GUIDE.md) and fill in the
+   hackathon link, your goal and your skills. The guide plans the run and hands you a
+   ready-to-paste prompt for each step, which you run in a fresh session.
+
+After one guided run, [`prompts/INVOKE_AUTOPILOT.md`](prompts/INVOKE_AUTOPILOT.md) runs the whole
+campaign hands-off. You don't need the external "kernel" described further down: Claude Code runs
+everything by default.
+
+## The pipeline at a glance
+
+| Step | Skill | What it does |
+|---|---|---|
+| 0a (optional) | `resource-extractor` | Pulls the event's docs, tracks and judging criteria into a resource pack |
+| 0 (optional) | `idea-forge` | Generates 20+ ideas and scores them down to one brief |
+| 1 | `architect` | Turns the brief into a spec, plans and a task graph |
+| 2 | `orchestrator` | Builds the plan task by task with subagents, checking each one |
+| 2.5 (optional) | `demo-studio` | Scripts, records, narrates and edits the demo video |
+| 3 (optional) | `gate-concierge` | Handles faucets, testnet deploy, API keys and the submission, one consent at a time |
+
+## Play fair
+
+Most hackathons allow AI tools but ask you to say how you used them (ETHGlobal and MLH events, for
+example). Disclose that you built with this kit and Claude Code, and know your project well enough
+to explain it to the judges.
+
+## How it works
+
 A reusable, three-role system for autonomous builds. The **architect** turns an idea + docs into a
 spec, plans, and a task manifest (plans include a README task locked to one of eight schemas —
 `references/readme-schemas.md`). The **mastermind** owns correctness and integration. The
